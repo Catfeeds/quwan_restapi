@@ -1,0 +1,16 @@
+{
+    "name": "vpgame/dingtalkbot",
+    "description": "Dingtalk Bot 钉钉聊天机器人",
+    "authors": [
+        {
+            "name": "YuHaibo",
+            "email": "yuhaibo@vpgame.cn"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+	      "Vpgame\\DingtalkBot\\": "src/"
+	}
+    },
+    "require": {}
+}
