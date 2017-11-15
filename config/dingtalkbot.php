@@ -3,7 +3,7 @@
  * 钉钉通知
  */
 return [
-    'project' => 'API ERROR',
+    'project' => '可以忽略,我玩玩的 API ERROR',
     'bot' => [
         'default' => env('DTB_DEFAULT', ''),
     ]

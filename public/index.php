@@ -13,7 +13,7 @@
 
 // 默认的 xunsearch 应用配置文件目录为 vendor/hightman/xunsearch/app
 // 如有必要，请通过常量 XS_APP_ROOT 定义
-define ('XS_APP_ROOT', __DIR__.'/../config');
+//define ('XS_APP_ROOT', __DIR__.'/../config');
 
 
 
