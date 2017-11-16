@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 119.29.87.252
-Source Server Version : 50636
-Source Host           : 119.29.87.252:3306
+Source Server         : 127.0.0.1
+Source Server Version : 50553
+Source Host           : localhost:3306
 Source Database       : quwan
 
 Target Server Type    : MYSQL
-Target Server Version : 50636
+Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2017-11-16 20:46:27
+Date: 2017-11-16 20:50:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,7 +30,7 @@ CREATE TABLE `qw_adv` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`adv_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告表';
 
 -- ----------------------------
 -- Table structure for qw_attractions
@@ -55,7 +55,7 @@ CREATE TABLE `qw_attractions` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`attractions_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='景点表';
 
 -- ----------------------------
 -- Table structure for qw_cid
@@ -68,7 +68,7 @@ CREATE TABLE `qw_cid` (
   `sort` int(10) DEFAULT '0' COMMENT '排序(从小到大)',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0禁用,1启用',
   PRIMARY KEY (`cid_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='景点分类表';
 
 -- ----------------------------
 -- Table structure for qw_cid_map
@@ -80,7 +80,7 @@ CREATE TABLE `qw_cid_map` (
   `sort` int(11) DEFAULT '0' COMMENT '排序',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2目的地，3路线,4节日，5酒店,6餐厅',
   PRIMARY KEY (`cid_map_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='分类引用表';
 
 -- ----------------------------
 -- Table structure for qw_destination
@@ -93,7 +93,7 @@ CREATE TABLE `qw_destination` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`destination_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='目的地表';
 
 -- ----------------------------
 -- Table structure for qw_destination_join
@@ -106,7 +106,7 @@ CREATE TABLE `qw_destination_join` (
   `sort` int(11) DEFAULT '0' COMMENT '排序',
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1景点,2路线,3酒店,4餐厅',
   PRIMARY KEY (`destination_join_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='目的地相关信息表';
 
 -- ----------------------------
 -- Table structure for qw_fav
@@ -120,7 +120,7 @@ CREATE TABLE `qw_fav` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`fav_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收藏表';
 
 -- ----------------------------
 -- Table structure for qw_hall
@@ -144,7 +144,7 @@ CREATE TABLE `qw_hall` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`hall_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='餐厅表';
 
 -- ----------------------------
 -- Table structure for qw_holiday
@@ -168,7 +168,7 @@ CREATE TABLE `qw_holiday` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`holiday_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节日表';
 
 -- ----------------------------
 -- Table structure for qw_home_page
@@ -181,7 +181,7 @@ CREATE TABLE `qw_home_page` (
   `home_page_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '页面类型，1广告，2路线，3目的地，4景点，5节日，6推荐周边',
   `home_page_sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序，小在前',
   PRIMARY KEY (`home_page_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='首页模块数据表';
 
 -- ----------------------------
 -- Table structure for qw_home_page_value
@@ -193,7 +193,7 @@ CREATE TABLE `qw_home_page_value` (
   `value_id` int(11) NOT NULL COMMENT '首页分类对应的值id',
   `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序，小的在前面',
   PRIMARY KEY (`home_page_value_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='首页模块排序控制';
 
 -- ----------------------------
 -- Table structure for qw_hotel
@@ -217,7 +217,7 @@ CREATE TABLE `qw_hotel` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`hotel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='酒店表';
 
 -- ----------------------------
 -- Table structure for qw_img
@@ -233,7 +233,7 @@ CREATE TABLE `qw_img` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`img_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务图片表';
 
 -- ----------------------------
 -- Table structure for qw_message
@@ -249,7 +249,7 @@ CREATE TABLE `qw_message` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
 
 -- ----------------------------
 -- Table structure for qw_order
@@ -277,7 +277,7 @@ CREATE TABLE `qw_order` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';
 
 -- ----------------------------
 -- Table structure for qw_route
@@ -292,7 +292,7 @@ CREATE TABLE `qw_route` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`route_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线表';
 
 -- ----------------------------
 -- Table structure for qw_route_day
@@ -303,7 +303,7 @@ CREATE TABLE `qw_route_day` (
   `route_id` int(10) DEFAULT '0' COMMENT '目的地id',
   `intro` varchar(255) NOT NULL COMMENT '日程介绍',
   PRIMARY KEY (`route_day_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线日程表';
 
 -- ----------------------------
 -- Table structure for qw_route_day_join
@@ -316,7 +316,7 @@ CREATE TABLE `qw_route_day_join` (
   `sort` int(11) DEFAULT '0' COMMENT '排序',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2目的地，3路线,4节日，5酒店,6餐厅',
   PRIMARY KEY (`route_day_join_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线日程相关数据表';
 
 -- ----------------------------
 -- Table structure for qw_score
@@ -334,7 +334,7 @@ CREATE TABLE `qw_score` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`score_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评价表';
 
 -- ----------------------------
 -- Table structure for qw_user
@@ -355,4 +355,4 @@ CREATE TABLE `qw_user` (
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
