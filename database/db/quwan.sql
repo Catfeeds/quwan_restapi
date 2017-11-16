@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 127.0.0.1
-Source Server Version : 50553
-Source Host           : localhost:3306
+Source Server         : 119.29.87.252
+Source Server Version : 50636
+Source Host           : 119.29.87.252:3306
 Source Database       : quwan
 
 Target Server Type    : MYSQL
-Target Server Version : 50553
+Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2017-11-16 20:50:11
+Date: 2017-11-16 20:59:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,6 +33,10 @@ CREATE TABLE `qw_adv` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告表';
 
 -- ----------------------------
+-- Records of qw_adv
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_attractions
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_attractions`;
@@ -48,6 +52,7 @@ CREATE TABLE `qw_attractions` (
   `is_refund` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可退货,0否,1是',
   `lon` varchar(64) DEFAULT '' COMMENT '经度',
   `lat` varchar(64) DEFAULT '' COMMENT '纬度',
+  `geohash` varchar(255) DEFAULT '' COMMENT '通过经纬度换算得到的字符串索引',
   `start_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开放时间',
   `end_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
   `sort` int(10) DEFAULT '0' COMMENT '排序(从小到大)',
@@ -56,6 +61,10 @@ CREATE TABLE `qw_attractions` (
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`attractions_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='景点表';
+
+-- ----------------------------
+-- Records of qw_attractions
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_cid
@@ -71,6 +80,10 @@ CREATE TABLE `qw_cid` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='景点分类表';
 
 -- ----------------------------
+-- Records of qw_cid
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_cid_map
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_cid_map`;
@@ -81,6 +94,10 @@ CREATE TABLE `qw_cid_map` (
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2目的地，3路线,4节日，5酒店,6餐厅',
   PRIMARY KEY (`cid_map_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='分类引用表';
+
+-- ----------------------------
+-- Records of qw_cid_map
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_destination
@@ -96,6 +113,10 @@ CREATE TABLE `qw_destination` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='目的地表';
 
 -- ----------------------------
+-- Records of qw_destination
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_destination_join
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_destination_join`;
@@ -107,6 +128,10 @@ CREATE TABLE `qw_destination_join` (
   `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1景点,2路线,3酒店,4餐厅',
   PRIMARY KEY (`destination_join_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='目的地相关信息表';
+
+-- ----------------------------
+-- Records of qw_destination_join
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_fav
@@ -123,6 +148,10 @@ CREATE TABLE `qw_fav` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收藏表';
 
 -- ----------------------------
+-- Records of qw_fav
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_hall
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_hall`;
@@ -137,6 +166,7 @@ CREATE TABLE `qw_hall` (
   `evaluation` int(10) DEFAULT '0' COMMENT '评价(单位分,使用时候格式化小数)',
   `lon` varchar(64) DEFAULT '' COMMENT '经度',
   `lat` varchar(64) DEFAULT '' COMMENT '纬度',
+  `geohash` varchar(255) DEFAULT '' COMMENT '通过经纬度换算得到的字符串索引',
   `start_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开放时间',
   `end_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
   `sort` int(10) DEFAULT '0' COMMENT '排序(从小到大)',
@@ -145,6 +175,10 @@ CREATE TABLE `qw_hall` (
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`hall_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='餐厅表';
+
+-- ----------------------------
+-- Records of qw_hall
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_holiday
@@ -161,6 +195,7 @@ CREATE TABLE `qw_holiday` (
   `evaluation` int(10) DEFAULT '0' COMMENT '评价(单位分,使用时候格式化小数)',
   `lon` varchar(64) DEFAULT '' COMMENT '经度',
   `lat` varchar(64) DEFAULT '' COMMENT '纬度',
+  `geohash` varchar(255) DEFAULT '' COMMENT '通过经纬度换算得到的字符串索引',
   `start_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开放时间',
   `end_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
   `sort` int(10) DEFAULT '0' COMMENT '排序(从小到大)',
@@ -169,6 +204,10 @@ CREATE TABLE `qw_holiday` (
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`holiday_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='节日表';
+
+-- ----------------------------
+-- Records of qw_holiday
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_home_page
@@ -184,6 +223,10 @@ CREATE TABLE `qw_home_page` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='首页模块数据表';
 
 -- ----------------------------
+-- Records of qw_home_page
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_home_page_value
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_home_page_value`;
@@ -194,6 +237,10 @@ CREATE TABLE `qw_home_page_value` (
   `sort` int(11) NOT NULL DEFAULT '1' COMMENT '排序，小的在前面',
   PRIMARY KEY (`home_page_value_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='首页模块排序控制';
+
+-- ----------------------------
+-- Records of qw_home_page_value
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_hotel
@@ -210,6 +257,7 @@ CREATE TABLE `qw_hotel` (
   `evaluation` int(10) DEFAULT '0' COMMENT '评价(单位分,使用时候格式化小数)',
   `lon` varchar(64) DEFAULT '' COMMENT '经度',
   `lat` varchar(64) DEFAULT '' COMMENT '纬度',
+  `geohash` varchar(255) DEFAULT '' COMMENT '通过经纬度换算得到的字符串索引',
   `start_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开放时间',
   `end_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
   `sort` int(10) DEFAULT '0' COMMENT '排序(从小到大)',
@@ -218,6 +266,10 @@ CREATE TABLE `qw_hotel` (
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`hotel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='酒店表';
+
+-- ----------------------------
+-- Records of qw_hotel
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_img
@@ -236,6 +288,10 @@ CREATE TABLE `qw_img` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务图片表';
 
 -- ----------------------------
+-- Records of qw_img
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_message
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_message`;
@@ -250,6 +306,10 @@ CREATE TABLE `qw_message` (
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
+
+-- ----------------------------
+-- Records of qw_message
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_order
@@ -280,6 +340,10 @@ CREATE TABLE `qw_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';
 
 -- ----------------------------
+-- Records of qw_order
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_route
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_route`;
@@ -295,6 +359,10 @@ CREATE TABLE `qw_route` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线表';
 
 -- ----------------------------
+-- Records of qw_route
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_route_day
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_route_day`;
@@ -304,6 +372,10 @@ CREATE TABLE `qw_route_day` (
   `intro` varchar(255) NOT NULL COMMENT '日程介绍',
   PRIMARY KEY (`route_day_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线日程表';
+
+-- ----------------------------
+-- Records of qw_route_day
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_route_day_join
@@ -317,6 +389,10 @@ CREATE TABLE `qw_route_day_join` (
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2目的地，3路线,4节日，5酒店,6餐厅',
   PRIMARY KEY (`route_day_join_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='路线日程相关数据表';
+
+-- ----------------------------
+-- Records of qw_route_day_join
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for qw_score
@@ -337,6 +413,10 @@ CREATE TABLE `qw_score` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评价表';
 
 -- ----------------------------
+-- Records of qw_score
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for qw_user
 -- ----------------------------
 DROP TABLE IF EXISTS `qw_user`;
@@ -350,9 +430,14 @@ CREATE TABLE `qw_user` (
   `openid` varchar(62) NOT NULL DEFAULT '' COMMENT '微信openid',
   `lon` varchar(64) DEFAULT '' COMMENT '经度',
   `lat` varchar(64) DEFAULT '' COMMENT '纬度',
+  `geohash` varchar(255) DEFAULT '' COMMENT '通过经纬度换算得到的字符串索引',
   `msg_num` int(10) unsigned DEFAULT '0' COMMENT '未读消息数(后台发一条+1,用户读一条-1)',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0禁用,1启用',
   `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+-- ----------------------------
+-- Records of qw_user
+-- ----------------------------
