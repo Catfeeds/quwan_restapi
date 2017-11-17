@@ -272,6 +272,10 @@ class TestController extends Controller
     public function qiniu()
     {
         $file = Input::file('file');
+        if ($file === null) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
         //检测是否上传成功
         if(!$file->isValid()){
             throw new UnprocessableEntityHttpException(850006,[],'',['msg'=>$file->getError()]);
