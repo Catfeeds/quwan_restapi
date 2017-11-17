@@ -33,6 +33,7 @@ $app->configure('general');
 $app->configure('jwt');
 $app->configure('dingtalkbot');
 $app->configure('dictionary');
+$app->configure('qiniu');
 ;
 /*
 |--------------------------------------------------------------------------

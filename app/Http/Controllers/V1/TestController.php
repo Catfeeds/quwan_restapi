@@ -5,13 +5,11 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Article;
+use App\Services\QiNiuService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
-use Qiniu\Auth;
-use Qiniu\Config;
-use Qiniu\Storage\FormUploader;
-use Qiniu\Storage\UploadManager;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Class TestController
@@ -40,6 +38,8 @@ class TestController extends Controller
         $this->params = $this->request->all();
 
     }
+
+
 
     //添加文档到索引
     public function addIndex()
@@ -200,31 +200,7 @@ class TestController extends Controller
 
     }
 
-    public function qiniu()
-    {
-        //QINIU_ACCESS_KEY=r4Puq7v6E1MrD8q2SZpRrtX3_exPMOHPuVRgquAT
-        //QINIU_SECRET_KEY=iqMsNBgQ5_nLkdpSNwjxieDLvno8YMcH1PXHTYGz
-        //QINIU_BUCKET=weiba-ms
-        //QINIU_DOMAIN=http://7xk9pc.com2.z0.glb.qiniucdn.com/
 
-        $bucketName = 'quwan';
-        $accessKey = 'jVIkLNl8FzaeCK8H5AxPLYi49qlmc86572ITnbiM';
-        $secretKey = 'A1JOHdGbg0IoxcoZYmoHtjfzbgwp51EDfzusMNkm';
-        $qiniuUrl = 'http://ozg3kv9uz.bkt.clouddn.com/';
-        $testAuth = new Auth($accessKey, $secretKey);
-
-        $name = '1123.jpg';
-        $fileName = base_path() . '/public/1.jpg';
-        $token = $testAuth->uploadToken($bucketName, $name);
-
-        $upManager = new UploadManager();
-        $res = $upManager->putFile($token, $name, $fileName);
-        if (true === empty($res[0]['key'])) {
-            throw new UnprocessableEntityHttpException(850006);
-        }
-
-        return response_success(['url' => $qiniuUrl, 'file_name' => $res[0]['key']]);
-    }
 
     public function sendSms()
     {
@@ -287,6 +263,42 @@ class TestController extends Controller
         $this->tokenService->revokeToken($claims['jti']);
 
         return response_success(['msg' => '退出成功']);
+    }
+
+    /**
+     * 上传到7牛
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function qiniu()
+    {
+        $file = Input::file('file');
+        //检测是否上传成功
+        if(!$file->isValid()){
+            throw new UnprocessableEntityHttpException(850006,[],'',['msg'=>$file->getError()]);
+        }
+
+        //大小限制
+        $uploadSize = config('qiniu.upload_size');
+        if($file->getClientSize() > $uploadSize){
+            throw new UnprocessableEntityHttpException(850007);
+        }
+
+        //类型限制
+        $allowed_extensions = config('qiniu.extensions');
+        if (!in_array($file->getClientMimeType (),$allowed_extensions)) {
+            throw new UnprocessableEntityHttpException(850008);
+        }
+
+        $hz_name         = substr($file->getClientOriginalName(), strrpos($file->getClientOriginalName(), ".")+1);
+        $destinationPath = 'uploads/imges/';
+        $fileName        = str_random(10).'.'.$hz_name;
+
+        //移动到指定文件夹
+        $file->move($destinationPath, $fileName);
+
+        list($qiniuUrl, $res) = QiNiuService::uploadQiniu($fileName, $destinationPath);
+
+        return response_success(['url' => $qiniuUrl, 'file_name' => $res[0]['key']]);
     }
 
 }

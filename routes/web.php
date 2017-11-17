@@ -27,7 +27,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->post('xs', 'TestController@xs'); //迅搜
     $app->get('login', 'TestController@login'); //登录
     $app->get('send_sms', 'TestController@sendSms'); //发送短信
-    $app->get('qiniu', 'TestController@qiniu'); //上传到7牛
+    $app->post('qiniu', 'TestController@qiniu'); //上传到7牛
 
 });
 
