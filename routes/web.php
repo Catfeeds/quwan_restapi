@@ -29,6 +29,9 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('send_sms', 'TestController@sendSms'); //发送短信
     $app->post('qiniu', 'TestController@qiniu'); //上传到7牛
 
+
+    $app->get('home', 'HomeController@index'); //首页数据
+
 });
 
 
