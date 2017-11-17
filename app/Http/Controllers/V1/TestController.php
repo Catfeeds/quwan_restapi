@@ -207,6 +207,7 @@ class TestController extends Controller
         //QINIU_BUCKET=weiba-ms
         //QINIU_DOMAIN=http://7xk9pc.com2.z0.glb.qiniucdn.com/
 
+        $bucketName = 'quwan';
         $accessKey = 'jVIkLNl8FzaeCK8H5AxPLYi49qlmc86572ITnbiM';
         $secretKey = 'A1JOHdGbg0IoxcoZYmoHtjfzbgwp51EDfzusMNkm';
         $qiniuUrl = 'http://ozg3kv9uz.bkt.clouddn.com/';
@@ -214,7 +215,6 @@ class TestController extends Controller
 
         $name = '1123.jpg';
         $fileName = base_path() . '/public/1.jpg';
-        $bucketName = 'quwan';
         $token = $testAuth->uploadToken($bucketName, $name);
 
         $upManager = new UploadManager();
