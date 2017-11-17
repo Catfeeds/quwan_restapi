@@ -30,6 +30,8 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->post('qiniu', 'TestController@qiniu'); //上传到7牛
 
 
+    $app->get('add_data', 'HomeController@addData'); //增加默认
+
     $app->get('home', 'HomeController@index'); //首页数据
 
 });
