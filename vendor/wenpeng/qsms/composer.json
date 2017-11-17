@@ -1,0 +1,26 @@
+{
+  "name": "wenpeng/qsms",
+  "description": "腾讯云Qcloud短信服务第三方SDK",
+  "keywords": [
+    "Qcloud SMS SDK"
+  ],
+  "homepage": "https://github.com/wenpeng/qsms",
+  "type": "library",
+  "require": {
+    "php": ">=5.1",
+    "wenpeng/curl": "*"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Wenpeng",
+      "email": "imwwp@outlook.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Wenpeng\\Qsms\\": "src/"
+    }
+  }
+}
