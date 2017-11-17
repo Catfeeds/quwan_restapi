@@ -277,7 +277,7 @@ class TestController extends Controller
             throw new UnprocessableEntityHttpException(850006,[],'',['msg'=>$file->getError()]);
         }
 
-        //大小限制
+        //大小限制1
         $uploadSize = config('qiniu.upload_size');
         if($file->getClientSize() > $uploadSize){
             throw new UnprocessableEntityHttpException(850007);
