@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Cid extends Model
 {
 
+    //分类类型(1景点,2目的地，3路线,4节日，5酒店,6餐厅)
+    const CID_TYPE_1 = 1;
+    const CID_TYPE_2 = 2;
+    const CID_TYPE_3 = 3;
+    const CID_TYPE_4 = 4;
+    const CID_TYPE_5 = 5;
+    const CID_TYPE_6 = 6;
+
+    //0禁用,1启用
+    const CID_STATUS_0 = 0;
+    const CID_STATUS_1 = 1;
+
     /**
      * 关联到模型的数据表
      *
@@ -39,5 +51,8 @@ class Cid extends Model
   'cid_sort' => 'int',
   'cid_status' => 'int',
 );
+
+
+
 
 }

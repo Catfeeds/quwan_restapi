@@ -3,28 +3,9 @@
 namespace App\Http\Controllers\V1;
 
 
-use App\Exceptions\UnprocessableEntityHttpException;
-use App\Models\Adv;
-use App\Models\Attractions;
-use App\Models\Cid;
-use App\Models\CidMap;
-use App\Models\Destination;
-use App\Models\DestinationJoin;
-use App\Models\Fav;
-use App\Models\Hall;
-use App\Models\Holiday;
-use App\Models\Hotel;
-use App\Models\Img;
-use App\Models\Message;
-use App\Models\Order;
-use App\Models\OrderCode;
-use App\Models\Route;
-use App\Models\RouteDay;
-use App\Models\RouteDayJoin;
-use App\Models\Score;
-use App\Models\User;
+use App\Models\HomePage;
+use App\Repository\HomePageRepository;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Services\TokenService;
 
 /**
@@ -41,14 +22,18 @@ class HomeController extends Controller
     protected $XSDocument;
     protected $XSSearch;
     protected $params;
+    protected $homePage;
+    protected $homePageRepository;
 
-    public function __construct(TokenService $tokenService, Request $request)
+    public function __construct(TokenService $tokenService, Request $request,HomePage $homePage,HomePageRepository $homePageRepository)
     {
 
         parent::__construct();
 
         $this->tokenService = $tokenService;
         $this->request = $request;
+        $this->homePage = $homePage;
+        $this->homePageRepository = $homePageRepository;
 
         //接受到的参数
         $this->params = $this->request->all();
@@ -59,9 +44,10 @@ class HomeController extends Controller
     public function index()
     {
         //获取首页数据
+        $data = $this->homePage->getHomeData();
+        $data = $this->homePageRepository->getPageData($data);
 
-
-        //return response_success(['data' => $data);
+        return response_success($data);
     }
 
 

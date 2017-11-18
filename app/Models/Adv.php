@@ -48,4 +48,9 @@ class Adv extends Model
         'adv_updated_at' => 'int',
     ];
 
+//    public function getInfo($advId)
+//    {
+//        $data = self::select
+//        return $data;
+//    }
 }
