@@ -65,7 +65,7 @@ class TestController extends Controller
         //验证
         $response = $app->server->serve();
 
-        var_dump('------',$response);
+        var_dump('---------',$response);
 
         // 将响应输出
 //        $response->send(); // Laravel 里请使用：return $response
