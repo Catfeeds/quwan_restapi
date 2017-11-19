@@ -11,7 +11,7 @@ return array(
         'file' => base_path() . '/storage/logs/wx.log', // XXX: 绝对路径！！！！
     ],
     'oauth' => [
-        'scopes' => ['snsapi_userinfo'],
+        'scopes' => ['snsapi_base'],
         'callback' => '/quwan/oauth_callback',
     ],
 );
