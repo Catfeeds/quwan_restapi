@@ -25,7 +25,10 @@ $unAuthGroup = [
 $app->group($unAuthGroup, function () use ($app) {
 
 
-    $app->get('/', 'TestController@wx'); //添加文档到索引
+
+    $app->get('/', 'HomeController@wx'); //添加文档到索引
+
+    $app->get('oauth_callback', 'TestController@oauthCallback'); //授权回调
 
     $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
     $app->post('xs', 'TestController@xs'); //迅搜

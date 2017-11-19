@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Log;
 use Qcloud\Sms\SmsSingleSender;
 
 /**
@@ -54,9 +55,22 @@ class TestController extends Controller
 
 
     //wx
-    public function wx()
+    public function oauthCallback()
     {
         $wxConfig = config('wx');
+
+        $app = new Application($wxConfig);
+        $oauth = $app->oauth;
+
+        // 获取 OAuth 授权结果用户信息
+        $user = $oauth->user();
+        $userArr = $user->toArray();
+        Log::error('登录用户: ', $userArr);
+
+        $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
+        header('location:'. $targetUrl); // 跳转到 user/profile
+
+
 //        var_dump('------',$wxConfig);
         $app = new Application($wxConfig);
 
@@ -64,6 +78,10 @@ class TestController extends Controller
         //验证
         //$response = $app->server->serve();
         //return $response;
+
+        $userService = $app->user;
+        $response = $userService->get($openId);
+
 
 
         // 从项目实例中得到服务端应用实例。

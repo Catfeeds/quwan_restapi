@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Models\HomePage;
 use App\Repository\HomePageRepository;
+use EasyWeChat\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
 
@@ -37,6 +38,39 @@ class HomeController extends Controller
 
         //接受到的参数
         $this->params = $this->request->all();
+
+    }
+
+
+
+    //wx
+    public function wx()
+    {
+        $wxConfig = config('wx');
+
+        $app = new Application($wxConfig);
+//        $oauth = $app->oauth;
+//
+//        // 获取 OAuth 授权结果用户信息
+//        $user = $oauth->user();
+//        $userArr = $user->toArray();
+//        Log::error('登录用户: ', $userArr);
+//
+//        $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
+//        header('location:'. $targetUrl); // 跳转到 user/profile
+
+
+        $oauth = $app->oauth;
+        // 未登录
+//        if (empty($_SESSION['wechat_user'])) {
+//            $_SESSION['target_url'] = 'user/profile';
+            return $oauth->redirect();
+            // 这里不一定是return，如果你的框架action不是返回内容的话你就得使用
+            // $oauth->redirect()->send();
+//        }
+        // 已经登录过
+//        $user = $_SESSION['wechat_user'];
+
 
     }
 
