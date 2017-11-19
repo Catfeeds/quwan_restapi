@@ -56,6 +56,29 @@ class TestController extends Controller
     }
 
 
+    public function sendMoban()
+    {
+        $wxConfig = config('wx');
+
+        $app = new Application($wxConfig);
+
+        $notice = $app->notice;
+        $userId = 'ovwAZuBLwSiize3Zjd-DiCZPWTf8';
+        $templateId = 'khV6wM2PO7inzv9octCaRQvp_HbvdHG4J1zIZFSn8xU';
+        $url = 'http://www.baidu.com';
+        $data = array(
+            "first"  => "恭喜你购买成功！",
+            "name"   => "巧克力",
+            "price"  => "39.8元",
+            "time"  => date('Y-m-d H:i:s', time()),
+            "remark" => "欢迎再次购买！",
+        );
+        $result = $notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
+        return $result;
+
+    }
+
+
     //wx
     public function oauthCallback()
     {

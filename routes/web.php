@@ -29,6 +29,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('/', 'HomeController@wx'); //添加文档到索引
 
     $app->get('oauth_callback', 'TestController@oauthCallback'); //授权回调
+    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
     $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
     $app->post('xs', 'TestController@xs'); //迅搜
