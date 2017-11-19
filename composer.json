@@ -15,7 +15,8 @@
         "wenpeng/qsms": "^1.0",
         "qiniu/php-sdk": "^7.2",
         "hightman/xunsearch": "^1.4",
-        "qcloudsms/qcloudsms_php": "^0.1.0"
+        "qcloudsms/qcloudsms_php": "^0.1.0",
+        "overtrue/wechat": "^3.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
