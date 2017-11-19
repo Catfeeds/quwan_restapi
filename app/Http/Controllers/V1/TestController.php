@@ -57,15 +57,16 @@ class TestController extends Controller
     public function wx()
     {
         $wxConfig = config('wx');
-        var_dump('------',$wxConfig);
+//        var_dump('------',$wxConfig);
         $app = new Application($wxConfig);
 
-        var_dump('-------',$app);
+//        var_dump('-------',$app);
 
         //验证
         $response = $app->server->serve();
 
-        var_dump('----------',$response);
+        return $response;
+//        var_dump('----------',$response);
 
         // 将响应输出
 //        $response->send(); // Laravel 里请使用：return $response
