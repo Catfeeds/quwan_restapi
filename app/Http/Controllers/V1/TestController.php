@@ -9,7 +9,6 @@ use App\Services\QiNiuService;
 use App\Services\SmsService;
 use App\Services\YanzhenService;
 use EasyWeChat\Foundation\Application;
-use houdunwang\validate\Validate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
@@ -66,6 +65,7 @@ class TestController extends Controller
         $user = $oauth->user();
         $userArr = $user->toArray();
         Log::error('登录用户: ', $userArr);
+        die;
 
         $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
         header('location:'. $targetUrl); // 跳转到 user/profile

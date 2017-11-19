@@ -8,6 +8,7 @@ use App\Repository\HomePageRepository;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HomeController
@@ -47,6 +48,7 @@ class HomeController extends Controller
     public function wx()
     {
         $wxConfig = config('wx');
+
 
         $app = new Application($wxConfig);
 //        $oauth = $app->oauth;
