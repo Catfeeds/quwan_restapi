@@ -69,7 +69,7 @@ class TestController extends Controller
 
         if (false === empty($userArr)) {
             //检测用户是否存在不存在注册
-            $tag = User::where('openid','',$userArr['id'])->count();
+            $tag = User::where('openid','=',$userArr['id'])->count();
             if (!$tag) {
                 $arr = [
                   'user_nickname' => $userArr['nickname'],
