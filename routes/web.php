@@ -49,6 +49,8 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('hotel/{hotel_id}', 'HotelController@index'); //酒店详情页数据
     $app->get('hall/{hall_id}', 'HallController@index'); //餐厅详情页数据
 
+    $app->post('fav', 'FavController@index'); //收藏/取消
+
 });
 
 
