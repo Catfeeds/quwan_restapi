@@ -72,7 +72,7 @@ class TestController extends Controller
         if (false === empty($userArr)) {
 
             //$targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
-            $targetUrl = '/?openid='.$userArr['id'];
+            $targetUrl = '/quwan/?openid='.$userArr['id'];
 
             //存在
             $cacheKey = 'quwan:openid:'.$userArr['id'];
