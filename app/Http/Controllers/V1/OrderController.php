@@ -75,9 +75,10 @@ class OrderController extends Controller
             'act_name'         => '测试活动',
             'remark'           => '测试备注',
         ];
-        $result = $luckyMoney->sendNormal($luckyMoneyData);
+        //$result = $luckyMoney->sendNormal($luckyMoneyData);
 
-
+        $mchBillNo = "xy123456";
+        $result = $luckyMoney->query($mchBillNo);
         return $result;
 
     }
