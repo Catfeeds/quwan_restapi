@@ -12,6 +12,6 @@ return array(
     ],
     'oauth' => [
         'scopes' => ['snsapi_userinfo'],
-        'callback' => '/oauth_callback',
+        'callback' => '/quwan/oauth_callback',
     ],
 );
