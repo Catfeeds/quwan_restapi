@@ -73,7 +73,9 @@ class TestController extends Controller
             "time"  => date('Y-m-d H:i:s', time()),
             "remark" => "欢迎再次购买！",
         );
+
         $result = $notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
+        var_dump($data,$result);die;
         return $result;
 
     }
