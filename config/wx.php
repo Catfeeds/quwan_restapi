@@ -6,7 +6,7 @@ return array(
 //    'token' => 'quwan',
     'debug' => true,
     'app_id' => 'wxb74f749dec2016f6',
-    'secret' => '300b037d3ba4252d73bf7c0a36317b2c',
+    'secret' => '768d23e80b3e08517603c39ff3d2f9c1',
     'token' => 'quwan',
 
 
