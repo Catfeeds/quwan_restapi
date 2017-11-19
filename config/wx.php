@@ -14,4 +14,11 @@ return array(
         'scopes' => ['snsapi_userinfo'], // snsapi_userinfo详情信息
         'callback' => '/quwan/oauth_callback',
     ],
+    'payment' => [
+        'merchant_id'        => '1454303702',
+        'key'                => 'WM4gTS60zN3KqORQGel7lCsDdCotVbGJ',
+        'cert_path'          => base_path() . '/config/apiclient_cert.pem', // XXX: 绝对路径！！！！
+        'key_path'           => base_path() . '/config/apiclient_key.pem',      // XXX: 绝对路径！！！！
+        'notify_url'         => '/quwan/notify_url',       // 你也可以在下单时单独设置来想覆盖它
+    ],
 );

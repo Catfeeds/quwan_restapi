@@ -29,6 +29,8 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('/', 'HomeController@wx'); //添加文档到索引
 
     $app->get('oauth_callback', 'TestController@oauthCallback'); //授权回调
+    $app->get('add_order', 'OrderController@addOrder'); //创建订单
+    $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
     $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
     $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
@@ -42,6 +44,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('add_data', 'HomeController@addData'); //增加默认
 
     $app->get('home', 'HomeController@index'); //首页数据
+    $app->get('mudi/{destination_id}', 'MudiController@index'); //目的地详情页数据
 
 });
 
