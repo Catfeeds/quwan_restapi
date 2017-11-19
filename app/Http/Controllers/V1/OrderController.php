@@ -50,12 +50,10 @@ class OrderController extends Controller
             'out_trade_no'     => '1217752501201407033233368018',
             'total_fee'        => 5388, // 单位：分
             'openid'           => 'ovwAZuBLwSiize3Zjd-DiCZPWTf8', // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识，
-            // ...
         ];
         $order = new Order($attributes);
 
-
-        return response_success($order);
+        return $order;
     }
 
 }
