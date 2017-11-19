@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Destination;
+use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
@@ -55,5 +56,33 @@ class OrderController extends Controller
 
         return $order;
     }
+
+    public function sendHongBao()
+    {
+
+        $wxConfig = config('wx');
+        $app = new Application($wxConfig);
+        $luckyMoney = $app->lucky_money;
+
+        $luckyMoneyData = [
+            'mch_billno'       => 'xy123456',
+            'send_name'        => '开发测试发红包',
+            're_openid'        => 'ovwAZuBLwSiize3Zjd-DiCZPWTf8',
+            'total_num'        => 1,  //固定为1，可不传
+            'total_amount'     => 100,  //单位为分，不小于100
+            'wishing'          => '祝福语',
+            'client_ip'        => '192.168.0.1',  //可不传，不传则由 SDK 取当前客户端 IP
+            'act_name'         => '测试活动',
+            'remark'           => '测试备注',
+        ];
+        $result = $luckyMoney->sendNormal($luckyMoneyData);
+
+
+        return $result;
+
+    }
+
+
+
 
 }
