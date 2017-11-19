@@ -53,9 +53,11 @@ class HomeController extends Controller
     public function wx()
     {
         $wxConfig = config('wx');
-        $app = new Application($wxConfig);
-        $response = $app->server->serve();
-        return $response;
+
+        //第一次验证时候用
+        //$app = new Application($wxConfig);
+        //$response = $app->server->serve();
+        //return $response;
 
 
         $openid = $this->params['openid'] ?? '' ;
