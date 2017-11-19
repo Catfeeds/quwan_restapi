@@ -11,7 +11,7 @@ return array(
 
 
 
-    // 'aes_key' => null, // 可选
+     'aes_key' => '1q0UZ3QsjOzFIsDIlblOYe490I0zabPHxKml8xhZZRN', // 可选
     'log' => [
         'level' => 'debug',
         'file' => base_path() . '/storage/logs/wx.log', // XXX: 绝对路径！！！！
