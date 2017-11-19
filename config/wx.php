@@ -1,9 +1,15 @@
 <?php
 return array(
+//    'debug' => true,
+//    'app_id' => 'wxfee3ef526ee96c44',
+//    'secret' => '3ad40eb4cdd69b78161ad6338c378a9e',
+//    'token' => 'quwan',
     'debug' => true,
-    'app_id' => 'wxfee3ef526ee96c44',
-    'secret' => '3ad40eb4cdd69b78161ad6338c378a9e',
+    'app_id' => 'wxb74f749dec2016f6',
+    'secret' => '300b037d3ba4252d73bf7c0a36317b2c',
     'token' => 'quwan',
+
+
 
     // 'aes_key' => null, // 可选
     'log' => [
