@@ -53,7 +53,6 @@ class HomeController extends Controller
     {
         $wxConfig = config('wx');
         $openid = $this->params['openid'] ?? '' ;
-        Log::error('登录用户1: '. $openid);
         if (!$openid) {
             $app = new Application($wxConfig);
             $oauth = $app->oauth;
@@ -63,8 +62,7 @@ class HomeController extends Controller
 
         $cacheKey = 'quwan:openid:'.$openid;
         $tag = Cache::tags('quwan')->get($cacheKey);
-        Log::error('登录用户2: '. $tag);
-        if($tag){
+        if(!$tag){
             $app = new Application($wxConfig);
             $oauth = $app->oauth;
             return $oauth->redirect();
