@@ -42,7 +42,6 @@ class TestController extends Controller
     {
 
         parent::__construct();
-
         $this->tokenService = $tokenService;
         $this->request = $request;
         $this->yanzhenService = $yanzhenService;
@@ -58,14 +57,19 @@ class TestController extends Controller
     public function wx()
     {
         $wxConfig = config('wx');
-
+        var_dump('------',$wxConfig);
         $app = new Application($wxConfig);
+
+        var_dump('-------',$app);
 
         //验证
         $response = $app->server->serve();
+
+        var_dump('------',$response);
+
         // 将响应输出
-        $response->send(); // Laravel 里请使用：return $response
-//        
+//        $response->send(); // Laravel 里请使用：return $response
+//
 //        // 从项目实例中得到服务端应用实例。
 //        $server = $app->server;
 //        $server->setMessageHandler(function ($message) {

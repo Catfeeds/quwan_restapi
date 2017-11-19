@@ -3,10 +3,9 @@
 $prefix     = 'quwan';
 $namespace  = 'App\Http\Controllers';
 
-$app->get($prefix, function ()  use ($app) {
-    $app->get('/', 'TestController@wx'); //wx
+//$app->get($prefix, function () {
 //    return 'Welcome to quwan';
-});
+//});
 
 /**
  * 允许的版本,即当前主版本
@@ -24,6 +23,10 @@ $unAuthGroup = [
     'middleware' => ['lang']
 ];
 $app->group($unAuthGroup, function () use ($app) {
+
+
+    $app->get('/', 'TestController@wx'); //添加文档到索引
+
     $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
     $app->post('xs', 'TestController@xs'); //迅搜
     $app->get('login', 'TestController@login'); //登录
