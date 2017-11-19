@@ -8,6 +8,7 @@ use App\Models\Article;
 use App\Services\QiNiuService;
 use App\Services\SmsService;
 use App\Services\YanzhenService;
+use EasyWeChat\Foundation\Application;
 use houdunwang\validate\Validate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,7 +33,12 @@ class TestController extends Controller
     protected $yanzhenService;
     protected $smsService;
 
-    public function __construct(TokenService $tokenService, Request $request, YanzhenService $yanzhenService, SmsService $smsService)
+    public function __construct(
+        TokenService $tokenService,
+        Request $request,
+        YanzhenService $yanzhenService,
+        SmsService $smsService
+    )
     {
 
         parent::__construct();
@@ -44,6 +50,31 @@ class TestController extends Controller
 
         //接受到的参数
         $this->params = $this->request->all();
+
+    }
+
+
+    //wx
+    public function wx()
+    {
+        $wxConfig = config('wx');
+
+        $app = new Application($wxConfig);
+
+        //验证
+        $response = $app->server->serve();
+        // 将响应输出
+        $response->send(); // Laravel 里请使用：return $response
+//        
+//        // 从项目实例中得到服务端应用实例。
+//        $server = $app->server;
+//        $server->setMessageHandler(function ($message) {
+//            // $message->FromUserName // 用户的 openid
+//            // $message->MsgType // 消息类型：event, text....
+//            return "您好！欢迎关注我!";
+//        });
+//        $response = $server->serve();
+//        $response->send(); // Laravel 里请使用：return $response;
 
     }
 

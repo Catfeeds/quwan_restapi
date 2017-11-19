@@ -3,8 +3,9 @@
 $prefix     = 'quwan';
 $namespace  = 'App\Http\Controllers';
 
-$app->get($prefix, function () {
-    return 'Welcome to quwan';
+$app->get($prefix, function ()  use ($app) {
+    $app->get('/', 'TestController@wx'); //wx
+//    return 'Welcome to quwan';
 });
 
 /**
