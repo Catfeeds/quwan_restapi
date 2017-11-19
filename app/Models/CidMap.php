@@ -65,4 +65,23 @@ class CidMap extends Model
         return $data;
     }
 
+
+    /**
+     * 目的地下所有线路分类
+     * @param $joinIds
+     * @param $cidMapType
+     * @return mixed
+     */
+    public function getMudiLists($joinIds, $cidMapType)
+    {
+        $data = self::select('c.cid_id','c.cid_name')
+            ->leftJoin('cid as c', 'c.cid_id', '=', 'cid_map.cid_id')
+            ->whereIn('cid_map.join_id',$joinIds)
+            ->where('cid_map.cid_map_type','=',$cidMapType)
+            ->orderBy('cid_map.cid_map_sort')
+            ->get()->toArray();
+
+        return $data;
+    }
+
 }

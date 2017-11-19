@@ -65,4 +65,12 @@ class DestinationJoin extends Model
 
     }
 
+    //获取目的地下所有关联数据
+    public function getJoinData($destinationId)
+    {
+        $data = self::select('join_id','destination_join_type','destination_join_sort')
+            ->where('destination_id','=',$destinationId)->get()->toArray();
+        return $data;
+    }
+
 }

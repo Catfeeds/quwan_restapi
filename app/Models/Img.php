@@ -68,4 +68,16 @@ class Img extends Model
     }
 
 
+    //获取关联的所有图片
+    public static function getImgs($joinIds,$imgType)
+    {
+
+        $data = self::where('img_status','=',self::IMG_STATUS_1)
+            ->where('img_type','=',$imgType)
+            ->whereIn('join_id',$joinIds)
+            ->pluck('img_url')->toArray();
+        return $data;
+    }
+
+
 }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Destination extends Model
 {
-
+    //0禁用,1启用
+    const DESTINATION_STATUS_0 = 0;
+    const DESTINATION_STATUS_1 = 1;
     /**
      * 关联到模型的数据表
      *
@@ -33,11 +35,21 @@ class Destination extends Model
      *
      * @var array
      */
-    protected $casts = array (
-  'destination_id' => 'int',
-  'destination_status' => 'int',
-  'destination_created_at' => 'int',
-  'destination_updated_at' => 'int',
-);
+    protected $casts = array(
+        'destination_id' => 'int',
+        'destination_status' => 'int',
+        'destination_created_at' => 'int',
+        'destination_updated_at' => 'int',
+    );
 
+    public function getInfo($destinationId = 0)
+    {
+        //获取目的地详情
+        $data = self::select('destination_id', 'destination_name')
+            ->where('destination_id', '=', $destinationId)
+            ->where('destination_status', '=', self::DESTINATION_STATUS_1)
+            ->first();
+
+        return $data;
+    }
 }

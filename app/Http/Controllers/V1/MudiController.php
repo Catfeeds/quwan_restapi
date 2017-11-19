@@ -4,7 +4,10 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Models\Attractions;
 use App\Models\Destination;
+use App\Models\DestinationJoin;
+use App\Services\MudiService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\Cache;
@@ -26,44 +29,30 @@ class MudiController extends Controller
     protected $XSDocument;
     protected $XSSearch;
     protected $params;
+    protected $destinationJoin;
+    protected $mudiService;
 
-    public function __construct(TokenService $tokenService, Request $request)
+    public function __construct(TokenService $tokenService, Request $request, MudiService $mudiService,DestinationJoin $destinationJoin)
     {
 
         parent::__construct();
 
         $this->tokenService = $tokenService;
         $this->request = $request;
+        $this->destinationJoin = $destinationJoin;
+        $this->mudiService = $mudiService;
 
         //接受到的参数
         $this->params = $this->request->all();
 
     }
 
+    //目的地详情页数据
     public function index($destination_id = 0)
     {
-        $destination_id = $destination_id ?? 0;
-
-        //获取目的地详情
-        $data = Destination::where('destination_id','=',$destination_id)->first();
-        if (!$data) {
-            throw new UnprocessableEntityHttpException(850004);
-        }
-        $data = $data->toArray();
-
-        //所有景点图片
-        $attractions = Attractions::select()->where('destination_id','=',$destination_id)->orderBy('attractions_sales_num DESC')->get()->toArray();
-
-        //所有线路分类
-
-        //2个销量最好的景点
-
-        //个使用最多的线路
-
-        //两个评价最多的酒店
-
-        //两个评价最多的餐厅
-        var_dump($destination_id,$data);
+        $destinationId = $destination_id ?? 0;
+        $data = $this->mudiService->getData($destinationId);
+        return response_success($data);
     }
 
 }
