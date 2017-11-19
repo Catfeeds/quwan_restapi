@@ -4,11 +4,15 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Models\HomePage;
+use App\Models\User;
 use App\Repository\HomePageRepository;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 /**
  * Class HomeController
@@ -48,30 +52,27 @@ class HomeController extends Controller
     public function wx()
     {
         $wxConfig = config('wx');
+        $openid = $this->params['openid'] ?? '' ;
 
-
-        $app = new Application($wxConfig);
-//        $oauth = $app->oauth;
-//
-//        // 获取 OAuth 授权结果用户信息
-//        $user = $oauth->user();
-//        $userArr = $user->toArray();
-//        Log::error('登录用户: ', $userArr);
-//
-//        $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
-//        header('location:'. $targetUrl); // 跳转到 user/profile
-
-
-        $oauth = $app->oauth;
-        // 未登录
-//        if (empty($_SESSION['wechat_user'])) {
-//            $_SESSION['target_url'] = 'user/profile';
+        if (!$openid) {
+            $app = new Application($wxConfig);
+            $oauth = $app->oauth;
             return $oauth->redirect();
-            // 这里不一定是return，如果你的框架action不是返回内容的话你就得使用
-            // $oauth->redirect()->send();
-//        }
-        // 已经登录过
-//        $user = $_SESSION['wechat_user'];
+        }
+
+
+        $cacheKey = 'quwan:openid:'.$openid;
+        $tag = Cache::tags('quwan')->get($cacheKey);
+        if($tag){
+            $app = new Application($wxConfig);
+            $oauth = $app->oauth;
+            return $oauth->redirect();
+        }
+
+        $userInfo = User::where('openid','=',$openid)->first();
+        $userInfo = $userInfo->toArray();
+
+        return response_success($userInfo);
 
 
     }

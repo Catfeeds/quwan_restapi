@@ -13,8 +13,10 @@ use EasyWeChat\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Qcloud\Sms\SmsSingleSender;
 
 /**
@@ -67,10 +69,24 @@ class TestController extends Controller
         $userArr = $user->toArray();
         Log::error('登录用户: ', $userArr);
 
+
+
         if (false === empty($userArr)) {
+
+//            $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
+            $targetUrl = '/?openid='.$userArr['id'];
+
+            //存在
+            $cacheKey = 'quwan:openid:'.$userArr['id'];
+            $tag = Cache::tags('quwan')->get($cacheKey);
+            if($tag){
+                header('location:'. $targetUrl); // 跳转到 user/profile
+            }
+
+
             //检测用户是否存在不存在注册
-            $tag = User::where('openid','=',$userArr['id'])->count();
-            if (!$tag) {
+//            $tag = User::where('openid','=',$userArr['id'])->count();
+//            if (!$tag) {
                 $arr = [
                   'user_nickname' => $userArr['nickname'],
                   'user_sex'  => $userArr['original']['sex'],
@@ -80,87 +96,11 @@ class TestController extends Controller
                   'user_updated_at'  => time(),
                 ];
                 User::create($arr);
-            }
-//            {
-//                "id": "ovwAZuBLwSiize3Zjd-DiCZPWTf8",
-//    "name": "叫我强哥",
-//    "nickname": "叫我强哥",
-//    "avatar": "http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIfyTSxfzLgsMB0hwGmpe7DsePhIlm6xxuvXn5svoXY9xoGSZoD98tDoq2XHKweeP0juF0naNWblg/0",
-//    "email": null,
-//    "original": {
-//                "openid": "ovwAZuBLwSiize3Zjd-DiCZPWTf8",
-//        "nickname": "叫我强哥",
-//        "sex": 1,
-//        "language": "zh_CN",
-//        "city": "杭州",
-//        "province": "浙江",
-//        "country": "中国",
-//        "headimgurl": "http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIfyTSxfzLgsMB0hwGmpe7DsePhIlm6xxuvXn5svoXY9xoGSZoD98tDoq2XHKweeP0juF0naNWblg/0",
-//        "privilege": []
-//    },
-//    "token": "[object] (Overtrue\\Socialite\\AccessToken: \"4_Shc233VKxdplTOG37YV8pV86JIc0WEOC3rvWZbJV5ocluFeyfO6Fzjmv5MzTat8W7pF22Uw5Ue_d5vdi6d_tGA\")",
-//    "provider": "WeChat"
-//}
+//            }
 
+            $cacheKey = 'quwan:openid:'.$userArr['id'];
+            Cache::tags('quwan')->put($cacheKey, $userArr['id'],60);
         }
-
-        die;
-
-        $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
-        header('location:'. $targetUrl); // 跳转到 user/profile
-
-
-//        var_dump('------',$wxConfig);
-        $app = new Application($wxConfig);
-
-
-        //验证
-        //$response = $app->server->serve();
-        //return $response;
-
-        $userService = $app->user;
-        $response = $userService->get($openId);
-
-
-
-        // 从项目实例中得到服务端应用实例。
-        $server = $app->server;
-        $server->setMessageHandler(function ($message) {
-
-//            $message->ToUserName    接收方帐号（该公众号 ID）
-//            $message->FromUserName  发送方帐号（OpenID, 代表用户的唯一标识）
-//            $message->CreateTime    消息创建时间（时间戳）
-//            $message->MsgId         消息 ID（64位整型）
-
-            switch ($message->MsgType) {
-                case 'event':
-                    return '收到事件消息';
-                    break;
-                case 'text':
-                    return '收到文字消息';
-                    break;
-                case 'image':
-                    return '收到图片消息';
-                    break;
-                case 'voice':
-                    return '收到语音消息';
-                    break;
-                case 'video':
-                    return '收到视频消息';
-                    break;
-                case 'location':
-                    return '收到坐标消息';
-                    break;
-                case 'link':
-                    return '收到链接消息';
-                    break;
-                default:
-                    return '收到其它消息';
-                    break;
-            }
-        });
-        $response = $server->serve();
-        return $response;
 
 
     }
@@ -440,6 +380,30 @@ class TestController extends Controller
         list($qiniuUrl, $res) = QiNiuService::uploadQiniu($fileName, $destinationPath);
 
         return response_success(['url' => $qiniuUrl, 'file_name' => $res[0]['key']]);
+    }
+
+    /**
+     * 删除饰品模块缓存
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delCache()
+    {
+        $params = $this->params;
+        $key = $params['key'] ?? '';
+
+        if ($key) {
+            //删除模块下指定缓存
+            Cache::tags(self::CACHE_TAG)->forget($key);
+
+            //删除缓存并发锁
+            Redis::DEL($key);
+        } else {
+            //删除模块下缓存
+            Cache::tags(self::CACHE_TAG)->flush();
+        }
+
+        //204 返回
+        return response_success([], Response::HTTP_NO_CONTENT);
     }
 
 }
