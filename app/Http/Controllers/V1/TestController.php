@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Article;
+use App\Models\User;
 use App\Services\QiNiuService;
 use App\Services\SmsService;
 use App\Services\YanzhenService;
@@ -65,6 +66,44 @@ class TestController extends Controller
         $user = $oauth->user();
         $userArr = $user->toArray();
         Log::error('登录用户: ', $userArr);
+
+        if (false === empty($userArr)) {
+            //检测用户是否存在不存在注册
+            $tag = User::where('openid','',$userArr['ovwAZuBLwSiize3Zjd-DiCZPWTf8'])->count();
+            if (!$tag) {
+                $arr = [
+                  'user_nickname' => $userArr['nickname'],
+                  'user_sex'  => $userArr['original']['sex'],
+                  'user_avatar'  => $userArr['avatar'],
+                  'openid'  => $userArr['id'],
+                  'user_created_at' => time(),
+                  'user_updated_at'  => time(),
+                ];
+                User::create($arr);
+            }
+//            {
+//                "id": "ovwAZuBLwSiize3Zjd-DiCZPWTf8",
+//    "name": "叫我强哥",
+//    "nickname": "叫我强哥",
+//    "avatar": "http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIfyTSxfzLgsMB0hwGmpe7DsePhIlm6xxuvXn5svoXY9xoGSZoD98tDoq2XHKweeP0juF0naNWblg/0",
+//    "email": null,
+//    "original": {
+//                "openid": "ovwAZuBLwSiize3Zjd-DiCZPWTf8",
+//        "nickname": "叫我强哥",
+//        "sex": 1,
+//        "language": "zh_CN",
+//        "city": "杭州",
+//        "province": "浙江",
+//        "country": "中国",
+//        "headimgurl": "http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIfyTSxfzLgsMB0hwGmpe7DsePhIlm6xxuvXn5svoXY9xoGSZoD98tDoq2XHKweeP0juF0naNWblg/0",
+//        "privilege": []
+//    },
+//    "token": "[object] (Overtrue\\Socialite\\AccessToken: \"4_Shc233VKxdplTOG37YV8pV86JIc0WEOC3rvWZbJV5ocluFeyfO6Fzjmv5MzTat8W7pF22Uw5Ue_d5vdi6d_tGA\")",
+//    "provider": "WeChat"
+//}
+
+        }
+
         die;
 
         $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
