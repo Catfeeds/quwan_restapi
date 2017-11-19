@@ -60,26 +60,51 @@ class TestController extends Controller
 //        var_dump('------',$wxConfig);
         $app = new Application($wxConfig);
 
-//        var_dump('-------',$app);
 
         //验证
-        $response = $app->server->serve();
+        //$response = $app->server->serve();
+        //return $response;
 
+
+        // 从项目实例中得到服务端应用实例。
+        $server = $app->server;
+        $server->setMessageHandler(function ($message) {
+
+//            $message->ToUserName    接收方帐号（该公众号 ID）
+//            $message->FromUserName  发送方帐号（OpenID, 代表用户的唯一标识）
+//            $message->CreateTime    消息创建时间（时间戳）
+//            $message->MsgId         消息 ID（64位整型）
+
+            switch ($message->MsgType) {
+                case 'event':
+                    return '收到事件消息';
+                    break;
+                case 'text':
+                    return '收到文字消息';
+                    break;
+                case 'image':
+                    return '收到图片消息';
+                    break;
+                case 'voice':
+                    return '收到语音消息';
+                    break;
+                case 'video':
+                    return '收到视频消息';
+                    break;
+                case 'location':
+                    return '收到坐标消息';
+                    break;
+                case 'link':
+                    return '收到链接消息';
+                    break;
+                default:
+                    return '收到其它消息';
+                    break;
+            }
+        });
+        $response = $server->serve();
         return $response;
-//        var_dump('----------',$response);
 
-        // 将响应输出
-//        $response->send(); // Laravel 里请使用：return $response
-//
-//        // 从项目实例中得到服务端应用实例。
-//        $server = $app->server;
-//        $server->setMessageHandler(function ($message) {
-//            // $message->FromUserName // 用户的 openid
-//            // $message->MsgType // 消息类型：event, text....
-//            return "您好！欢迎关注我!";
-//        });
-//        $response = $server->serve();
-//        $response->send(); // Laravel 里请使用：return $response;
 
     }
 
