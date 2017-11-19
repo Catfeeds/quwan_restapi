@@ -47,6 +47,31 @@ class Hotel extends Model
     );
 
     /**
+     * 酒店详情页->酒店详情
+     * @param $hotelId
+     * @return array
+     */
+    public function getInfo($hotelId)
+    {
+
+        $data = self::select('*')
+            ->where('hotel_sort', '=', self::HOTEL_STATUS_1)
+            ->where('hotel_id', $hotelId)
+            ->orderBy('hotel_score_num', 'desc')
+            ->first();
+        if (true === empty($data)) {
+            return [];
+        }
+        $data = $data->toArray();
+
+        //图片
+        $data['img'] = Img::getJoinImgs($data['hotel_id'], Img::IMG_TYPE_3);
+
+
+        return $data;
+    }
+
+    /**
      * 目的->评价最好的酒店
      * @param $hotelIds
      * @return array
@@ -67,7 +92,7 @@ class Hotel extends Model
 
         foreach ($data as $keyR => &$valueR) {
             //图片
-            $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['hotel_id']);
+            $valueR['img'] = Img::getOneImg($valueR['hotel_id'], Img::IMG_TYPE_3);
 
         }
 

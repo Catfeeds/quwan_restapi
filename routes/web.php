@@ -46,6 +46,8 @@ $app->group($unAuthGroup, function () use ($app) {
 
     $app->get('home', 'HomeController@index'); //首页数据
     $app->get('mudi/{destination_id}', 'MudiController@index'); //目的地详情页数据
+    $app->get('hotel/{hotel_id}', 'HotelController@index'); //酒店详情页数据
+    $app->get('hall/{hall_id}', 'HallController@index'); //餐厅详情页数据
 
 });
 

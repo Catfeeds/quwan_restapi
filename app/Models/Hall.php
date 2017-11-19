@@ -48,6 +48,31 @@ class Hall extends Model
     );
 
     /**
+     * 餐厅详情页->餐厅详情
+     * @param $hallId
+     * @return array
+     */
+    public function getInfo($hallId)
+    {
+
+        $data = self::select('*')
+            ->where('hall_sort', '=', self::HALL_STATUS_1)
+            ->where('hall_id', $hallId)
+            ->orderBy('hall_score_num', 'desc')
+            ->first();
+        if (true === empty($data)) {
+            return [];
+        }
+        $data = $data->toArray();
+
+        //图片
+        $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_4);
+
+
+        return $data;
+    }
+
+    /**
      * 目的->评价最好的餐厅
      * @param $hallIds
      * @return array
@@ -68,7 +93,7 @@ class Hall extends Model
 
         foreach ($data as $keyR => &$valueR) {
             //图片
-            $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['hall_id']);
+            $valueR['img'] = Img::getOneImg($valueR['hall_id'],Img::IMG_TYPE_4);
 
         }
 

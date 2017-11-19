@@ -54,7 +54,7 @@ class Img extends Model
 );
 
 
-    //获取线路下第一张图片
+    //获取类型下第一张图片
     public static function getOneImg($joinId,$imgType)
     {
 
@@ -68,7 +68,21 @@ class Img extends Model
     }
 
 
-    //获取关联的所有图片
+    //获取类型下所有图片
+    public static function getJoinImgs($joinId,$imgType)
+    {
+
+        $data = self::where('img_status','=',self::IMG_STATUS_1)
+            ->where('img_type','=',$imgType)
+            ->where('join_id','=',$joinId)
+            ->orderBy('img_sort')
+            ->pluck('img_url')->toArray();
+        return $data;
+    }
+
+
+
+    //批量获取关联的所有图片
     public static function getImgs($joinIds,$imgType)
     {
 
