@@ -69,11 +69,9 @@ class TestController extends Controller
         $userArr = $user->toArray();
         Log::error('登录用户: ', $userArr);
 
-
-
         if (false === empty($userArr)) {
 
-//            $targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
+            //$targetUrl = empty($userArr['target_url']) ? '/' : $userArr['target_url'];
             $targetUrl = '/?openid='.$userArr['id'];
 
             //存在
@@ -84,22 +82,22 @@ class TestController extends Controller
             }
 
 
-            //检测用户是否存在不存在注册
-//            $tag = User::where('openid','=',$userArr['id'])->count();
-//            if (!$tag) {
-                $arr = [
-                  'user_nickname' => $userArr['nickname'],
-                  'user_sex'  => $userArr['original']['sex'],
-                  'user_avatar'  => $userArr['avatar'],
-                  'openid'  => $userArr['id'],
-                  'user_created_at' => time(),
-                  'user_updated_at'  => time(),
-                ];
-                User::create($arr);
-//            }
+            //不存在注册
+            $arr = [
+              'user_nickname' => $userArr['nickname'],
+              'user_sex'  => $userArr['original']['sex'],
+              'user_avatar'  => $userArr['avatar'],
+              'openid'  => $userArr['id'],
+              'user_created_at' => time(),
+              'user_updated_at'  => time(),
+            ];
+            User::create($arr);
 
+            //写入缓存
             $cacheKey = 'quwan:openid:'.$userArr['id'];
             Cache::tags('quwan')->put($cacheKey, $userArr['id'],60);
+
+            header('location:'. $targetUrl); // 跳转到 user/profile
         }
 
 
