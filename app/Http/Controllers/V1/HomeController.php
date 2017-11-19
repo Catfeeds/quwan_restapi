@@ -48,10 +48,16 @@ class HomeController extends Controller
 
 
 
+
     //wx
     public function wx()
     {
         $wxConfig = config('wx');
+        $app = new Application($wxConfig);
+        $response = $app->server->serve();
+        return $response;
+
+
         $openid = $this->params['openid'] ?? '' ;
         if (!$openid) {
             $app = new Application($wxConfig);
