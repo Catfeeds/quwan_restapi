@@ -45,7 +45,16 @@ class SmsService
 
         //单发短信
         $sender = new SmsSingleSender($appid, $appkey);
-        $result = $sender->send(0, "86", $phone, $msg, "", "");
+
+        //发送模板消息
+        $templId = 58447;
+        $params = ['123456', '3'];
+        // 假设模板内容为：测试短信，{1}，{2}，{3}，上学。
+        $result = $sender->sendWithParam('86', $phone, $templId, $params, '', '', '');
+
+        //发送单条信息
+        //$result = $sender->send(0, "86", $phone, $msg, "", "");
+
         $rsp = json_decode($result,true);
         if(true === empty($rsp)){
             throw new UnprocessableEntityHttpException(850010,[],'',['msg'=>'短信服务无返回信息']);
