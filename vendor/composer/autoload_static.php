@@ -53,6 +53,7 @@ class ComposerStaticInitebd6559e27087b4de5f87674729f57d3
         'Q' => 
         array (
             'Qiniu\\' => 6,
+            'Qcloud\\Sms\\' => 11,
         ),
         'P' => 
         array (
@@ -187,6 +188,10 @@ class ComposerStaticInitebd6559e27087b4de5f87674729f57d3
         'Qiniu\\' => 
         array (
             0 => __DIR__ . '/..' . '/qiniu/php-sdk/src/Qiniu',
+        ),
+        'Qcloud\\Sms\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/qcloudsms/qcloudsms_php/src',
         ),
         'Psr\\Log\\' => 
         array (

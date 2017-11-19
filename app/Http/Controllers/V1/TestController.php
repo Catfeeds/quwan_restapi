@@ -6,10 +6,14 @@ namespace App\Http\Controllers\V1;
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Article;
 use App\Services\QiNiuService;
+use App\Services\SmsService;
+use App\Services\YanzhenService;
+use houdunwang\validate\Validate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\Input;
+use Qcloud\Sms\SmsSingleSender;
 
 /**
  * Class TestController
@@ -25,20 +29,23 @@ class TestController extends Controller
     protected $XSDocument;
     protected $XSSearch;
     protected $params;
+    protected $yanzhenService;
+    protected $smsService;
 
-    public function __construct(TokenService $tokenService, Request $request)
+    public function __construct(TokenService $tokenService, Request $request, YanzhenService $yanzhenService, SmsService $smsService)
     {
 
         parent::__construct();
 
         $this->tokenService = $tokenService;
         $this->request = $request;
+        $this->yanzhenService = $yanzhenService;
+        $this->smsService = $smsService;
 
         //接受到的参数
         $this->params = $this->request->all();
 
     }
-
 
 
     //添加文档到索引
@@ -201,9 +208,8 @@ class TestController extends Controller
     }
 
 
-
-    public function sendSms()
-    {
+//    public function sendSms()
+//    {
 
 //        用法
 //
@@ -239,7 +245,7 @@ class TestController extends Controller
 //        }
 
 //        return response_success(['token' => $token]);
-    }
+//    }
 
     public function login()
     {
@@ -265,6 +271,19 @@ class TestController extends Controller
         return response_success(['msg' => '退出成功']);
     }
 
+    public function sendSms()
+    {
+        $phone = $this->params['phone'] ?? '';
+        if (!$this->yanzhenService::isMobile($phone)) {
+            throw new UnprocessableEntityHttpException(850009);
+        }
+
+        $res = $this->smsService::send($phone);
+
+        return response_success($res);
+
+    }
+
     /**
      * 上传到7牛
      * @return \Illuminate\Http\JsonResponse|Response
@@ -277,25 +296,25 @@ class TestController extends Controller
         }
 
         //检测是否上传成功
-        if(!$file->isValid()){
-            throw new UnprocessableEntityHttpException(850006,[],'',['msg'=>$file->getError()]);
+        if (!$file->isValid()) {
+            throw new UnprocessableEntityHttpException(850006, [], '', ['msg' => $file->getError()]);
         }
 
         //大小限制1
         $uploadSize = config('qiniu.upload_size');
-        if($file->getClientSize() > $uploadSize){
+        if ($file->getClientSize() > $uploadSize) {
             throw new UnprocessableEntityHttpException(850007);
         }
 
         //类型限制
         $allowed_extensions = config('qiniu.extensions');
-        if (!in_array($file->getClientMimeType (),$allowed_extensions)) {
+        if (!in_array($file->getClientMimeType(), $allowed_extensions)) {
             throw new UnprocessableEntityHttpException(850008);
         }
 
-        $hz_name         = substr($file->getClientOriginalName(), strrpos($file->getClientOriginalName(), ".")+1);
+        $hz_name = substr($file->getClientOriginalName(), strrpos($file->getClientOriginalName(), ".") + 1);
         $destinationPath = 'uploads/imges/';
-        $fileName        = str_random(10).'.'.$hz_name;
+        $fileName = str_random(10) . '.' . $hz_name;
 
         //移动到指定文件夹
         $file->move($destinationPath, $fileName);

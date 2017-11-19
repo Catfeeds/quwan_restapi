@@ -26,7 +26,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
     $app->post('xs', 'TestController@xs'); //迅搜
     $app->get('login', 'TestController@login'); //登录
-    $app->get('send_sms', 'TestController@sendSms'); //发送短信
+    $app->post('send_sms', 'TestController@sendSms'); //发送短信
     $app->post('qiniu', 'TestController@qiniu'); //上传到7牛
 
 

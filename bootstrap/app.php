@@ -34,6 +34,7 @@ $app->configure('jwt');
 $app->configure('dingtalkbot');
 $app->configure('dictionary');
 $app->configure('qiniu');
+$app->configure('sms');
 ;
 /*
 |--------------------------------------------------------------------------

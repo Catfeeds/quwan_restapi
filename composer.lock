@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1ac30dbd44fda30e7947b7701fea60b1",
-    "content-hash": "9410b39f1b71e0a6fa6930bcc95fca11",
+    "hash": "572688f5ec0520539acf3cd03fad1bac",
+    "content-hash": "0decc4d60b1c8fdbf607f0ba97ecf7f7",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1738,6 +1738,42 @@
                 "psr-3"
             ],
             "time": "2016-10-10 12:19:37"
+        },
+        {
+            "name": "qcloudsms/qcloudsms_php",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/qcloudsms/qcloudsms_php.git",
+                "reference": "eac2b0d332d1c1744fb3a865cb40b4cc25fd69ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/qcloudsms/qcloudsms_php/eac2b0d332d1c1744fb3a865cb40b4cc25fd69ab.zip",
+                "reference": "eac2b0d332d1c1744fb3a865cb40b4cc25fd69ab",
+                "shasum": ""
+            },
+            "require-dev": {
+                "sami/sami": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Qcloud\\Sms\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "qcloud sms php sdk",
+            "keywords": [
+                "php",
+                "qcloud",
+                "sdk",
+                "sms"
+            ],
+            "time": "2017-11-10 11:41:17"
         },
         {
             "name": "qiniu/php-sdk",
