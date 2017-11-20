@@ -42,28 +42,16 @@ class Score extends Model
      *
      * @var array
      */
-    protected $casts = array (
-  'score_id' => 'int',
-  'user_id' => 'int',
-  'join_id' => 'int',
-  'order_id' => 'int',
-  'score_type' => 'int',
-  'score_status' => 'int',
-  'score_created_at' => 'int',
-  'score_updated_at' => 'int',
-);
+    protected $casts = array(
+        'score_id' => 'int',
+        'user_id' => 'int',
+        'join_id' => 'int',
+        'order_id' => 'int',
+        'score_type' => 'int',
+        'score_status' => 'int',
+        'score_created_at' => 'int',
+        'score_updated_at' => 'int',
+    );
 
-
-//
-//`score_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-//`user_id` int(10) DEFAULT '0' COMMENT '评价创建者',
-//`join_id` int(10) DEFAULT '0' COMMENT '关联id(如景点,目的地等)',
-//`order_id` int(10) DEFAULT '0' COMMENT '关联的订单id',
-//`score` decimal(10,2) DEFAULT '0.00' COMMENT '评分',
-//`score_comment` varchar(255) NOT NULL COMMENT '内容',
-//`score_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2节日，3酒店,4餐厅',
-//`score_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0禁用,1启用',
-//`score_created_at` int(11) DEFAULT '0',
-//`score_updated_at` int(11) DEFAULT '0',
 
 }

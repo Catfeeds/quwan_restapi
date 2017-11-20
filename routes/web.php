@@ -51,6 +51,7 @@ $app->group($unAuthGroup, function () use ($app) {
 
     $app->post('fav', 'FavController@index'); //收藏/取消
     $app->get('score', 'ScoreController@index'); //评价列表
+    $app->post('add_score', 'ScoreController@add'); //发布评价
 
 });
 

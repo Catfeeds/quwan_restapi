@@ -15,10 +15,12 @@ use App\Models\CidMap;
 use App\Models\Destination;
 use App\Models\DestinationJoin;
 use App\Models\Hall;
+use App\Models\Hotel;
 use App\Models\Score;
 use App\Models\Img;
 use App\Models\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ScoreService
 {
@@ -31,8 +33,10 @@ class ScoreService
     protected $hall;
     protected $score;
     protected $user;
+    protected $hotel;
 
     public function __construct(
+        Hotel $hotel,
         User $user,
         Score $score,
         Hall $hall,
@@ -46,6 +50,7 @@ class ScoreService
     {
 
 
+        $this->hotel = $hotel;
         $this->user = $user;
         $this->score = $score;
         $this->hall = $hall;
@@ -69,7 +74,7 @@ class ScoreService
         $offset = $data['offset'] ?? 1; //页码
         $offset = ($offset - 1) * $limit;
 
-        $query = $this->score::select('score_id','user_id','join_id','order_id','score','score_comment','score_type','score_status','score_created_at');
+        $query = $this->score::select('score_id', 'user_id', 'join_id', 'order_id', 'score', 'score_comment', 'score_type', 'score_status', 'score_created_at');
         $query->orderBy('score_id', 'DESC');
 
         $wheres = [];
@@ -77,7 +82,7 @@ class ScoreService
         $wheres = array_merge($condition, $wheres);
 
         //1景点,2节日，3酒店,4餐厅
-        if($data['score_type']){
+        if ($data['score_type']) {
             $condition = array(array('column' => 'score_type', 'value' => $data['score_type'], 'operator' => '='));
             $wheres = array_merge($condition, $wheres);
         }
@@ -109,5 +114,66 @@ class ScoreService
 
         return $result;
 
+    }
+
+
+    /**
+     * @param $
+     */
+    public function addScore($params)
+    {
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+
+            //添加评价
+            $arr = [
+                'user_id' => $params['user_id'],
+                'join_id' => $params['join_id'],
+                'order_id' => $params['order_id'],
+                'score' => $params['score'],
+                'score_comment' => $params['score_comment'],
+                'score_type' => $params['score_type'],
+                'score_created_at' => time(),
+            ];
+            $res = $this->score::create($arr);
+
+            //添加评价图片
+            if (false === empty($params['img'])) {
+                foreach ($params['img'] as $key => $value) {
+                    $arr = [
+                        'join_id' => $params['join_id'],
+                        'img_sort' => $key + 1,
+                        'img_type' => $this->img::IMG_TYPE_5,
+                        'img_url' => $value,
+                        'img_created_at' => time(),
+                    ];
+                    $this->img::create($arr);
+                }
+            }
+
+            //评价酒店,餐厅,增加评价数量
+            //1景点,2节日，3酒店,4餐厅
+            switch ($params['score_type']) {
+                case 3:
+                    $this->hotel->where('hotel_id', '=', $params['join_id'])->increment('hotel_score_num');
+                    break;
+                case 4:
+                    $this->hall->where('hall_id', '=', $params['join_id'])->increment('hall_score_num');
+                    break;
+                default:
+                    break;
+            }
+
+
+            DB::connection('db_quwan')->commit();
+
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('添加评价异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
     }
 }

@@ -25,7 +25,7 @@ class ScoreController extends Controller
     protected $params;
     protected $scoreService;
 
-    public function __construct(TokenService $tokenService, Request $request,ScoreService $scoreService)
+    public function __construct(TokenService $tokenService, Request $request, ScoreService $scoreService)
     {
 
         parent::__construct();
@@ -51,19 +51,19 @@ class ScoreController extends Controller
         $this->params['score_type'] = (int)$this->params['score_type'];
 
 
-        $arr = [Score::SCORE_TYPE_1,Score::SCORE_TYPE_2,Score::SCORE_TYPE_3,Score::SCORE_TYPE_4];
+        $arr = [Score::SCORE_TYPE_1, Score::SCORE_TYPE_2, Score::SCORE_TYPE_3, Score::SCORE_TYPE_4];
         if (!in_array($this->params['score_type'], $arr)) {
-         throw new UnprocessableEntityHttpException(850005);
+            throw new UnprocessableEntityHttpException(850005);
         }
 
         $data = $this->scoreService->getList($this->params);
 
-        if(!$data){
+        if (!$data) {
             $data = [
-                'paging'=>[
-                    'limit'=>10,
-                    'offset'=>0,
-                    'total'=>0,
+                'paging' => [
+                    'limit' => 10,
+                    'offset' => 0,
+                    'total' => 0,
                 ],
                 'data' => []
             ];
@@ -71,4 +71,61 @@ class ScoreController extends Controller
         return response_success($data);
     }
 
+
+    public function add()
+    {
+
+        $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2节日，3酒店,4餐厅
+        $this->params['score_type'] = (int)$this->params['score_type'];
+
+        $this->params['join_id'] = $this->params['join_id'] ?? 0; //评价对象id
+        $this->params['join_id'] = (int)$this->params['join_id'];
+
+        $this->params['order_id'] = $this->params['order_id'] ?? 0; //评价关联订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+
+        $this->params['score'] = $this->params['score'] ?? 0; //评分
+        $this->params['score'] = (int)$this->params['score'];
+
+        $this->params['score_comment'] = $this->params['score_comment'] ?? ''; //评价内容
+        $this->params['img'] = $this->params['img'] ?? ''; //评价图片,多个用英文,号连接
+        $this->params['img'] = explode(',', $this->params['img']);
+
+        $this->params['user_id'] = $this->params['user_id'] ?? 0; //用户id
+        $this->params['user_id'] = (int)$this->params['user_id'];
+
+        Log::error('添加评价参数: ', $this->params);
+
+        $arr = [Score::SCORE_TYPE_1, Score::SCORE_TYPE_2, Score::SCORE_TYPE_3, Score::SCORE_TYPE_4];
+        if (!in_array($this->params['score_type'], $arr)) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if (!$this->params['join_id']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+        if (!$this->params['order_id']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+        if (!$this->params['score']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+        if (!$this->params['score_comment']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        //少于10个字提示 请输入大于10个字的评价
+        if (cn_strlen($this->params['score_comment']) < 10) {
+            throw new UnprocessableEntityHttpException(850011);
+        }
+
+        //最多4张图片
+        if (count($this->params['img']) > 4) {
+            throw new UnprocessableEntityHttpException(850012);
+        }
+
+        $res = $this->scoreService->addScore($this->params);
+
+        return response_success(['msg' => '感谢您的评价']);
+    }
 }
