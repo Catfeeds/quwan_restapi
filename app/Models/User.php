@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    //  '0女,1男',
+    const USER_SEX_0 = 0;
+    const USER_SEX_1 = 1;
+
+
+    //'手机绑定(0未绑定,1已绑定)',
+    const USER_IS_BINDING_0 = 0;
+    const USER_IS_BINDING_1 = 1;
+
+    // '0禁用,1启用',
+    const USER_STATUS_0 = 0;
+    const USER_STATUS_1 = 1;
 
     /**
      * 关联到模型的数据表
@@ -33,14 +45,43 @@ class User extends Model
      *
      * @var array
      */
-    protected $casts = array (
-  'user_id' => 'int',
-  'user_sex' => 'int',
-  'user_is_binding' => 'int',
-  'user_msg_num' => 'int',
-  'user_status' => 'int',
-  'user_created_at' => 'int',
-  'user_updated_at' => 'int',
-);
+    protected $casts = array(
+        'user_id' => 'int',
+        'user_sex' => 'int',
+        'user_is_binding' => 'int',
+        'user_msg_num' => 'int',
+        'user_status' => 'int',
+        'user_created_at' => 'int',
+        'user_updated_at' => 'int',
+    );
+
+
+    /**
+     * 字段过滤器(当查询获取这个字段时候会触发方法处理字段)
+     * @param $value
+     * @return string
+     */
+    public  function getUserSexAttribute($value)
+    {
+        $value = (int)$value === self::USER_SEX_0 ? '女' : '男';
+        return $value;
+    }
+
+    /**
+     * 获取用户详情
+     * @param $userId
+     * @return array
+     */
+    public function getInfo($userId)
+    {
+        $data = self::select('user_id', 'user_nickname', 'user_sex', 'user_avatar', 'user_mobile', 'user_is_binding',
+            'openid', 'user_lon', 'user_lat', 'user_geohash', 'user_msg_num', 'user_status', 'user_created_at')
+            ->where('user_id', '=', $userId)->first();
+        if (!$data) {
+            return [];
+        }
+        $data = $data->toArray();
+        return $data;
+    }
 
 }

@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Score extends Model
 {
+    //'1景点,2节日，3酒店,4餐厅',
+    const SCORE_TYPE_1 = 1;
+    const SCORE_TYPE_2 = 2;
+    const SCORE_TYPE_3 = 3;
+    const SCORE_TYPE_4 = 4;
+
+    // '0禁用,1启用',
+    const SCORE_STATUS_0 = 0;
+    const SCORE_STATUS_1 = 1;
 
     /**
      * 关联到模型的数据表
@@ -43,5 +52,18 @@ class Score extends Model
   'score_created_at' => 'int',
   'score_updated_at' => 'int',
 );
+
+
+//
+//`score_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+//`user_id` int(10) DEFAULT '0' COMMENT '评价创建者',
+//`join_id` int(10) DEFAULT '0' COMMENT '关联id(如景点,目的地等)',
+//`order_id` int(10) DEFAULT '0' COMMENT '关联的订单id',
+//`score` decimal(10,2) DEFAULT '0.00' COMMENT '评分',
+//`score_comment` varchar(255) NOT NULL COMMENT '内容',
+//`score_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1景点,2节日，3酒店,4餐厅',
+//`score_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0禁用,1启用',
+//`score_created_at` int(11) DEFAULT '0',
+//`score_updated_at` int(11) DEFAULT '0',
 
 }
