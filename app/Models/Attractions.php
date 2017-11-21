@@ -80,4 +80,33 @@ class Attractions extends Model
 
         return $data;
     }
+
+    /**
+     * 获取目的地下热门景点
+     * @param $attractionsId
+     * @return array
+     */
+    public function getInfo($attractionsId)
+    {
+        $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest')->where('attractions_status', '=', self::ATTRACTIONS_STATUS_1)
+            ->where('attractions_id','=', $attractionsId)
+            ->first();
+        if (true === empty($data)) {
+            return [];
+        }
+        $data = $data->toArray();
+
+        //图片
+        $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_1);
+        //分类
+        $data['cid'] = CidMap::getCidsInfo($data['attractions_id'], CidMap::CID_MAP_TYPE_1);
+
+        //@todo 关联的订单兑换码
+        //$data['code'] = Order::getTypeCode($userId, $joinId, $orderType);
+
+        //@todo 是否可以领红包
+        //$data['is_reward'] = 0;
+
+        return $data;
+    }
 }

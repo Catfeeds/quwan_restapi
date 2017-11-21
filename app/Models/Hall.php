@@ -56,7 +56,7 @@ class Hall extends Model
     {
 
         $data = self::select('*')
-            ->where('hall_sort', '=', self::HALL_STATUS_1)
+            ->where('hall_status', '=', self::HALL_STATUS_1)
             ->where('hall_id', $hallId)
             ->orderBy('hall_score_num', 'desc')
             ->first();
@@ -81,7 +81,7 @@ class Hall extends Model
     {
 
         $data = self::select('hall_id', 'hall_name', 'hall_score', 'hall_evaluation')
-            ->where('hall_sort', '=', self::HALL_STATUS_1)
+            ->where('hall_status', '=', self::HALL_STATUS_1)
             ->whereIn('hall_id', $hallIds)
             ->orderBy('hall_score_num', 'desc')
             ->limit(2)

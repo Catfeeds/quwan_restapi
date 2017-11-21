@@ -48,10 +48,14 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('mudi/{destination_id}', 'MudiController@index'); //目的地详情页数据
     $app->get('hotel/{hotel_id}', 'HotelController@index'); //酒店详情页数据
     $app->get('hall/{hall_id}', 'HallController@index'); //餐厅详情页数据
+    $app->get('holiday/{holiday_id}', 'HolidayController@index'); //节日详情页数据
+    $app->get('attractions/{attractions_id}', 'AttractionsController@index'); //景点详情页数据
 
     $app->post('fav', 'FavController@index'); //收藏/取消
     $app->get('score', 'ScoreController@index'); //评价列表
     $app->post('add_score', 'ScoreController@add'); //发布评价
+
+
 
 });
 

@@ -46,7 +46,7 @@ class DestinationJoin extends Model
   'destination_join_type' => 'int',
 );
 
-//获取线路下第一张图片
+    //获取线路下第一张图片
     public static function getOneJoinImg($destinationId)
     {
 

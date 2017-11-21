@@ -4,24 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderCode extends Model
+class HolidayJoin extends Model
 {
-    //'是否兑换核销,0未,1已',
-    const IS_EXCHANGE_0 = 0;
-    const IS_EXCHANGE_1 = 1;
+
     /**
      * 关联到模型的数据表
      *
      * @var string
      */
-    protected $table = 'order_code';
+    protected $table = 'holiday_join';
 
     /**
      * 黑名单，包含不能被赋值的属性数组
      *
      * @var array
      */
-    protected $guarded = ['order_code_id'];
+    protected $guarded = ['holiday_join_id'];
 
     /**
      * 表明模型是否应该被打上时间戳
@@ -36,12 +34,15 @@ class OrderCode extends Model
      * @var array
      */
     protected $casts = array (
-  'order_code_id' => 'int',
-  'order_id' => 'int',
-  'is_exchange' => 'int',
-  'exchange_user_id' => 'int',
-  'exchange_at' => 'int',
-  'created_at' => 'int',
+  'holiday_join_id' => 'int',
+  'holiday_id' => 'int',
+  'route_id' => 'int',
 );
+    //获取所有关联线路数据
+    public static function getJoinData($holidayId)
+    {
+        $data = self::where('holiday_id','=',$holidayId)->pluck('route_id');
+        return $data;
+    }
 
 }

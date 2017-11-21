@@ -55,7 +55,7 @@ class Hotel extends Model
     {
 
         $data = self::select('*')
-            ->where('hotel_sort', '=', self::HOTEL_STATUS_1)
+            ->where('hotel_status', '=', self::HOTEL_STATUS_1)
             ->where('hotel_id', $hotelId)
             ->orderBy('hotel_score_num', 'desc')
             ->first();
@@ -80,7 +80,7 @@ class Hotel extends Model
     {
 
         $data = self::select('hotel_id', 'hotel_name', 'hotel_score', 'hotel_evaluation')
-            ->where('hotel_sort', '=', self::HOTEL_STATUS_1)
+            ->where('hotel_status', '=', self::HOTEL_STATUS_1)
             ->whereIn('hotel_id', $hotelIds)
             ->orderBy('hotel_score_num', 'desc')
             ->limit(2)
