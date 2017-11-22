@@ -106,7 +106,7 @@ class Route extends Model
 
     /**
      * 获取线路详情数据
-     * @param $routeIds
+     * @param $routeId
      * @return array
      */
     public static function getInfo($routeId)
@@ -120,17 +120,8 @@ class Route extends Model
         }
         $data = $data->toArray();
 
-        //获取线路每天的行程
-
-        //图片
-        //所有景点图片
-//        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_A);
-        //$data['img'] =  Img::getJoinImgs($data['route_id'], Img::IMG_TYPE_A);
-        //$data['img'] = RouteDayJoin::getOneJoinImg($data['route_id']);
-
         //分类
         $data['cid'] = CidMap::getCidsInfo($data['route_id'], CidMap::CID_MAP_TYPE_3);
-
 
         return $data;
     }

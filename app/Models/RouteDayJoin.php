@@ -68,4 +68,34 @@ class RouteDayJoin extends Model
 
     }
 
+
+    //获取线路下所有join信息
+    public static function getJoinData($routeId)
+    {
+        $dayJoin = RouteDayJoin::select('route_day_id', 'join_id', 'route_day_join_type')
+            ->where('route_id','=',$routeId)
+            ->orderBy('route_day_join_sort')
+            ->get()
+            ->toArray();
+        return $dayJoin;
+    }
+
+
+    //获取线路下所有景区图片
+    public static function getAttractionsImgs($routeId)
+    {
+        $joinIds = RouteDayJoin::where('route_id','=',$routeId)
+            ->where('route_day_join_type','=',RouteDayJoin::ROUTE_DAY_JOIN_TYPE_A)
+            ->orderBy('route_day_join_sort')
+            ->pluck('join_id');
+
+        if(true === empty($joinIds)){
+            return [];
+        }
+
+        $img = Img::getImgs($joinIds,Img::IMG_TYPE_A);
+
+        return $img;
+    }
+
 }

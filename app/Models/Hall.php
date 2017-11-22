@@ -52,7 +52,7 @@ class Hall extends Model
      * @param $hallId
      * @return array
      */
-    public function getInfo($hallId)
+    public static function getInfo($hallId)
     {
 
         $data = self::select('*')

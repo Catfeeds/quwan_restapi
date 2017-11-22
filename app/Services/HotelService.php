@@ -56,7 +56,7 @@ class HotelService
 
     public function getData($hotelId)
     {
-        $data = $this->hotel->getInfo($hotelId);
+        $data = $this->hotel::getInfo($hotelId);
         if (!$data) {
             throw new UnprocessableEntityHttpException(850004);
         }

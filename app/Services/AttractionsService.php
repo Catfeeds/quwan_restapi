@@ -53,7 +53,7 @@ class AttractionsService
 
     public function getData($attractionsId)
     {
-        $data = $this->attractions->getInfo($attractionsId);
+        $data = $this->attractions::getInfo($attractionsId);
         if (!$data) {
             throw new UnprocessableEntityHttpException(850004);
         }

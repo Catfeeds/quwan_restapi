@@ -39,4 +39,15 @@ class RouteDay extends Model
   'route_day_sort' => 'int',
 );
 
+    //获取线路下所有行程
+    public static function getDayData($routeId)
+    {
+        $day = RouteDay::select('route_day_id','route_day_intro')
+            ->where('route_id','=',$routeId)
+            ->orderBy('route_day_sort')
+            ->get()
+            ->toArray();
+        return $day;
+    }
+
 }

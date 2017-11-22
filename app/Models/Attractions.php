@@ -86,7 +86,7 @@ class Attractions extends Model
      * @param $attractionsId
      * @return array
      */
-    public function getInfo($attractionsId)
+    public static function getInfo($attractionsId)
     {
         $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest')->where('attractions_status', '=', self::ATTRACTIONS_STATUS_1)
             ->where('attractions_id','=', $attractionsId)

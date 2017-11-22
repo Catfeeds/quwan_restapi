@@ -51,7 +51,7 @@ class Hotel extends Model
      * @param $hotelId
      * @return array
      */
-    public function getInfo($hotelId)
+    public static function getInfo($hotelId)
     {
 
         $data = self::select('*')
