@@ -46,9 +46,19 @@ class SmsService
         //单发短信
         $sender = new SmsSingleSender($appid, $appkey);
 
+
+
+//        58480	节日提醒	        你报名的节日{1}，将在{2}天后开始，请注意准备。
+//        58479	结款提醒	        车友会给你结款{1}元
+//        58478	用户确认订单	    用户{1}确认了他的订单，你有{2}元到账
+//        58477	订单提醒	        你购买了{1}，消费了{2}元
+//        58476	短信验证码	    你的登录验证码是{1}，请勿告诉其他人。
+//        58447	登录验证码	    {1}为您的登录验证码，请于{2}分钟内填写。如非本人操作，请忽略本短信。
+
+
         //发送模板消息
-        $templId = 58447;
-        $params = ['123456', '3'];
+        $templId = 58476;
+        $params = ['234567'];
         // 假设模板内容为：测试短信，{1}，{2}，{3}，上学。
         $result = $sender->sendWithParam('86', $phone, $templId, $params, '', '', '');
 
@@ -56,6 +66,7 @@ class SmsService
         //$result = $sender->send(0, "86", $phone, $msg, "", "");
 
         $rsp = json_decode($result,true);
+        var_dump($rsp);die;
         if(true === empty($rsp)){
             throw new UnprocessableEntityHttpException(850010,[],'',['msg'=>'短信服务无返回信息']);
         }
