@@ -73,16 +73,16 @@ class MudiService
         foreach ($joinData as $key => $value) {
             //1景点,2路线,3酒店,4餐厅
             switch ((int)$value['destination_join_type']) {
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_1:
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_A:
                     $attractions[] = $value['join_id'];
                     break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_2:
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_B:
                     $route[] = $value['join_id'];
                     break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_3:
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_C:
                     $hotel[] = $value['join_id'];
                     break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_4:
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_D:
                     $hall[] = $value['join_id'];
                     break;
                 default:
@@ -91,7 +91,7 @@ class MudiService
         }
 
         //所有景点图片
-        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_1);
+        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_A);
 
         //所有线路分类
         $data['cid'] = $this->cidMap->getMudiLists($route, $this->cidMap::CID_MAP_TYPE_3);

@@ -72,7 +72,7 @@ class Attractions extends Model
 
         foreach ($data as $keyA => &$valueA) {
             //图片
-            $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_1);
+            $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_A);
             //分类
             $valueA['cid'] = CidMap::getCidsInfo($valueA['attractions_id'], CidMap::CID_MAP_TYPE_1);
 
@@ -97,7 +97,7 @@ class Attractions extends Model
         $data = $data->toArray();
 
         //图片
-        $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_1);
+        $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_A);
         //分类
         $data['cid'] = CidMap::getCidsInfo($data['attractions_id'], CidMap::CID_MAP_TYPE_1);
 

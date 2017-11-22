@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Score extends Model
 {
-    //'1景点,2节日，3酒店,4餐厅',
-    const SCORE_TYPE_1 = 1;
-    const SCORE_TYPE_2 = 2;
-    const SCORE_TYPE_3 = 3;
-    const SCORE_TYPE_4 = 4;
+    //1景点,2目的地，3路线,4节日，5酒店,6餐厅,7图片
+    const SCORE_TYPE_A = 1;
+    const SCORE_TYPE_B = 4;
+    const SCORE_TYPE_C = 5;
+    const SCORE_TYPE_D = 6;
 
     // '0禁用,1启用',
     const SCORE_STATUS_0 = 0;

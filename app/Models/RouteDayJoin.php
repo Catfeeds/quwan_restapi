@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class RouteDayJoin extends Model
 {
-    //1景点,2目的地，3节日，4酒店,5餐厅
-    const ROUTE_DAY_JOIN_TYPE_1 = 1;
-    const ROUTE_DAY_JOIN_TYPE_2 = 2;
-    const ROUTE_DAY_JOIN_TYPE_3 = 3;
-    const ROUTE_DAY_JOIN_TYPE_4 = 4;
-    const ROUTE_DAY_JOIN_TYPE_5 = 5;
+
+    //1景点,2目的地，3路线,4节日，5酒店,6餐厅
+    const ROUTE_DAY_JOIN_TYPE_A = 1;
+    const ROUTE_DAY_JOIN_TYPE_B = 2;
+    const ROUTE_DAY_JOIN_TYPE_C = 4;
+    const ROUTE_DAY_JOIN_TYPE_D = 5;
+    const ROUTE_DAY_JOIN_TYPE_E = 6;
 
 
     /**

@@ -124,8 +124,8 @@ class Route extends Model
 
         //图片
         //所有景点图片
-//        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_1);
-        //$data['img'] =  Img::getJoinImgs($data['route_id'], Img::IMG_TYPE_1);
+//        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_A);
+        //$data['img'] =  Img::getJoinImgs($data['route_id'], Img::IMG_TYPE_A);
         //$data['img'] = RouteDayJoin::getOneJoinImg($data['route_id']);
 
         //分类

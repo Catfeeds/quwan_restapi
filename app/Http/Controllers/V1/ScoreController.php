@@ -51,7 +51,7 @@ class ScoreController extends Controller
         $this->params['score_type'] = (int)$this->params['score_type'];
 
 
-        $arr = [Score::SCORE_TYPE_1, Score::SCORE_TYPE_2, Score::SCORE_TYPE_3, Score::SCORE_TYPE_4];
+        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D];
         if (!in_array($this->params['score_type'], $arr)) {
             throw new UnprocessableEntityHttpException(850005);
         }
@@ -98,7 +98,7 @@ class ScoreController extends Controller
 
         Log::error('添加评价参数: ', $this->params);
 
-        $arr = [Score::SCORE_TYPE_1, Score::SCORE_TYPE_2, Score::SCORE_TYPE_3, Score::SCORE_TYPE_4];
+        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D];
         if (!in_array($this->params['score_type'], $arr)) {
             throw new UnprocessableEntityHttpException(850005);
         }

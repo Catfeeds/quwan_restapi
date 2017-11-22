@@ -137,7 +137,7 @@ class HomePageRepository extends BaseRepository
         $res['cid'] = HomePageValue::select('a.cid_id', 'a.cid_name')
             ->leftJoin('cid as a', 'a.cid_id', '=', 'home_page_value.value_id')
             ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
-            ->where('a.cid_type', '=', Cid::CID_TYPE_1)
+            ->where('a.cid_type', '=', Cid::CID_TYPE_A)
             ->orderBy('home_page_value.sort')
             ->get()
             ->toArray();
@@ -162,7 +162,7 @@ class HomePageRepository extends BaseRepository
         if (false === empty($res['attractions'])) {
             foreach ($res['attractions'] as $keyA => &$valueA) {
                 //图片
-                $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_1);
+                $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_A);
                 //分类
                 $valueA['cid'] = CidMap::getCidsInfo($valueA['attractions_id'], CidMap::CID_MAP_TYPE_1);
 
@@ -189,7 +189,7 @@ class HomePageRepository extends BaseRepository
         if (false === empty($res['holiday'])) {
             foreach ($res['holiday'] as $keyH => &$valueH) {
                 //图片
-                $valueH['img'] = Img::getOneImg($valueH['holiday_id'], Img::IMG_TYPE_2);
+                $valueH['img'] = Img::getOneImg($valueH['holiday_id'], Img::IMG_TYPE_B);
             }
         }
         return $res;
@@ -231,7 +231,7 @@ class HomePageRepository extends BaseRepository
                 foreach ($attractions as $keyAAA => &$valueAAA) {
 
                     //图片
-                    $valueAAA['img'] = Img::getOneImg($valueAAA['attractions_id'], Img::IMG_TYPE_1);
+                    $valueAAA['img'] = Img::getOneImg($valueAAA['attractions_id'], Img::IMG_TYPE_A);
                     //分类
                     $valueAAA['cid'] = CidMap::getCidsInfo($valueAAA['attractions_id'], CidMap::CID_MAP_TYPE_1);
                 }

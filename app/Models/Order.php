@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
 
-    //'订单类型1景点,2节日，3酒店,4餐厅',
-    const ORDER_TYPE_1 = 1;
-    const ORDER_TYPE_2 = 2;
-    const ORDER_TYPE_3 = 3;
-    const ORDER_TYPE_4 = 4;
+    //1景点,2目的地，3路线,4节日，5酒店,6餐厅,7图片
+    const ORDER_TYPE_A = 1;
+    const ORDER_TYPE_B = 4;
+    const ORDER_TYPE_C = 5;
+    const ORDER_TYPE_D = 6;
 
     // '是否评价,0未,1已',
     const ORDER_IS_SCORE_0 = 0;

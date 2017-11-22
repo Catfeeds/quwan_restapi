@@ -66,7 +66,7 @@ class Hall extends Model
         $data = $data->toArray();
 
         //图片
-        $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_4);
+        $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_D);
 
 
         return $data;
@@ -93,7 +93,7 @@ class Hall extends Model
 
         foreach ($data as $keyR => &$valueR) {
             //图片
-            $valueR['img'] = Img::getOneImg($valueR['hall_id'],Img::IMG_TYPE_4);
+            $valueR['img'] = Img::getOneImg($valueR['hall_id'],Img::IMG_TYPE_D);
 
         }
 

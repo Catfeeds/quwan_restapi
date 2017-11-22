@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class DestinationJoin extends Model
 {
-    //1景点,2路线,3酒店,4餐厅
-    const DESTINATION_JOIN_TYPE_1 = 1;
-    const DESTINATION_JOIN_TYPE_2 = 2;
-    const DESTINATION_JOIN_TYPE_3 = 3;
-    const DESTINATION_JOIN_TYPE_4 = 4;
+    //1景点,2目的地，3路线,4节日，5酒店,6餐厅
+    const DESTINATION_JOIN_TYPE_A = 1;
+    const DESTINATION_JOIN_TYPE_B = 3;
+    const DESTINATION_JOIN_TYPE_C = 5;
+    const DESTINATION_JOIN_TYPE_D = 6;
 
     /**
      * 关联到模型的数据表

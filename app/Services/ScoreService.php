@@ -105,7 +105,7 @@ class ScoreService
                 $value['user_avatar'] = $userInfo['user_avatar'] ?? '';
 
                 //获取评论图片
-                $value['img'] = $this->img::getJoinImgs($value['score_id'], $this->img::IMG_TYPE_5);
+                $value['img'] = $this->img::getJoinImgs($value['score_id'], $this->img::IMG_TYPE_E);
 
             }
 
@@ -145,7 +145,7 @@ class ScoreService
                     $arr = [
                         'join_id' => $params['join_id'],
                         'img_sort' => $key + 1,
-                        'img_type' => $this->img::IMG_TYPE_5,
+                        'img_type' => $this->img::IMG_TYPE_E,
                         'img_url' => $value,
                         'img_created_at' => time(),
                     ];

@@ -65,7 +65,7 @@ class Hotel extends Model
         $data = $data->toArray();
 
         //图片
-        $data['img'] = Img::getJoinImgs($data['hotel_id'], Img::IMG_TYPE_3);
+        $data['img'] = Img::getJoinImgs($data['hotel_id'], Img::IMG_TYPE_C);
 
 
         return $data;
@@ -92,7 +92,7 @@ class Hotel extends Model
 
         foreach ($data as $keyR => &$valueR) {
             //图片
-            $valueR['img'] = Img::getOneImg($valueR['hotel_id'], Img::IMG_TYPE_3);
+            $valueR['img'] = Img::getOneImg($valueR['hotel_id'], Img::IMG_TYPE_C);
 
         }
 

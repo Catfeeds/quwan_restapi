@@ -65,7 +65,7 @@ class Holiday extends Model
         $data = $data->toArray();
 
         //图片
-        $data['img'] = Img::getJoinImgs($data['holiday_id'], Img::IMG_TYPE_2);
+        $data['img'] = Img::getJoinImgs($data['holiday_id'], Img::IMG_TYPE_B);
 
         //关联线路
         $routeIds = HolidayJoin::getJoinData($holidayId);
