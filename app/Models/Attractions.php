@@ -82,7 +82,7 @@ class Attractions extends Model
     }
 
     /**
-     * 获取目的地下热门景点
+     * 获取景点详情
      * @param $attractionsId
      * @return array
      */

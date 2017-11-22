@@ -135,6 +135,7 @@ class ScoreService
                 'score_comment' => $params['score_comment'],
                 'score_type' => $params['score_type'],
                 'score_created_at' => time(),
+                'score_from_id' => $params['score_from_id'],
             ];
             $res = $this->score::create($arr);
 

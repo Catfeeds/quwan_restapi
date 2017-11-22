@@ -103,4 +103,36 @@ class Route extends Model
         return $data;
     }
 
+
+    /**
+     * 获取线路详情数据
+     * @param $routeIds
+     * @return array
+     */
+    public static function getInfo($routeId)
+    {
+        $data = self::select('route_id', 'route_name', 'route_name', 'route_day_num', 'route_intro')
+            ->where('route_status','=',self::ROUTE_STATUS_1)
+            ->where('route_id','=',$routeId)
+            ->first();
+        if (true === empty($data)) {
+            return [];
+        }
+        $data = $data->toArray();
+
+        //获取线路每天的行程
+
+        //图片
+        //所有景点图片
+//        $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_1);
+        //$data['img'] =  Img::getJoinImgs($data['route_id'], Img::IMG_TYPE_1);
+        //$data['img'] = RouteDayJoin::getOneJoinImg($data['route_id']);
+
+        //分类
+        $data['cid'] = CidMap::getCidsInfo($data['route_id'], CidMap::CID_MAP_TYPE_3);
+
+
+        return $data;
+    }
+
 }

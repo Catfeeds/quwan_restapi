@@ -94,10 +94,16 @@ class ScoreController extends Controller
         $this->params['user_id'] = $this->params['user_id'] ?? 0; //用户id
         $this->params['user_id'] = (int)$this->params['user_id'];
 
+        $this->params['score_from_id'] = $this->params['score_from_id'] ?? ''; //模板id(后台回复评论消息用)
+
         Log::error('添加评价参数: ', $this->params);
 
         $arr = [Score::SCORE_TYPE_1, Score::SCORE_TYPE_2, Score::SCORE_TYPE_3, Score::SCORE_TYPE_4];
         if (!in_array($this->params['score_type'], $arr)) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if (!$this->params['score_from_id']) {
             throw new UnprocessableEntityHttpException(850005);
         }
 
