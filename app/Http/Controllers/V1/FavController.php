@@ -51,7 +51,18 @@ class FavController extends Controller
          throw new UnprocessableEntityHttpException(850005);
         }
 
-        $data = $this->favService->addOrDel($this->params);
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $data = $this->favService->addOrDel($this->params);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('收藏/取消异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
         return response_success(['msg'=>'操作成功']);
     }
 

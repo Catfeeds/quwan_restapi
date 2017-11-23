@@ -69,6 +69,21 @@ class RouteDayJoin extends Model
     }
 
 
+
+    //获取线路下所有join信息
+    public static function getJoinList($routeId, $routeDayId)
+    {
+
+        $dayJoin = RouteDayJoin::select('route_day_id', 'join_id','route_day_join_sort', 'route_day_join_type')
+            ->where('route_id','=',$routeId)
+            ->where('route_day_id','=',$routeDayId)
+            ->orderBy('route_day_join_sort')
+            ->get()
+            ->toArray();
+        return $dayJoin;
+    }
+
+
     //获取线路下所有join信息
     public static function getJoinData($routeId)
     {

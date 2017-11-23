@@ -47,6 +47,26 @@ class CidMap extends Model
   'cid_map_type' => 'int',
 );
 
+
+    /**
+     * 获取关联的所有分类信息
+     * @param $joinId
+     * @param $cidMapType
+     * @return mixed
+     */
+    public static function getCidsList($joinId, $cidMapType)
+    {
+        $data = self::select('cid_id','cid_map_sort','cid_map_type')
+            ->where('join_id','=',$joinId)
+            ->where('cid_map_type','=',$cidMapType)
+            ->orderBy('cid_map_sort')
+            ->get()->toArray();
+
+        return $data;
+    }
+
+
+
     /**
      * 获取关联的所有分类id,名称
      * @param $joinId

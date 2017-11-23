@@ -51,6 +51,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('holiday/{holiday_id}', 'HolidayController@index'); //节日详情页数据
     $app->get('attractions/{attractions_id}', 'AttractionsController@index'); //景点详情页数据
     $app->get('route/{route_id}', 'RouteController@index'); //线路详情页数据
+    $app->post('use_route', 'RouteController@use'); //使用线路
 
     $app->post('fav', 'FavController@index'); //收藏/取消
     $app->get('score', 'ScoreController@index'); //评价列表
