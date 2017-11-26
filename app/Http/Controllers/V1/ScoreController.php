@@ -140,7 +140,7 @@ class ScoreController extends Controller
             DB::connection('db_quwan')->rollBack();
 
             //记错误日志
-            Log::error('收藏/取消异常: ', ['error' => $e]);
+            Log::error('发布评价异常: ', ['error' => $e]);
             throw new UnprocessableEntityHttpException(850002);
         }
 

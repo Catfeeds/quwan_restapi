@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Img extends Model
 {
 
-    //1景点,2目的地，3路线,4节日，5酒店,6餐厅, 8评价
+    //1景点,2目的地，3路线,4节日，5酒店,6餐厅, 8评价,9建议评价
     const IMG_TYPE_A = 1;
     const IMG_TYPE_B = 4;
     const IMG_TYPE_C = 5;
     const IMG_TYPE_D = 6;
     const IMG_TYPE_E = 8;
+    const IMG_TYPE_F = 9;
 
     //0禁用,1启用
     const IMG_STATUS_0 = 0;
