@@ -84,4 +84,52 @@ class User extends Model
         return $data;
     }
 
+    //添加用户
+    public function register($params)
+    {
+        //检测用户是否存在不存在注册
+        $userId = User::where('openid','=', $params['openid'])->value('user_id');
+        if (!$userId) {
+            $arr = [
+                'user_nickname' => $params['user_nickname'],
+                'user_sex'  => $params['user_sex'],
+                'user_avatar'  => $params['user_avatar'],
+                'openid'  => $params['openid'],
+                'user_created_at' => time(),
+                'user_updated_at'  => time(),
+            ];
+            $userId = User::create($arr);
+        }
+        
+        return $userId;
+    }
+
+    //修改用户经纬度
+    public function editLbs($userId,$params)
+    {
+        $arr = [
+            'user_lon'=>$params['user_lon'],
+            'user_lat'=>$params['user_lat'],
+            'user_updated_at'=>time(),
+        ];
+        $tag = User::where('user_id','=', $userId)->update($arr);
+
+        return $tag;
+    }
+
+    //修改用户信息
+    public function editInfo($userId,$params)
+    {
+        $arr = [
+            'user_nickname'=>$params['user_nickname'],
+            'user_sex'=>$params['user_sex'],
+            'user_avatar'=>$params['user_avatar'],
+            'user_mobile'=>$params['user_mobile'],
+            'user_updated_at'=>time(),
+        ];
+        $tag = User::where('user_id','=', $userId)->update($arr);
+
+        return $tag;
+    }
+
 }
