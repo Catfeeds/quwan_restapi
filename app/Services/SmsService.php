@@ -14,7 +14,7 @@ use Qcloud\Sms\SmsSingleSender;
 
 class SmsService
 {
-    public static function send($phone, $msg = '')
+    public static function send($templId, $phone, $params)
     {
         //准备必要参数
         $appid = config('sms.sms_appid');
@@ -57,8 +57,8 @@ class SmsService
 
 
         //发送模板消息
-        $templId = 58476;
-        $params = ['234567'];
+        //$templId = 58476;
+        //$params = ['234567'];
         // 假设模板内容为：测试短信，{1}，{2}，{3}，上学。
         $result = $sender->sendWithParam('86', $phone, $templId, $params, '', '', '');
 
@@ -66,12 +66,12 @@ class SmsService
         //$result = $sender->send(0, "86", $phone, $msg, "", "");
 
         $rsp = json_decode($result,true);
-        var_dump($rsp);die;
+
         if(true === empty($rsp)){
             throw new UnprocessableEntityHttpException(850010,[],'',['msg'=>'短信服务无返回信息']);
         }
 
-        if ($rsp['errmsg'] !== 'ok') {
+        if ($rsp['errmsg'] !== 'OK') {
             throw new UnprocessableEntityHttpException(850010,[],'',['msg'=>$rsp['errmsg']]);
         }
 

@@ -132,4 +132,17 @@ class User extends Model
         return $tag;
     }
 
+    //绑定用户手机
+    public function bindMobile($userId,$userMobile)
+    {
+        $arr = [
+            'user_is_binding'=>self::USER_IS_BINDING_1,
+            'user_mobile'=>$userMobile,
+            'user_updated_at'=>time(),
+        ];
+        $tag = User::where('user_id','=', $userId)->update($arr);
+
+        return $tag;
+    }
+
 }

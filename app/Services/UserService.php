@@ -75,6 +75,18 @@ class UserService
 
     }
 
+    //绑定用户手机
+    public function bindMobile($userId,$userMobile)
+    {
+        $data = $this->user->bindMobile($userId,$userMobile);
+        if (!$data) {
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        return $data;
+
+    }
+
     //修改用户经纬度
     public function editLbs($userId,$params)
     {

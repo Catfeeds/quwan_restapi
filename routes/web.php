@@ -77,12 +77,13 @@ $app->group($authGroup, function () use ($app) {
     $app->post('edit_lbs', 'UserController@editLbs'); //修改用户经纬度信息
     $app->get('user_info', 'UserController@userInfo'); //获取用户信息
     $app->post('edit_user_info', 'UserController@editUserInfo'); //编辑用户信息
+    $app->post('bind_mobile', 'UserController@bindMobile'); //绑定用户手机
 
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
 
 
 
-    $app->post('send_sms', 'TestController@sendSms'); //发送短信
+    $app->post('send_sms', 'UserController@sendSms'); //发送短信
     $app->post('qiniu', 'UserController@qiniu'); //上传到7牛
 
     $app->get('logout', 'UserController@logout'); //登出

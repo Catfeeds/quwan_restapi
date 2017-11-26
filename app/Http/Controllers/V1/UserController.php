@@ -11,6 +11,7 @@ use App\Services\SmsService;
 use App\Services\YanzhenService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Input;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Input;
  */
 class UserController extends Controller
 {
+
+    const CACHE_TAG = 'QUWAN'; //缓存模块tag
+    public $userYzmCacheKey = 'quwan:user:yzm:%s'; //验证码key
 
     protected $tokenService;
     protected $request;
@@ -53,6 +57,71 @@ class UserController extends Controller
         $this->params = $this->request->all();
 
     }
+
+
+    //绑定用户手机
+    public function bindMobile()
+    {
+
+        $yzm = $this->params['yzm'] ?? '';
+
+        //检测验证码
+        $userYzmCacheKey = sprintf($this->userYzmCacheKey, $this->userId);
+        $oldYzm = Cache::tags(self::CACHE_TAG)->get($userYzmCacheKey);
+        if($yzm !== $oldYzm){
+            Cache::tags(self::CACHE_TAG)->forget($userYzmCacheKey);
+            throw new UnprocessableEntityHttpException(850013);
+        }
+
+        $phone = $this->params['user_mobile'] ?? '';
+        if (!$this->yanzhenService::isMobile($phone)) {
+            throw new UnprocessableEntityHttpException(850009);
+        }
+
+        //绑定用户手机与状态
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+
+            $tag = $this->userService->bindMobile($this->userId,$phone);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('绑定用户手机异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+        return response_success(['msg' => '绑定成功']);
+
+    }
+
+
+    //发送短信
+    public function sendSms()
+    {
+        $phone = $this->params['user_mobile'] ?? '';
+        if (!$this->yanzhenService::isMobile($phone)) {
+            throw new UnprocessableEntityHttpException(850009);
+        }
+
+        //验证码
+        $yzm = random_int(100000,999999);
+
+        //存储到缓存中 1分钟
+        $userYzmCacheKey = sprintf($this->userYzmCacheKey, $this->userId);
+        Cache::tags(self::CACHE_TAG)->put($userYzmCacheKey, $yzm, 1);
+
+        //发送短信
+        $templId = 58476; //模板id
+        $params = [$yzm];
+        $res = $this->smsService::send($templId, $phone, $params);
+
+        return response_success(['msg'=>'发送成功']);
+
+    }
+
 
     /**
      * 上传到7牛
