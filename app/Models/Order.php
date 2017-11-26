@@ -87,4 +87,24 @@ class Order extends Model
             ->toArray();
         return $data;
     }
+
+    //获取用户订单统计信息
+    public  function countInfo($userId)
+    {
+        //未付款
+        $data['pay_no'] = self::where('user_id','=',$userId)->where('order_status','=',self::ORDER_STATUS_10)->count();
+        //可使用
+        $data['pay_ok'] = self::where('user_id','=',$userId)->where('order_status','=',self::ORDER_STATUS_20)->count();
+        //待评价
+        $data['score_no'] = self::where('user_id','=',$userId)
+            ->where('order_status','=',self::ORDER_STATUS_20)
+            ->where('order_is_score','=',self::ORDER_IS_SCORE_0)
+            ->count();
+        //已完成
+        $data['order_ok'] = self::where('user_id','=',$userId)->where('order_status','=',self::ORDER_STATUS_40)->count();
+        //已取消
+        $data['order_refund'] = self::where('user_id','=',$userId)->where('order_status','=',self::ORDER_STATUS_0)->count();
+
+        return $data;
+    }
 }

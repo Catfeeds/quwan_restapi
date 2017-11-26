@@ -4,6 +4,8 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Services\OrderService;
+use App\Services\QiNiuService;
 use App\Services\UserService;
 use App\Services\SmsService;
 use App\Services\YanzhenService;
@@ -11,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Class UserController
@@ -25,8 +28,10 @@ class UserController extends Controller
     protected $yanzhenService;
     protected $smsService;
     protected $userService;
+    protected $orderService;
 
     public function __construct(
+        OrderService $orderService,
         UserService $userService,
         TokenService $tokenService,
         Request $request,
@@ -36,20 +41,65 @@ class UserController extends Controller
     {
 
         parent::__construct();
+        $this->orderService = $orderService;
         $this->userService = $userService;
         $this->tokenService = $tokenService;
         $this->request = $request;
         $this->yanzhenService = $yanzhenService;
         $this->smsService = $smsService;
 
-        //检测用户是否登录
-        if(!$this->userId){
-            throw new UnprocessableEntityHttpException(850000);
-        }
 
         //接受到的参数
         $this->params = $this->request->all();
 
+    }
+
+    /**
+     * 上传到7牛
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function qiniu()
+    {
+        $file = Input::file('file');
+        if ($file === null) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        //检测是否上传成功
+        if (!$file->isValid()) {
+            throw new UnprocessableEntityHttpException(850006, [], '', ['msg' => $file->getError()]);
+        }
+
+        //大小限制1
+        $uploadSize = config('qiniu.upload_size');
+        if ($file->getClientSize() > $uploadSize) {
+            throw new UnprocessableEntityHttpException(850007);
+        }
+
+        //类型限制
+        $allowed_extensions = config('qiniu.extensions');
+        if (!in_array($file->getClientMimeType(), $allowed_extensions)) {
+            throw new UnprocessableEntityHttpException(850008);
+        }
+
+        $hz_name = substr($file->getClientOriginalName(), strrpos($file->getClientOriginalName(), ".") + 1);
+        $destinationPath = 'uploads/imges/';
+        $fileName = str_random(10) . '.' . $hz_name;
+
+        //移动到指定文件夹
+        $file->move($destinationPath, $fileName);
+
+        list($qiniuUrl, $res) = QiNiuService::uploadQiniu($fileName, $destinationPath);
+
+        return response_success(['url' => $qiniuUrl, 'file_name' => $res[0]['key']]);
+    }
+
+
+    //获取订单统计信息
+    public function orderCount()
+    {
+        $userInfo = $this->orderService->getCountInfo($this->userId);
+        return response_success($userInfo);
     }
 
     //获取用户信息

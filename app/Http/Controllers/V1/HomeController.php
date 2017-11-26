@@ -87,6 +87,7 @@ class HomeController extends Controller
 
     public function index()
     {
+
         //获取首页数据
         $data = $this->homePage->getHomeData();
         $data = $this->homePageRepository->getPageData($data);
