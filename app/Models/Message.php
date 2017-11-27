@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
 
+    //'1全部用户,2单个用户',
+    const MESSAGE_TYPE_1 = 1;
+    const MESSAGE_TYPE_2 = 2;
+
+    //'0未读1已读',
+    const MESSAGE_READ_0 = 0;
+    const MESSAGE_READ_1 = 1;
     /**
      * 关联到模型的数据表
      *
@@ -43,4 +50,12 @@ class Message extends Model
   'message_updated_at' => 'int',
 );
 
+    public static function getInfo($messageId)
+    {
+        $data = self::select('message_id', 'message_read','message_title', 'message_comment','message_type')->where('message_id','=',$messageId)->first();
+        if (!$data) {
+            return [];
+        }
+        return $data->toArray();
+    }
 }

@@ -80,6 +80,9 @@ $app->group($authGroup, function () use ($app) {
     $app->post('bind_mobile', 'UserController@bindMobile'); //绑定用户手机
 
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
+    $app->get('message_list', 'MessageController@messageList'); //消息列表
+    $app->get('message_info/{message_id}', 'MessageController@messageInfo'); //消息详情
+    $app->post('message_read', 'MessageController@messageRead'); //所有消息已读
 
 
 
