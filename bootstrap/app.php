@@ -36,6 +36,7 @@ $app->configure('dictionary');
 $app->configure('qiniu');
 $app->configure('sms');
 $app->configure('wx');
+$app->configure('xs');
 ;
 /*
 |--------------------------------------------------------------------------

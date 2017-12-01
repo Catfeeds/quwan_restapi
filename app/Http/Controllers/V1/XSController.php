@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Models\Cid;
 use App\Services\SmsService;
 use App\Services\XSService;
 use App\Services\YanzhenService;
@@ -35,106 +36,239 @@ class XSController extends Controller
         $this->tokenService = $tokenService;
         $this->request = $request;
         $this->yanzhenService = $yanzhenService;
-        $this->yanzhenService = $XSService;
+        $this->XSService = $XSService;
 
         //接受到的参数
         $this->params = $this->request->all();
 
     }
 
-    //添加文档到索引
-    public function addIndex()
+
+    //修改文档
+    public function editIndex()
     {
-        $res = $this->XSService->add($this->params);
+        $params['type'] = $this->params['type'] ?? 0;   //类型 1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $params['type'] = (int) $params['type'];
+        $params['id'] = $this->params['id'] ?? 0;       //主键
+        $params['id'] = (int) $params['id'];
+        $params['name'] = $this->params['name'] ?? '';  //名称
+        $params['address'] = $this->params['address'] ?? ''; //地址
+        $params['img'] = $this->params['img'] ?? '';        //图片
+        $params['phone'] = $this->params['phone'] ?? '';    //电话
+        $params['price'] = $this->params['price'] ?? 0.00;  //价格
+        $params['price'] = (float) $params['price'];
+        $params['intro'] = $this->params['intro'] ?? '';    //简介
+        $params['score'] = $this->params['score'] ?? 0.00;  //评分
+        $params['score'] = (float) $params['score'];
+        $params['evaluation'] = $this->params['evaluation'] ?? 0; //评价
+        $params['evaluation'] = (int) $params['evaluation'];
+        $params['lon'] = $this->params['lon'] ?? 0.00;      //经度
+        $params['lon'] = (float) $params['lon'];
+        $params['lat'] = $this->params['lat'] ?? 0.00;      //纬度
+        $params['lat'] = (float) $params['lat'];
+        $params['geohash'] = $this->params['geohash'] ?? '';        //经纬度换算的字符串
+        $params['open_time'] = $this->params['open_time'] ?? '';    //开放时间
+        $params['sort'] = $this->params['sort'] ?? 0;       //排序
+        $params['sort'] = (int) $params['sort'];
+        $params['created_at'] = $this->params['created_at'] ?? 0;   //创建时间
+        $params['created_at'] = (int) $params['created_at'];
+        $params['suggest'] = $this->params['suggest'] ?? '';        //建议
+        $params['sales_num'] = $this->params['sales_num'] ?? 0;     //销售数
+        $params['sales_num'] = (int) $params['sales_num'];
+        $params['score_num'] = $this->params['score_num'] ?? 0;     //评论数
+        $params['score_num'] = (int) $params['score_num'];
+
+
+        if (!$params['type']) {
+            throw new UnprocessableEntityHttpException(850015);
+        }
+        if (!$params['id']) {
+            throw new UnprocessableEntityHttpException(850016);
+        }
+        if (!$params['name']) {
+            throw new UnprocessableEntityHttpException(850017);
+        }
+        if (!$params['intro']) {
+            throw new UnprocessableEntityHttpException(850019);
+        }
+        if (!$params['lon']) {
+            throw new UnprocessableEntityHttpException(850022);
+        }
+        if (!$params['lat']) {
+            throw new UnprocessableEntityHttpException(850023);
+        }
+        if (!$params['created_at']) {
+            throw new UnprocessableEntityHttpException(850025);
+        }
+        if (!$params['img']) {
+            throw new UnprocessableEntityHttpException(850028);
+        }
+
+
+        $params['id'] = $params['type'].'-'.$params['id'];
+
+//        $params = array(
+//            'id' => '1',
+//            'type' => 1,
+//            'name' => '杭州',
+//            'address' => '浙江杭州西湖56号',
+//            'img' => '123.jpg',
+//            'phone' => '0571889988',
+//            'price' => 109.55,
+//            'intro' => '简称“杭”，浙江省省会、副省级市，位于中国东南沿海、浙江省北部、钱塘江下游、京杭大运河南端，是浙江省的政治、经济、文化、教育、交通和金融中心，长江三角洲城市群中心城市之一、长三角宁杭生态经济带节点城市、中国重要的电子',
+//            'score' => 4.5,
+//            'evaluation' => 8933,
+//            'lon' => 120.143051,
+//            'lat' => 30.246092,
+//            'geohash' => 'asjdfoiajeoifjaiowef',
+//            'open_time' => '早8:00-晚18:00',
+//            'sort' => 1,
+//            'created_at' => time(),
+//            'suggest' => '1-2天',
+//            'sales_num' => 18,
+//            'score_num' => 8933,
+//        );
+
+        $res = $this->XSService::update($params);
+        return ['msg'=>'操作成功'];
 
     }
 
-    public function xs()
+    //添加文档到索引
+    public function addIndex()
+    {
+        $params['type'] = $this->params['type'] ?? 0;   //类型 1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $params['type'] = (int) $params['type'];
+        $params['id'] = $this->params['id'] ?? 0;       //主键
+        $params['id'] = (int) $params['id'];
+        $params['name'] = $this->params['name'] ?? '';  //名称
+        $params['address'] = $this->params['address'] ?? ''; //地址
+        $params['img'] = $this->params['img'] ?? '';        //图片
+        $params['phone'] = $this->params['phone'] ?? '';    //电话
+        $params['price'] = $this->params['price'] ?? 0.00;  //价格
+        $params['price'] = (float) $params['price'];
+        $params['intro'] = $this->params['intro'] ?? '';    //简介
+        $params['score'] = $this->params['score'] ?? 0.00;  //评分
+        $params['score'] = (float) $params['score'];
+        $params['evaluation'] = $this->params['evaluation'] ?? 0; //评价
+        $params['evaluation'] = (int) $params['evaluation'];
+        $params['lon'] = $this->params['lon'] ?? 0.00;      //经度
+        $params['lon'] = (float) $params['lon'];
+        $params['lat'] = $this->params['lat'] ?? 0.00;      //纬度
+        $params['lat'] = (float) $params['lat'];
+        $params['geohash'] = $this->params['geohash'] ?? '';        //经纬度换算的字符串
+        $params['open_time'] = $this->params['open_time'] ?? '';    //开放时间
+        $params['sort'] = $this->params['sort'] ?? 0;       //排序
+        $params['sort'] = (int) $params['sort'];
+        $params['created_at'] = $this->params['created_at'] ?? 0;   //创建时间
+        $params['created_at'] = (int) $params['created_at'];
+        $params['suggest'] = $this->params['suggest'] ?? '';        //建议
+        $params['sales_num'] = $this->params['sales_num'] ?? 0;     //销售数
+        $params['sales_num'] = (int) $params['sales_num'];
+        $params['score_num'] = $this->params['score_num'] ?? 0;     //评论数
+        $params['score_num'] = (int) $params['score_num'];
+
+
+        if (!$params['type']) {
+            throw new UnprocessableEntityHttpException(850015);
+        }
+        if (!$params['id']) {
+            throw new UnprocessableEntityHttpException(850016);
+        }
+        if (!$params['name']) {
+            throw new UnprocessableEntityHttpException(850017);
+        }
+        if (!$params['intro']) {
+            throw new UnprocessableEntityHttpException(850019);
+        }
+        if (!$params['lon']) {
+            throw new UnprocessableEntityHttpException(850022);
+        }
+        if (!$params['lat']) {
+            throw new UnprocessableEntityHttpException(850023);
+        }
+        if (!$params['created_at']) {
+            throw new UnprocessableEntityHttpException(850025);
+        }
+        if (!$params['img']) {
+            throw new UnprocessableEntityHttpException(850028);
+        }
+
+
+        $params['id'] = $params['type'].'-'.$params['id'];
+
+//        $params = array(
+//            'id' => '1',
+//            'type' => 1,
+//            'name' => '杭州',
+//            'address' => '浙江杭州西湖56号',
+//            'img' => '123.jpg',
+//            'phone' => '0571889988',
+//            'price' => 109.55,
+//            'intro' => '简称“杭”，浙江省省会、副省级市，位于中国东南沿海、浙江省北部、钱塘江下游、京杭大运河南端，是浙江省的政治、经济、文化、教育、交通和金融中心，长江三角洲城市群中心城市之一、长三角宁杭生态经济带节点城市、中国重要的电子',
+//            'score' => 4.5,
+//            'evaluation' => 8933,
+//            'lon' => 120.143051,
+//            'lat' => 30.246092,
+//            'geohash' => 'asjdfoiajeoifjaiowef',
+//            'open_time' => '早8:00-晚18:00',
+//            'sort' => 1,
+//            'created_at' => time(),
+//            'suggest' => '1-2天',
+//            'sales_num' => 18,
+//            'score_num' => 8933,
+//        );
+
+        $res = $this->XSService::add($params);
+        return ['msg'=>'操作成功'];
+
+    }
+
+
+    //删除文档
+    public function delIndex()
+    {
+        $arr = [Cid::CID_TYPE_A,Cid::CID_TYPE_B,Cid::CID_TYPE_C,Cid::CID_TYPE_D,Cid::CID_TYPE_E,Cid::CID_TYPE_F];
+        $type = $this->params['type'] ?? 0; //类型 1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $type = (int)$type;
+        $id = $this->params['id'] ?? 0; //id
+        $id = (int)$id;
+        if (!in_array($type, $arr)) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+        if (!$id) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        $res = $this->XSService::del($type.'-'.$id);
+
+        return ['msg'=>'操作成功'];
+    }
+
+    //搜索
+    public function search()
     {
 
-        try {
-            $key = $this->params['key'] ?? '';
-            if (!$key) {
-                throw new UnprocessableEntityHttpException(850005);
-            }
-
-            $search_begin = microtime(true); //开始执行搜索时间
-
-            $xs = new \XS('article4');
-
-
-            if (substr_count($key, ' ')) {
-                $logKey = $key;
-                $key = str_replace(' ', 'AND', $key);
-                var_dump('-------连词-------', $key);
-            } else {
-                //分词 setIgnore过滤标点 setMulti分词长短 getResult获取分词结果
-                $tokenizer = new \XSTokenizerScws();
-                $key = $tokenizer->setIgnore(true)->setMulti(5)->getResult($key);
-                $key = array_pluck($key, 'word');
-                $logKey = implode(' ', $key);
-                $key = implode('OR', $key);
-                var_dump('-------分词-------', $key);
-            }
-
-            $search = $xs->search;
-
-            $search->setFuzzy(true); //开启模糊搜索
-            //$search->setScwsMulti(8);//搜索语句的分词等级[与setFuzzy使用相互排斥]
-
-            //排序 表示先以 chrono 正序、再以 pid 逆序(pid 是字符串并不是数值所以 12 会排在 3 之后)
-            //$sorts = array('chrono' => true, 'pid' => false);
-            //$search->setMultiSort($sorts);
-
-            //经纬度排序 lon 代表经度、lat 代表纬度 必须将经度定义在前纬度在后
-            //$geo = array('lon' => 116.45, 'lat' => '39.96');
-            //$search->setGeodistSort($geo);
-
-            $words = $search->getHotQuery(50, 'total'); //热门词
-            var_dump('-------热门词-------', $words);
-
-            $words = $search->getRelatedQuery($key, 10);//相关搜索
-            var_dump('-------相关搜索-------', $words);
-
-            $docs = $search->getExpandedQuery($key); //搜索建议
-            var_dump('--------搜索建议------', $docs);
-
-
-            $docs = $search->terms($key); //高亮搜索词
-            var_dump('--------高亮搜索词------', $docs);
-
-            //$search->addWeight('title', $this->params['key']); //增加关键字权重
-
-            $count = $search->count($key);
-            var_dump('-------搜索匹配总数-------', $count);
-
-            $docs = $search->search($key); //执行搜索
-            $log = $search->getQuery($key); //搜索语句
-            var_dump('-------sql-------', $log);
-
-            $search_cost = microtime(true) - $search_begin; //执行结束时间
-            var_dump('-------执行时间-------', $search_cost);
-
-            $arr = [];
-            if (false === empty($docs)) {
-                foreach ($docs as $key => $value) {
-                    $arr[] = $value->getFieldsArray();
-                }
-            }
-            var_dump('-------结果-------', $arr);
-
-            //添加搜索记录到缓存去
-            $search->addSearchLog($logKey);
-            //刷新搜索日志
-            $xs->index->flushLogging();
-
-        } catch (\XSException $e) {
-            echo $e;               // 直接输出异常描述
-            if (defined('DEBUG'))  // 如果是 DEBUG 模式，则输出堆栈情况
-            {
-                echo "\n" . $e->getTraceAsString() . "\n";
-            }
+        $key = $this->params['key'] ?? '';
+        if (!$key) {
+            throw new UnprocessableEntityHttpException(850029);
         }
+
+        $res = $this->XSService::search($key);
+
+        return $res;
+
+    }
+
+    //搜索建议
+    public function suggest()
+    {
+        $key = $this->params['key'] ?? '';
+        if (!$key) {
+            throw new UnprocessableEntityHttpException(850029);
+        }
+        $res = $this->XSService::suggest($key);
+        return $res;
 
     }
 
