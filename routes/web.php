@@ -25,17 +25,19 @@ $unAuthGroup = [
 $app->group($unAuthGroup, function () use ($app) {
 
 
+    $app->post('add_index', 'XSController@addIndex'); //添加文档到索引
+//    $app->post('xs', 'TestController@xs'); //迅搜
 
     //$app->get('/', 'HomeController@wx'); //添加文档到索引
 
 //    $app->get('oauth_callback', 'TestController@oauthCallback'); //授权回调
+    $app->get('send_merchant_pay', 'OrderController@sendMerchantPay'); //企业支付
+    $app->get('send_refund', 'OrderController@sendRefundo'); //退款
     $app->get('send_hong_bao', 'OrderController@sendHongBao'); //发送红包
     $app->get('add_order', 'OrderController@addOrder'); //创建订单
     $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
 //    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
-//    $app->post('add_index', 'TestController@addIndex'); //添加文档到索引
-//    $app->post('xs', 'TestController@xs'); //迅搜
     $app->post('login', 'LoginController@login'); //登录
 
 //    $app->post('send_sms', 'TestController@sendSms'); //发送短信

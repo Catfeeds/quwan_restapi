@@ -65,9 +65,9 @@ class OrderController extends Controller
         $luckyMoney = $app->lucky_money;
 
         $luckyMoneyData = [
-            'mch_billno'       => 'xy123456',
+            'mch_billno'       => 'xy123456789',
             'send_name'        => '开发测试发红包',
-            're_openid'        => 'ovwAZuBLwSiize3Zjd-DiCZPWTf8',
+            're_openid'        => 'oal4F0bkh9UTjvGaEEC21M5hv_cM',
             'total_num'        => 1,  //固定为1，可不传
             'total_amount'     => 100,  //单位为分，不小于100
             'wishing'          => '祝福语',
@@ -75,11 +75,69 @@ class OrderController extends Controller
             'act_name'         => '测试活动',
             'remark'           => '测试备注',
         ];
-        //$result = $luckyMoney->sendNormal($luckyMoneyData);
+        $result = $luckyMoney->sendNormal($luckyMoneyData);
 
-        $mchBillNo = "xy123456";
-        $result = $luckyMoney->query($mchBillNo);
-        return $result;
+        //$mchBillNo = "xy123456";
+        //$result = $luckyMoney->query($mchBillNo);
+        return ['luckyMoneyData'=>$luckyMoneyData,'result'=>$result];
+
+    }
+
+
+
+    public function sendMerchantPay()
+    {
+        $wxConfig = config('wx');
+        $app = new Application($wxConfig);
+        $merchantPay = $app->merchant_pay;
+
+        $merchantPayData = [
+            'partner_trade_no' => str_random(16), //随机字符串作为订单号，跟红包和支付一个概念。
+            'openid' => 'oal4F0bkh9UTjvGaEEC21M5hv_cM', //收款人的openid
+            'check_name' => 'NO_CHECK',  //文档中有三种校验实名的方法 NO_CHECK OPTION_CHECK FORCE_CHECK
+            're_user_name'=>'张三',     //OPTION_CHECK FORCE_CHECK 校验实名的时候必须提交
+            'amount' => 100,  //单位为分
+            'desc' => '开发测试企业付款',
+            'spbill_create_ip' => '192.168.0.1',  //发起交易的IP地址
+        ];
+        //var_dump($merchantPayData);
+        $result = $merchantPay->send($merchantPayData);
+        return ['merchantPayData'=>$merchantPayData,'result'=>$result];
+        //$partnerTradeNo = "商户系统内部的订单号（partner_trade_no）";
+        //$merchantPay->query($partnerTradeNo);
+    }
+
+    public function sendRefundo()
+    {
+
+        $wxConfig = config('wx');
+        $app = new Application($wxConfig);
+        $payment = $app->payment;;
+
+        $orderNo = str_random(16);
+        $refundNo = str_random(16);
+        $result = $payment->refund($orderNo, $refundNo, 100, 80, 1900000109); // 总金额 100， 退款 80，操作员：1900000109
+
+        return ['orderNo'=>$orderNo,'refundNo'=>$refundNo,'result'=>$result];
+
+//        $luckyMoney = $app->lucky_money;
+//
+//        $luckyMoneyData = [
+//            'mch_billno'       => 'xy123456',
+//            'send_name'        => '开发测试发红包',
+//            're_openid'        => 'ovwAZuBLwSiize3Zjd-DiCZPWTf8',
+//            'total_num'        => 1,  //固定为1，可不传
+//            'total_amount'     => 100,  //单位为分，不小于100
+//            'wishing'          => '祝福语',
+//            'client_ip'        => '192.168.0.1',  //可不传，不传则由 SDK 取当前客户端 IP
+//            'act_name'         => '测试活动',
+//            'remark'           => '测试备注',
+//        ];
+//        //$result = $luckyMoney->sendNormal($luckyMoneyData);
+//
+//        $mchBillNo = "xy123456";
+//        $result = $luckyMoney->query($mchBillNo);
+//        return $result;
 
     }
 
