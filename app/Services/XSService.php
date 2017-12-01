@@ -286,6 +286,39 @@ class XSService
                     //@todo 注意图片处理
                     //$valArr['img'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
                     $arr[] = $valArr;
+                    $arr[] = [
+                        'id' => $valArr['id'] ?? 0,
+                        'type' => $valArr['type'] ?? 0,
+                        'name' => $valArr['name'] ?? '',
+                        'address' => $valArr['address'] ?? '',
+                        'img' => $valArr['img'] ?? '',
+                        'phone' => $valArr['phone'] ?? '',
+                        'price' => $valArr['price'] ?? 0,
+                        'intro' => $valArr['intro'] ?? '',
+                        'score' => $valArr['score'] ?? 0,
+                        'evaluation' => $valArr['evaluation'] ?? 0,
+                        'lon' => $valArr['lon'] ?? '',
+                        'lat' => $valArr['lat'] ?? '',
+                        'geohash' => $valArr['geohash'] ?? '',
+                        'open_time' => $valArr['open_time'] ?? '',
+                        'sort' => $valArr['sort'] ?? 0,
+                        'created_at' => $valArr['created_at'] ?? 0,
+                        'suggest' => $valArr['suggest'] ?? '',
+                        'sales_num' => $valArr['sales_num'] ?? 0,
+                        'score_num' => $valArr['score_num'] ?? 0,
+                        //迅搜
+                        //docid() 取得搜索结果文档的 docid 值 (实际数据库内的 id，一般用不到)
+                        //rank() 取得搜索结果文档的序号值 (第X条结果)
+                        //percent() 取得搜索结果文档的匹配百分比 (结果匹配度, 1~100)
+                        //weight() 取得搜索结果文档的权重值 (浮点数)
+                        //ccount() 取得搜索结果折叠的数量 (按字段折叠搜索时才有效)
+                        'xs_docid' => $valArr['docid'] ?? 0,
+                        'xs_rank' => $valArr['rank'] ?? 0,
+                        'xs_ccount' => $valArr['ccount'] ?? 0,
+                        'xs_percent' => $valArr['percent'] ?? 0,
+                        'xs_weight' => $valArr['weight'] ?? 0,
+                        'xs_charset' => $valArr['charset'] ?? 0,
+                    ];
                 }
             }
             //var_dump('-------结果-------', $arr);
