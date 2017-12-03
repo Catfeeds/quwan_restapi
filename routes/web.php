@@ -58,6 +58,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('attractions/{attractions_id}', 'AttractionsController@index'); //景点详情页数据
     $app->get('route/{route_id}', 'RouteController@index'); //线路详情页数据
 
+    $app->get('score', 'ScoreController@index'); //评价列表
 
 
 
@@ -73,8 +74,9 @@ $authGroup = [
 $app->group($authGroup, function () use ($app) {
 
     $app->post('use_route', 'RouteController@use'); //使用线路
+    $app->post('add_route', 'RouteController@add'); //添加线路
+    $app->get('my_route', 'RouteController@myRoute'); //我的线路
     $app->post('fav', 'FavController@index'); //收藏/取消
-    $app->get('score', 'ScoreController@index'); //评价列表
     $app->post('add_score', 'ScoreController@add'); //发布评价
     $app->post('add_suggest', 'SuggestController@addSuggest'); //发布建议反馈
 

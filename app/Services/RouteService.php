@@ -44,8 +44,6 @@ class RouteService
         Route $route
     )
     {
-
-
         $this->routeDay = $routeDay;
         $this->routeDayJoin = $routeDayJoin;
         $this->routeDayRepository = $routeDayRepository;
@@ -61,8 +59,6 @@ class RouteService
     //复制线路到用户
     public function useRoute($routeId, $userId)
     {
-
-
         //检测线路是否存在
         $res = $this->route->where('route_id', '=', $routeId)->first();
         if (!$res) {
@@ -163,6 +159,39 @@ class RouteService
             $value['join_id'] = $res->id;
             $this->cidMap::create($value);
         }
+    }
+
+    /**
+     * 我的线路
+     * @param $params
+     * @return array
+     */
+    public function getList($params)
+    {
+       $params['limit'] =$params['limit'] ?? 10;//每页显示数
+       $params['limit'] = (int)$params['limit'];
+
+       $params['offset'] =$params['offset'] ?? 1;//页码
+       $params['offset'] = (int)$params['offset'];
+
+       $params['user_id'] =$params['user_id'] ?? 0;
+       $params['user_id'] = (int)$params['user_id'];
+
+
+        $data = $this->route::getUserListInfo($params);
+
+        if (!$data) {
+            $data = [
+                'paging' => [
+                    'limit' => 10,
+                    'offset' => 0,
+                    'total' => 0,
+                ],
+                'data' => []
+            ];
+        }
+
+        return $data;
     }
 
 

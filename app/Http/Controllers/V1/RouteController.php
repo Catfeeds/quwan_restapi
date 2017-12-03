@@ -96,4 +96,58 @@ class RouteController extends Controller
         return response_success(['msg' => '使用成功']);
     }
 
+
+    //添加线路
+    public function add()
+    {
+
+        $this->params['route_name'] = $this->params['route_name'] ?? ''; //线路名称
+        $this->params['route_intro'] = $this->params['route_intro'] ?? ''; //线路介绍
+        $this->params['route_day_num'] = $this->params['route_day_num'] ?? 0; //线路天数
+        $this->params['route_day_num'] = (int)$this->params['route_day_num'];
+
+
+//        $this->params['user_id'] = $this->params['user_id'] ?? 0; //用户id
+//        $this->params['user_id'] = (int)$this->params['user_id'];
+        $this->params['user_id'] = $this->userId;
+
+
+        Log::error('使用线路参数: ', $this->params);
+
+
+        if (!$this->params['user_id']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if (!$this->params['route_id']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            //复制线路到用户
+            $this->routeService->useRoute($this->params['route_id'],$this->params['user_id']);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('使用线路异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+
+
+        return response_success(['msg' => '使用成功']);
+    }
+
+
+    //我的线路
+    public function myRoute()
+    {
+        $this->params['user_id'] = $this->userId;
+        $data = $this->routeService->getList($this->params);
+        return response_success($data);
+    }
 }
