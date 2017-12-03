@@ -37,8 +37,9 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('send_merchant_pay', 'OrderController@sendMerchantPay'); //企业支付
     $app->get('send_refund', 'OrderController@sendRefundo'); //退款
     $app->get('send_hong_bao', 'OrderController@sendHongBao'); //发送红包
-    $app->get('add_order', 'OrderController@addOrder'); //创建订单
+//    $app->get('add_order', 'OrderController@addOrder'); //创建订单
     $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
+    $app->post('notify_url', 'OrderController@notifyUrl'); //订单回调
 //    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
     $app->post('login', 'LoginController@login'); //登录
@@ -73,8 +74,12 @@ $authGroup = [
 ];
 $app->group($authGroup, function () use ($app) {
 
+    $app->post('buy', 'OrderController@buy'); //购买 [景点,节日]
+    $app->post('buy_route', 'OrderController@buyRoute'); //购买线路
+
     $app->post('use_route', 'RouteController@use'); //使用线路
     $app->post('add_route', 'RouteController@add'); //添加线路
+    $app->post('edit_route', 'RouteController@edit'); //编辑线路
     $app->get('my_route', 'RouteController@myRoute'); //我的线路
     $app->post('fav', 'FavController@index'); //收藏/取消
     $app->post('add_score', 'ScoreController@add'); //发布评价

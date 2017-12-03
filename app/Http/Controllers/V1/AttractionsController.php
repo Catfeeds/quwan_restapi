@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 
+use App\Models\Order;
 use App\Services\AttractionsService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
@@ -41,6 +42,14 @@ class AttractionsController extends Controller
     {
         $attractionsId = $attractions_id ?? 0;
         $data = $this->attractionsService->getData($attractionsId);
+        $data['code'] = [];
+
+        $userId = $this->userId;
+        if($userId){
+            //关联的订单兑换码
+            $data['code'] = Order::getTypeCode($userId,Order::ORDER_TYPE_A,$attractions_id);
+        }
+
         return response_success($data);
     }
 

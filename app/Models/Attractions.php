@@ -88,7 +88,8 @@ class Attractions extends Model
      */
     public static function getInfo($attractionsId)
     {
-        $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest')->where('attractions_status', '=', self::ATTRACTIONS_STATUS_1)
+        $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest','attractions_status','shop_id')
+//            ->where('attractions_status', '=', self::ATTRACTIONS_STATUS_1)
             ->where('attractions_id','=', $attractionsId)
             ->first();
         if (true === empty($data)) {
@@ -101,11 +102,6 @@ class Attractions extends Model
         //分类
         $data['cid'] = CidMap::getCidsInfo($data['attractions_id'], CidMap::CID_MAP_TYPE_1);
 
-        //@todo 关联的订单兑换码
-        //$data['code'] = Order::getTypeCode($userId, $joinId, $orderType);
-
-        //@todo 是否可以领红包
-        //$data['is_reward'] = 0;
 
         return $data;
     }

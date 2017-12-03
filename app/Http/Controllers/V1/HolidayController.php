@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 
+use App\Models\Order;
 use App\Services\HolidayService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
@@ -41,6 +42,13 @@ class HolidayController extends Controller
     {
         $holidayId = $holiday_id ?? 0;
         $data = $this->holidayService->getData($holidayId);
+        $data['code'] = [];
+
+        $userId = $this->userId;
+        if($userId){
+            //关联的订单兑换码
+            $data['code'] = Order::getTypeCode($userId,Order::ORDER_TYPE_B,$holiday_id);
+        }
         return response_success($data);
     }
 

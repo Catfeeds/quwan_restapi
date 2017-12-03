@@ -56,7 +56,7 @@ class Holiday extends Model
     {
 
         $data = self::select('*')
-            ->where('holiday_status', '=', self::HOLIDAY_STATUS_1)
+//            ->where('holiday_status', '=', self::HOLIDAY_STATUS_1)
             ->where('holiday_id', $holidayId)
             ->first();
         if (true === empty($data)) {

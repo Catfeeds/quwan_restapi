@@ -85,7 +85,16 @@ class Order extends Model
             ->where('c.is_exchange', '=', OrderCode::IS_EXCHANGE_0)
             ->get()
             ->toArray();
-        return $data;
+        if(true === empty($data)){
+            return [];
+        }
+
+        $res = [];
+        foreach ($data as $key => $value) {
+            $res[] = $value['code'];
+        }
+
+        return $res;
     }
 
     //获取用户订单统计信息
@@ -106,5 +115,28 @@ class Order extends Model
         $data['order_refund'] = self::where('user_id','=',$userId)->where('order_status','=',self::ORDER_STATUS_0)->count();
 
         return $data;
+    }
+
+    //通过订单id获取订单信息
+    public function getInfo($orderId)
+    {
+        $res = self::where('order_id','=',$orderId)->first();
+        if(!$res){
+            return [];
+        }
+        $res = $res->toArray();
+        return $res;
+    }
+
+
+    //通过订单sn获取订单信息
+    public function getInfoToSn($orderSn)
+    {
+        $res = self::where('order_sn','=',$orderSn)->first();
+        if(!$res){
+            return [];
+        }
+        $res = $res->toArray();
+        return $res;
     }
 }

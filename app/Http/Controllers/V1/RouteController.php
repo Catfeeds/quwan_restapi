@@ -105,41 +105,107 @@ class RouteController extends Controller
         $this->params['route_intro'] = $this->params['route_intro'] ?? ''; //线路介绍
         $this->params['route_day_num'] = $this->params['route_day_num'] ?? 0; //线路天数
         $this->params['route_day_num'] = (int)$this->params['route_day_num'];
+        $this->params['cid'] = $this->params['cid'] ?? ''; //线路分类
+        $this->params['day'] = $this->params['day'] ?? ''; //行程
 
-
-//        $this->params['user_id'] = $this->params['user_id'] ?? 0; //用户id
-//        $this->params['user_id'] = (int)$this->params['user_id'];
         $this->params['user_id'] = $this->userId;
 
 
-        Log::error('使用线路参数: ', $this->params);
+        Log::error('创建线路参数: ', $this->params);
 
 
-        if (!$this->params['user_id']) {
-            throw new UnprocessableEntityHttpException(850005);
+        if (!$this->params['route_name']) {
+            throw new UnprocessableEntityHttpException(850030);
         }
 
-        if (!$this->params['route_id']) {
-            throw new UnprocessableEntityHttpException(850005);
+        if (!$this->params['route_day_num']) {
+            throw new UnprocessableEntityHttpException(850031);
+        }
+        if (!$this->params['route_intro']) {
+            throw new UnprocessableEntityHttpException(850032);
+        }
+        if (!$this->params['cid']) {
+            throw new UnprocessableEntityHttpException(850033);
+        }
+        if (!$this->params['day']) {
+            throw new UnprocessableEntityHttpException(850034);
         }
 
         DB::connection('db_quwan')->beginTransaction();
         try {
-            //复制线路到用户
-            $this->routeService->useRoute($this->params['route_id'],$this->params['user_id']);
+            $this->routeService->addRoute($this->params);
 
             DB::connection('db_quwan')->commit();
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();
 
             //记错误日志
-            Log::error('使用线路异常: ', ['error' => $e]);
+            Log::error('创建线路异常: ', ['error' => $e]);
             throw new UnprocessableEntityHttpException(850002);
         }
 
+        return response_success(['msg' => '创建成功']);
+    }
 
 
-        return response_success(['msg' => '使用成功']);
+
+    //编辑线路
+    public function edit()
+    {
+
+        $this->params['route_id'] = $this->params['route_id'] ?? 0; //线路id
+        $this->params['route_id'] = (int)$this->params['route_id'];
+        $this->params['route_name'] = $this->params['route_name'] ?? ''; //线路名称
+        $this->params['route_intro'] = $this->params['route_intro'] ?? ''; //线路介绍
+        $this->params['route_day_num'] = $this->params['route_day_num'] ?? 0; //线路天数
+        $this->params['route_day_num'] = (int)$this->params['route_day_num'];
+        $this->params['cid'] = $this->params['cid'] ?? ''; //线路分类
+        $this->params['day'] = $this->params['day'] ?? ''; //行程
+
+        $this->params['user_id'] = (int)$this->userId;
+
+
+        Log::error('编辑线路参数: ', $this->params);
+
+        //检测线路是否存在
+        $res = $this->routeService->checkRoute($this->params['route_id']);
+
+        //检测线路是否是自己的
+        if($this->params['user_id'] !== (int)$res['user_id']){
+            throw new UnprocessableEntityHttpException(850038);
+        }
+
+        if (!$this->params['route_name']) {
+            throw new UnprocessableEntityHttpException(850030);
+        }
+
+        if (!$this->params['route_day_num']) {
+            throw new UnprocessableEntityHttpException(850031);
+        }
+        if (!$this->params['route_intro']) {
+            throw new UnprocessableEntityHttpException(850032);
+        }
+        if (!$this->params['cid']) {
+            throw new UnprocessableEntityHttpException(850033);
+        }
+        if (!$this->params['day']) {
+            throw new UnprocessableEntityHttpException(850034);
+        }
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $this->routeService->editRoute($this->params);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('编辑线路异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+        return response_success(['msg' => '编辑成功']);
     }
 
 

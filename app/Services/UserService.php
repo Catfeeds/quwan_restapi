@@ -51,6 +51,16 @@ class UserService
 
     }
 
+    //检测是否绑定手机
+    public function checkBindMobile($userId)
+    {
+        $data = $this->user::where('user_id','=',$userId)->where('user_is_binding','=',$this->user::USER_IS_BINDING_1)->count();
+        if (!$data) {
+            throw new UnprocessableEntityHttpException(850039);
+        }
+    }
+
+
     //获取用户信息
     public function getUserInfo($userId)
     {
@@ -62,6 +72,7 @@ class UserService
         return $data;
 
     }
+
 
     //修改用户信息
     public function editUserInfo($userId,$params)
