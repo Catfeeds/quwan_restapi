@@ -56,10 +56,11 @@ class Hall extends Model
     {
 
         $data = self::select('*')
-            ->where('hall_status', '=', self::HALL_STATUS_1)
+            //->where('hall_status', '=', self::HALL_STATUS_1)
             ->where('hall_id', $hallId)
             ->orderBy('hall_score_num', 'desc')
             ->first();
+
         if (true === empty($data)) {
             return [];
         }
@@ -67,7 +68,6 @@ class Hall extends Model
 
         //图片
         $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_D);
-
 
         return $data;
     }

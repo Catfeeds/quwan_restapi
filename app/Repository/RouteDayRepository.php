@@ -46,16 +46,16 @@ class RouteDayRepository extends BaseRepository
             }
         }
 
+        $dayJoinNew = $dayJoin;
 
-        foreach ($day as $key => $value) {
-            $day[$key]['day_data'] = [];
-            foreach ($dayJoin as $keyJ => $valueJ) {
-                if ((int)$value['route_day_id'] === (int)$valueJ['route_day_id'] && false === empty($valueJ['join_data'])) {
-                    $day[$key]['day_data'][] = $valueJ['join_data'] ?? '';
+        foreach ($dayJoinNew as $keyJ => $valueJ) {
+            foreach ($day as $keyB => $valueB) {
+                if((int)$valueB['route_day_id'] === (int)$valueJ['route_day_id']){
+                    $day[$keyB]['day_data'][] = $valueJ;
                 }
             }
-        }
 
+        }
         return $day;
     }
 
@@ -67,7 +67,7 @@ class RouteDayRepository extends BaseRepository
     private function getHotelList($hotelId)
     {
         $res = Hotel::getInfo($hotelId);
-        if (ture === empty($res)) {
+        if (true === empty($res)) {
             return [];
         }
 
@@ -119,8 +119,9 @@ class RouteDayRepository extends BaseRepository
      */
     private function getHallList($hallId)
     {
+
         $res = Hall::getInfo($hallId);
-        if (ture === empty($res)) {
+        if (true === empty($res)) {
             return [];
         }
 

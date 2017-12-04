@@ -275,6 +275,7 @@ class RouteService
     {
         if(false === empty($params['day'])){
             foreach ($params['day'] as $key => $value) {
+
                 $arr = [
                     'route_id' => $routeId,
                     'route_day_intro' => $value['route_day_intro'],
@@ -287,7 +288,7 @@ class RouteService
                 }
 
                 //复制行程数据
-                $this->addRouteDayJoin($routeId, $params, $dayAdd->id);
+                $this->addRouteDayJoin($routeId, $value['day_data'], $dayAdd->id);
             }
         }
 

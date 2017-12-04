@@ -106,9 +106,11 @@ class RouteController extends Controller
         $this->params['route_day_num'] = $this->params['route_day_num'] ?? 0; //线路天数
         $this->params['route_day_num'] = (int)$this->params['route_day_num'];
         $this->params['cid'] = $this->params['cid'] ?? ''; //线路分类
-        $this->params['day'] = $this->params['day'] ?? ''; //行程
+        $this->params['day'] = $this->params['day'] ?? []; //行程
 
         $this->params['user_id'] = $this->userId;
+
+
 
 
         Log::error('创建线路参数: ', $this->params);
@@ -121,13 +123,13 @@ class RouteController extends Controller
         if (!$this->params['route_day_num']) {
             throw new UnprocessableEntityHttpException(850031);
         }
-        if (!$this->params['route_intro']) {
-            throw new UnprocessableEntityHttpException(850032);
-        }
-        if (!$this->params['cid']) {
-            throw new UnprocessableEntityHttpException(850033);
-        }
-        if (!$this->params['day']) {
+//        if (!$this->params['route_intro']) {
+//            throw new UnprocessableEntityHttpException(850032);
+//        }
+//        if (!$this->params['cid']) {
+//            throw new UnprocessableEntityHttpException(850033);
+//        }
+        if (true === empty($this->params['day'])) {
             throw new UnprocessableEntityHttpException(850034);
         }
 
@@ -182,13 +184,13 @@ class RouteController extends Controller
         if (!$this->params['route_day_num']) {
             throw new UnprocessableEntityHttpException(850031);
         }
-        if (!$this->params['route_intro']) {
-            throw new UnprocessableEntityHttpException(850032);
-        }
-        if (!$this->params['cid']) {
-            throw new UnprocessableEntityHttpException(850033);
-        }
-        if (!$this->params['day']) {
+//        if (!$this->params['route_intro']) {
+//            throw new UnprocessableEntityHttpException(850032);
+//        }
+//        if (!$this->params['cid']) {
+//            throw new UnprocessableEntityHttpException(850033);
+//        }
+        if (true === empty($this->params['day'])) {
             throw new UnprocessableEntityHttpException(850034);
         }
 

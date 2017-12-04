@@ -53,7 +53,8 @@ class HallService
     public function getData($hallId)
     {
         $data = $this->hall::getInfo($hallId);
-        if (!$data) {
+        $data['hall_status'] = $data['hall_status'] ?? 0;
+        if (!$data || !$data['hall_status']) {
             throw new UnprocessableEntityHttpException(850004);
         }
 
