@@ -102,9 +102,8 @@ class OrderService
 
         $result->return_code = $result->return_code ?? '';
         $result->result_code = $result->result_code ?? '';
-
+        Log::error('微信返回: ', ['return_code' => $result->return_code, 'return_msg' => $result->return_msg]);
         if ($result->return_code !== 'SUCCESS' && $result->result_code !=='SUCCESS'){
-            Log::error('微信返回: ', ['return_code' => $result->return_code, 'return_msg' => $result->return_msg]);
             throw new UnprocessableEntityHttpException(850044);
         }
 
