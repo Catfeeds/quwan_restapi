@@ -58,6 +58,7 @@ class OrderService
     //获取用户订单统计信息
     public function addOrder($params)
     {
+        Log::error('创建订单参数: ', $params);
         //创建订单
         $orderRes = $this->order::create($params);
         if(!$orderRes){
@@ -75,6 +76,8 @@ class OrderService
             'openid'           => $openid, // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识，
             'attach'           => '主订单号:', // original_id
         ];
+
+        Log::error('创建微信订单参数: ', $attributes);
         $order = new \EasyWeChat\Payment\Order($attributes);
 
         $wxConfig = config('wx');
