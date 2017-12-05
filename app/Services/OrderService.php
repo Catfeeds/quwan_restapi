@@ -66,6 +66,7 @@ class OrderService
         }
 
         $openid = User::where('user_id','=',$params['user_id'])->value('openid');
+        //$openid = 'oal4F0bkh9UTjvGaEEC21M5hv_cM';
 
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -81,8 +82,12 @@ class OrderService
         $order = new \EasyWeChat\Payment\Order($attributes);
 
         $wxConfig = config('wx');
+
+        $wxConfig['app_id'] = $wxConfig['xiao_app_id'];
+        $wxConfig['secret'] = $wxConfig['xiao_secret'];
         $app = new Application($wxConfig);
         $payment = $app->payment;
+
         $result = $payment->prepare($order);
 
 //        'return_code' => string 'SUCCESS' (length=7)

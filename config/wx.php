@@ -4,6 +4,12 @@ return array(
 //    'app_id' => 'wxfee3ef526ee96c44',
 //    'secret' => '3ad40eb4cdd69b78161ad6338c378a9e',
 //    'token' => 'quwan',
+
+    //小程序
+    'xiao_app_id' => 'wxd87a756c26460edd',
+    'xiao_secret' => '2aa0eaeab3ca2ffa68b0809f3531dc1e',
+
+    //公众号
     'debug' => true,
     'app_id' => 'wxb74f749dec2016f6',
     'secret' => '768d23e80b3e08517603c39ff3d2f9c1',
