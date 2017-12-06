@@ -10,6 +10,8 @@ namespace App\Services;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Models\Cid;
+use App\Models\CidMap;
 
 class XSService
 {
@@ -109,6 +111,7 @@ class XSService
             // 创建文档对象
             $doc = new \XSDocument();
 
+            //获取分类id
 
             $doc->setFields($params);
 
@@ -218,7 +221,7 @@ class XSService
     }
 
     //搜索
-    public static function search($key)
+    public static function search($params)
     {
         try {
             $search_begin = microtime(true); //开始执行搜索时间
@@ -226,6 +229,7 @@ class XSService
             $indexName = config('xs.xs_index');
             $xs = new \XS($indexName);
 
+            $key = $params['key'];
             if (substr_count($key, ' ')) {
                 $logKey = $key;
                 $key = str_replace(' ', 'AND', $key);
@@ -239,19 +243,21 @@ class XSService
                 $key = implode('OR', $key);
                 //var_dump('-------分词-------', $key);
             }
+            $key = '('.$key.')';
 
             $search = $xs->search;
 
             $search->setFuzzy(true); //开启模糊搜索
+
+            //$search->setQuery('type:"2" AND '.$key);
+
             //$search->setScwsMulti(8);//搜索语句的分词等级[与setFuzzy使用相互排斥]
 
             //排序 表示先以 chrono 正序、再以 pid 逆序(pid 是字符串并不是数值所以 12 会排在 3 之后)
             //$sorts = array('chrono' => true, 'pid' => false);
             //$search->setMultiSort($sorts);
 
-            //经纬度排序 lon 代表经度、lat 代表纬度 必须将经度定义在前纬度在后
-            //$geo = array('lon' => 116.45, 'lat' => '39.96');
-            //$search->setGeodistSort($geo);
+
 
             //$words = $search->getHotQuery(50, 'total'); //热门词
             //var_dump('-------热门词-------', $words);
@@ -268,12 +274,57 @@ class XSService
 
             //$search->addWeight('title', $this->params['key']); //增加关键字权重
 
+            //搜索分类id
+            if($params['cid']){
+                //获取所有关联分类的景点id
+                $attractionsIds = CidMap::getJoinIds($params['cid'], CidMap::CID_MAP_TYPE_1);
+                if(true === empty($attractionsIds)){
+                    return ['_count'=>0,'data'=>[]];
+                }
+
+                $tmp = ' AND (';
+                foreach ($attractionsIds as $keyA => $valueA) {
+                    $tmp .= 'id:'.CidMap::CID_MAP_TYPE_1.'-'.$valueA.' ';
+                }
+                $tmp .= ')';
+                $key .= $tmp;
+            }
+
+            //[0全部,1景点,2目的地，3路线,4节日，5酒店,6餐厅]
+            if($params['filter']){
+                $key .= ' AND (type:'.$params['filter'].')';
+            }
+
+
+
             $count = $search->count($key);
             //var_dump('-------搜索匹配总数-------', $count);
 
+            //距离优先 在保证基本相关的情况下，距离越近的越靠前
+            if($params['sortby'] === 'distance'){
+                //经纬度排序 lon 代表经度、lat 代表纬度 必须将经度定义在前纬度在后
+                $geo = array('lon' => $params['lon'], 'lat' => $params['lat']);
+                $search->setGeodistSort($geo);
+            }
+
+            //评分优先 在保证基本相关的情况下，评分越高的越靠前
+            if($params['sortby'] === 'score'){
+                $sorts = array('score' => false);
+                // 设置搜索排序
+                $search->setMultiSort($sorts);
+            }
+
+            //分页
+            $limit = $params['limit'] ?? 12; //每页显示数
+            $offset = $params['offset'] ?? 1; //页码
+            $offset = ($offset - 1) * $limit;
+            $search->setLimit($limit, $offset);
+
+            //$search->addWeight('type', '2');
+
             $docs = $search->search($key); //执行搜索
-            //$log = $search->getQuery($key); //搜索语句
-            //var_dump('-------sql-------', $log);
+            $log = $search->getQuery($key); //搜索语句
+            //var_dump('-------sql-------', $log,$key);
 
             $search_cost = microtime(true) - $search_begin; //执行结束时间
             //var_dump('-------执行时间-------', $search_cost);
@@ -283,12 +334,14 @@ class XSService
                 foreach ($docs as $key => $value) {
                     $valArr = $value->getFieldsArray();
                     $valArr['id'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
+
                     //@todo 注意图片处理
                     //$valArr['img'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
-                    $arr[] = $valArr;
+                    //$arr[] = $valArr;
                     $arr[] = [
                         'id' => $valArr['id'] ?? 0,
                         'type' => $valArr['type'] ?? 0,
+                        'cid' => isset($valArr['cid']) ? json_decode($valArr['cid'],true) : [],
                         'name' => $valArr['name'] ?? '',
                         'address' => $valArr['address'] ?? '',
                         'img' => $valArr['img'] ?? '',
@@ -299,6 +352,7 @@ class XSService
                         'evaluation' => $valArr['evaluation'] ?? 0,
                         'lon' => $valArr['lon'] ?? '',
                         'lat' => $valArr['lat'] ?? '',
+                        'distance' => round($xs::geoDistance($params['lon'], $params['lat'], $valArr['lon'], $valArr['lat'])),
                         'geohash' => $valArr['geohash'] ?? '',
                         'open_time' => $valArr['open_time'] ?? '',
                         'sort' => $valArr['sort'] ?? 0,
@@ -337,7 +391,7 @@ class XSService
     }
 
 
-    //搜索
+    //搜索建议
     public static function suggest($key)
     {
 

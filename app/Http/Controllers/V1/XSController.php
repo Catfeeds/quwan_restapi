@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Cid;
+use App\Models\CidMap;
 use App\Services\SmsService;
 use App\Services\XSService;
 use App\Services\YanzhenService;
@@ -107,6 +108,18 @@ class XSController extends Controller
 
         $params['id'] = $params['type'].'-'.$params['id'];
 
+        //分类处理
+        $params['cid'] = '';
+        $cid = CidMap::getCidsInfo($params['id'], $params['type']);
+        if (false === empty($cid)) {
+            //$tmpArr = [];
+            //foreach ($cid as $key => $value) {
+            //    $tmpArr[] = $value['cid_id'];
+            //}
+            //$params['cid'] = implode(',',$tmpArr);
+            $params['cid'] = json_encode($cid);
+        }
+
 //        $params = array(
 //            'id' => '1',
 //            'type' => 1,
@@ -197,6 +210,18 @@ class XSController extends Controller
 
         $params['id'] = $params['type'].'-'.$params['id'];
 
+        //分类处理
+        $params['cid'] = '';
+        $cid = CidMap::getCidsInfo($params['id'], $params['type']);
+        if (false === empty($cid)) {
+            //$tmpArr = [];
+            //foreach ($cid as $key => $value) {
+            //    $tmpArr[] = $value['cid_id'];
+            //}
+            //$params['cid'] = implode(',',$tmpArr);
+            $params['cid'] = json_encode($cid);
+        }
+
 //        $params = array(
 //            'id' => '1',
 //            'type' => 1,
@@ -249,12 +274,41 @@ class XSController extends Controller
     public function search()
     {
 
-        $key = $this->params['key'] ?? '';
-        if (!$key) {
+        $this->params['limit'] = $this->params['limit'] ?? 10;//每页显示数
+        $this->params['limit'] = (int)$this->params['limit'];
+
+        $this->params['offset'] = $this->params['offset'] ?? 1;//页码
+        $this->params['offset'] = (int)$this->params['offset'];
+
+
+
+        $this->params['key'] = $this->params['key'] ?? '';
+
+        $this->params['filter'] = $this->params['filter'] ?? 0; //搜索对象 [0全部,1景点,2目的地，3路线,4节日，5酒店,6餐厅]
+        $this->params['filter'] = (int)$this->params['filter'];
+
+        $this->params['sortby'] = $this->params['sortby'] ?? 'key'; //搜索排序 [key相关优先, distance距离优先, score评分优先]
+        $this->params['lon'] = $this->params['lon'] ?? ''; //用户经度
+        $this->params['lat'] = $this->params['lat'] ?? ''; //用户纬度
+
+        $this->params['cid'] = $this->params['cid'] ?? 0; //搜索分类id
+        $this->params['cid'] = (int)$this->params['cid'];
+
+        if (!$this->params['key']) {
             throw new UnprocessableEntityHttpException(850029);
         }
 
-        $res = $this->XSService::search($key);
+        $filterArr = [0,1,2,3,4,5,6];
+        if (!in_array($this->params['filter'], $filterArr)) {
+            throw new UnprocessableEntityHttpException(850045);
+        }
+
+        $sortbyArr = ['key', 'distance', 'score'];
+        if (!in_array($this->params['sortby'], $sortbyArr)) {
+            throw new UnprocessableEntityHttpException(850046);
+        }
+
+        $res = $this->XSService::search($this->params);
 
         return $res;
 

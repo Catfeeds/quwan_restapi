@@ -104,4 +104,20 @@ class CidMap extends Model
         return $data;
     }
 
+
+    /**
+     * 获取分类下关联的join_id
+     * @param $cId
+     * @param $cidMapType
+     * @return mixed
+     */
+    public static function getJoinIds($cId, $cidMapType)
+    {
+        $data = self::where('cid_id','=',$cId)
+            ->where('cid_map_type','=',$cidMapType)
+            ->pluck('join_id');
+
+        return $data;
+    }
+
 }

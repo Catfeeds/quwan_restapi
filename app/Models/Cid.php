@@ -53,6 +53,17 @@ class Cid extends Model
 );
 
 
+    /**
+     * 获取所有分类信息
+     * @return mixed
+     */
+    public static function getAll()
+    {
 
+        $data = self::where('cid_status','=',self::CID_STATUS_1)
+            ->pluck('cid_name','cid_id')->toArray();
+
+        return $data;
+    }
 
 }

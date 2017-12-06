@@ -169,6 +169,8 @@ class ScoreService
 
             DB::connection('db_quwan')->commit();
 
+            //@todo 修改索引文档更新评分
+
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();
 
