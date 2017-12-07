@@ -88,7 +88,7 @@ class Attractions extends Model
      */
     public static function getInfo($attractionsId)
     {
-        $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest','attractions_status','shop_id')
+        $data = self::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat', 'attractions_suggest','attractions_status','shop_id','attractions_address','attractions_is_refund','attractions_open_time','attractions_phone')
 //            ->where('attractions_status', '=', self::ATTRACTIONS_STATUS_1)
             ->where('attractions_id','=', $attractionsId)
             ->first();
