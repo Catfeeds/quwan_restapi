@@ -186,10 +186,12 @@ class OrderController extends Controller
             throw new UnprocessableEntityHttpException(850042);
         }
 
+        $this->params['order_sn'] = create_order_no();
+
         //下单
         $orderInfo = [
            'shop_id' => $goods['shop_id'],
-           'order_sn' => create_order_no(),
+           'order_sn' => $this->params['order_sn'],
            'join_id' => $this->params['join_id'],
            'order_type' => $this->params['order_type'],
            'order_num' => $this->params['order_num'],

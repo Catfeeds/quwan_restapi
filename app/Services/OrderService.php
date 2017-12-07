@@ -107,7 +107,10 @@ class OrderService
             throw new UnprocessableEntityHttpException(850044);
         }
 
-        return ['prepay_id' => $result->prepay_id];
+        return [
+            'order_sn' => $params['order_sn'],
+            'prepay_id' => $result->prepay_id,
+            ];
     }
 
 
