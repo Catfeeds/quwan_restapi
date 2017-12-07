@@ -338,6 +338,10 @@ class XSService
                     //@todo 注意图片处理
                     //$valArr['img'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
                     //$arr[] = $valArr;
+
+                    if(false === empty($params['lon'])){
+                        $distance = round($xs::geoDistance($params['lon'], $params['lat'], $valArr['lon'], $valArr['lat']));
+                    }
                     $arr[] = [
                         'id' => $valArr['id'] ?? 0,
                         'type' => $valArr['type'] ?? 0,
@@ -352,7 +356,7 @@ class XSService
                         'evaluation' => $valArr['evaluation'] ?? 0,
                         'lon' => $valArr['lon'] ?? '',
                         'lat' => $valArr['lat'] ?? '',
-                        'distance' => round($xs::geoDistance($params['lon'], $params['lat'], $valArr['lon'], $valArr['lat'])),
+                        'distance' => $distance ?? '',
                         'geohash' => $valArr['geohash'] ?? '',
                         'open_time' => $valArr['open_time'] ?? '',
                         'sort' => $valArr['sort'] ?? 0,

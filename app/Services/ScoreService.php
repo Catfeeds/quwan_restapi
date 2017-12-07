@@ -15,6 +15,7 @@ use App\Models\CidMap;
 use App\Models\Destination;
 use App\Models\DestinationJoin;
 use App\Models\Hall;
+use App\Models\Holiday;
 use App\Models\Hotel;
 use App\Models\Score;
 use App\Models\Img;
@@ -34,8 +35,10 @@ class ScoreService
     protected $score;
     protected $user;
     protected $hotel;
+    protected $holiday;
 
     public function __construct(
+        Holiday $holiday,
         Hotel $hotel,
         User $user,
         Score $score,
@@ -50,6 +53,7 @@ class ScoreService
     {
 
 
+        $this->holiday = $holiday;
         $this->hotel = $hotel;
         $this->user = $user;
         $this->score = $score;
@@ -158,19 +162,36 @@ class ScoreService
                 }
             }
 
-            //评价酒店,餐厅,增加评价数量
-            //1景点,2节日，3酒店,4餐厅
+            //最新平均评分
+            $stock = $this->score::where('join_id','=', $params['join_id'])->where('score_type','=', $params['score_type'])->avg('score');
+            $stock = round($stock,1);
+
+            //评价酒店,餐厅,增加评价数量,更新评分
+            //1景点,2目的地，3路线,4节日，5酒店,6餐厅,7图片
             switch ($params['score_type']) {
-                case 3:
-                    $this->hotel->where('hotel_id', '=', $params['join_id'])->increment('hotel_score_num');
+                case $this->score::SCORE_TYPE_A:
+                    $this->attractions->where('attractions_id', '=', $params['join_id'])->increment('attractions_evaluation');
+                    $this->attractions->where('attractions_id', '=', $params['join_id'])->increment('attractions_score_num');
+                    $this->attractions->where('attractions_id', '=', $params['join_id'])->update(['attractions_score'=>$stock]);
                     break;
-                case 4:
+                case $this->score::SCORE_TYPE_B:
+                    $this->attractions->where('attractions_id', '=', $params['join_id'])->increment('holiday_evaluation');
+                    $this->holiday->where('holiday_id', '=', $params['join_id'])->increment('holiday_score_num');
+                    $this->holiday->where('holiday_id', '=', $params['join_id'])->update(['holiday_score'=>$stock]);
+                    break;
+                case $this->score::SCORE_TYPE_C:
+                    $this->hotel->where('hotel_id', '=', $params['join_id'])->increment('hotel_evaluation');
+                    $this->hotel->where('hotel_id', '=', $params['join_id'])->increment('hotel_score_num');
+                    $this->hotel->where('hotel_id', '=', $params['join_id'])->update(['hotel_score'=>$stock]);
+                    break;
+                case $this->score::SCORE_TYPE_D:
+                    $this->hall->where('hall_id', '=', $params['join_id'])->increment('hall_evaluation');
                     $this->hall->where('hall_id', '=', $params['join_id'])->increment('hall_score_num');
+                    $this->hall->where('hotel_id', '=', $params['join_id'])->update(['hall_score'=>$stock]);
                     break;
                 default:
                     break;
             }
-
 
             DB::connection('db_quwan')->commit();
 
