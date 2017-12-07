@@ -128,7 +128,7 @@ class API extends AbstractAPI
         if (is_null($order->spbill_create_ip)) {
             $order->spbill_create_ip = (Order::NATIVE === $order->trade_type) ? get_server_ip() : get_client_ip();
         }
-
+        Log::error('生成微信预订单参数: ', $order->all());
         return $this->request($this->wrapApi(self::API_PREPARE_ORDER), $order->all());
     }
 
