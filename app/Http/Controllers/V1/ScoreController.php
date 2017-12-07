@@ -50,6 +50,9 @@ class ScoreController extends Controller
         $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2节日，3酒店,4餐厅
         $this->params['score_type'] = (int)$this->params['score_type'];
 
+        $this->params['join_id'] = $this->params['join_id'] ?? 0; //关联id
+        $this->params['join_id'] = (int)$this->params['join_id'];
+
 
         $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D];
         if (!in_array($this->params['score_type'], $arr)) {

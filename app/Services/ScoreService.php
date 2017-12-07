@@ -87,6 +87,11 @@ class ScoreService
             $wheres = array_merge($condition, $wheres);
         }
 
+        if ($data['join_id']) {
+            $condition = array(array('column' => 'join_id', 'value' => $data['join_id'], 'operator' => '='));
+            $wheres = array_merge($condition, $wheres);
+        }
+
         //载入查询条件
         $wheres = array_reverse($wheres);
         foreach ($wheres as $value) {
