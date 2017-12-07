@@ -27,6 +27,7 @@ use EasyWeChat\Core\AbstractAPI;
 use EasyWeChat\Core\Exception;
 use EasyWeChat\Support\Collection;
 use EasyWeChat\Support\XML;
+use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\ResponseInterface;
 
 /**
