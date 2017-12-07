@@ -71,6 +71,8 @@ class OrderController extends Controller
         Log::error('支付回调参数: ', $this->params);
 
         $wxConfig = config('wx');
+        $wxConfig['app_id'] = $wxConfig['xiao_app_id'];
+        $wxConfig['secret'] = $wxConfig['xiao_secret'];
         $app = new Application($wxConfig);
         $response = $app->payment->handleNotify(function($notify, $successful){
             // 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单
