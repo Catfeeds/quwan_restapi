@@ -75,19 +75,19 @@ class OrderController extends Controller
         $app = new Application($wxConfig);
         $response = $app->payment->handleNotify(function($notify, $successful){
 
-            Log::error('支付回调参数: ', $notify);
+            Log::error('支付回调参数: ', typeOf($notify));
 
             // 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单
-            $order = $this->orderService->getInfoToSn($notify['out_trade_no']);
+            $order = $this->orderService->getInfoToSn($notify->out_trade_no);
             if (!$order) { // 如果订单不存在
-                Log::error('订单不存在: '.$notify['out_trade_no']);
+                Log::error('订单不存在: '.$notify->out_trade_no);
                 return 'SUCCESS';// 告诉微信，我已经处理完了，订单没找到，别再通知我了
             }
 
             //`order_status` tinyint(1) NOT NULL DEFAULT '10' COMMENT '订单状态(10未付款,20已支付，30已核销，40已评价，0已取消',
             // 如果已支付,不在执行
             if((int)$order['order_status'] !== \App\Models\Order::ORDER_STATUS_10){
-                Log::error('订单已支付过: '.$notify['out_trade_no']);
+                Log::error('订单已支付过: '.$notify->out_trade_no);
                 return 'SUCCESS';// 告诉微信，我已经处理完了，订单没找到，别再通知我了
             }
 
@@ -102,19 +102,19 @@ class OrderController extends Controller
             try {
 
                 //是否主订单
-                if($notify['attach']){
-                    Log::error('主订单: '.$notify['attach']);
+                if($notify->attach){
+                    Log::error('主订单: '.$notify->attach);
                     return 'SUCCESS';
                 }else{
 
-                    Log::error('子订单: '.$notify['out_trade_no']);
+                    Log::error('子订单: '.$notify->out_trade_no);
 
                     // 修改订单状态,订单时间,第三方订单号,实际支付金额
                     $arr = [
-                        'order_pay_amount' => $notify['total_fee'] / 100, //返回是分,要转换
+                        'order_pay_amount' => $notify->total_fee / 100, //返回是分,要转换
                         'order_status' => \App\Models\Order::ORDER_STATUS_20,
                         'order_pay_at' => time(),
-                        'transaction_id' => $notify['transaction_id'],
+                        'transaction_id' => $notify->transaction_id,
                     ];
                     Order::where('order_id','=',$order['order_id'])->update($arr);
 
@@ -129,7 +129,7 @@ class OrderController extends Controller
                     //}
                 }
 
-                Log::error('修改订单状态成功: '.$notify['out_trade_no']);
+                Log::error('修改订单状态成功: '.$notify->out_trade_no);
 
                 DB::connection('db_quwan')->commit();
 
