@@ -75,7 +75,7 @@ class OrderService
             'out_trade_no'     => $params['order_sn'],
             'total_fee'        => $params['order_amount'] * 100, // 单位：分
             'openid'           => $openid, // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识，
-            'attach'           => '主订单号:', // original_id
+            'attach'           => '', // original_id
         ];
 
         Log::error('创建微信订单参数: ', $attributes);

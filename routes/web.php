@@ -38,7 +38,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('send_refund', 'OrderController@sendRefundo'); //退款
     $app->get('send_hong_bao', 'OrderController@sendHongBao'); //发送红包
 //    $app->get('add_order', 'OrderController@addOrder'); //创建订单
-    $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
+    //$app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
     $app->post('notify_url', 'OrderController@notifyUrl'); //订单回调
 //    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
