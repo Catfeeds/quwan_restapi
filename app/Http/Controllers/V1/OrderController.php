@@ -116,7 +116,7 @@ class OrderController extends Controller
                         'order_pay_at' => time(),
                         'transaction_id' => $notify->transaction_id,
                     ];
-                    Order::where('order_id','=',$order['order_id'])->update($arr);
+                    \App\Models\Order::where('order_id','=',$order['order_id'])->update($arr);
 
                     //@todo 增加销售量
                     //if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
