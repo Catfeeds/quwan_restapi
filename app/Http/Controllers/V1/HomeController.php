@@ -48,7 +48,6 @@ class HomeController extends Controller
 
 
 
-
     //wx
     public function wx()
     {

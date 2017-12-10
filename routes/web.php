@@ -59,6 +59,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('attractions/{attractions_id}', 'AttractionsController@index'); //景点详情页数据
     $app->get('route/{route_id}', 'RouteController@index'); //线路详情页数据
 
+
     $app->get('score', 'ScoreController@index'); //评价列表
 
 
@@ -106,6 +107,9 @@ $app->group($authGroup, function () use ($app) {
     $app->post('qiniu', 'UserController@qiniu'); //上传到7牛
 
     $app->post('share_ok', 'UserController@shareOk'); //分享成功增加统计
+
+
+    $app->post('hongbao', 'OrderController@hongbao'); //领取红包
 
     $app->get('logout', 'UserController@logout'); //登出
 
