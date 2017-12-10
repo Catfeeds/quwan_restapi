@@ -1,14 +1,22 @@
 <?php
 
 if (!function_exists('get_distance')) {
-    function get_distance($lat1, $lon1, $lat2, $lon2) {
-        $R = 6371393; //地球平均半径,单位米
-        $dlat = deg2rad($lat2-$lat1);
-        $dlon = deg2rad($lon2-$lon1);
-        $a = pow(sin($dlat/2), 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * pow(sin($dlon/2), 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-        $d = $R * $c;
-        return round($d);
+    /**
+     * 计算经纬度距离
+     * @param float $lon1 原点经度
+     * @param float $lat1 原点纬度
+     * @param float $lon2 目标点经度
+     * @param float $lat2 目标点纬度
+     * @return float 两点大致距离，单位：米
+     */
+    function get_distance($lon1, $lat1, $lon2, $lat2)
+    {
+        $dx = $lon1 - $lon2;
+        $dy = $lat1 - $lat2;
+        $b = ($lat1 + $lat2) / 2;
+        $lx = 6367000.0 * deg2rad($dx) * cos(deg2rad($b));
+        $ly = 6367000.0 * deg2rad($dy);
+        return sqrt($lx * $lx + $ly * $ly);
     }
 }
 if (!function_exists('uuid')) {

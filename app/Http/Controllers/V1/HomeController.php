@@ -92,6 +92,15 @@ class HomeController extends Controller
         $data = $this->homePage->getHomeData();
         $data = $this->homePageRepository->getPageData($data);
 
+        //记录登录日志
+        $logArr = [
+            'log_type' => \App\Models\Log::LOG_TYPE_3,
+            'log_time' => time(),
+            'user_id' => $this->userId,
+            'log_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ];
+        \App\Models\Log::create($logArr);
+
         return response_success($data);
     }
 

@@ -76,6 +76,15 @@ class LoginController extends Controller
             //登录注册
             $userId = $this->loginService->login($this->params);
 
+            //记录登录日志
+            $logArr = [
+                'log_type' => \App\Models\Log::LOG_TYPE_1,
+                'log_time' => time(),
+                'user_id' => $userId,
+                'log_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            ];
+            \App\Models\Log::create($logArr);
+
             DB::connection('db_quwan')->commit();
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();

@@ -68,7 +68,7 @@ class ScoreService
     }
 
     /**
-     * 添加或取消收藏
+     * 评价列表
      * @param $data
      * @return mixed|static
      */

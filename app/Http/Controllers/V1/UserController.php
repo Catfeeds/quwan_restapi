@@ -58,6 +58,49 @@ class UserController extends Controller
 
     }
 
+    //分享成功增加统计
+    public function shareOk()
+    {
+
+        $this->params['join_id'] = $this->params['join_id'] ?? 0;
+        $this->params['join_id'] = (int)$this->params['join_id'];
+        $this->params['log_join_type'] = $this->params['log_join_type'] ?? 0;
+        $this->params['log_join_type'] = (int)$this->params['log_join_type']; //1景点,2目的地，3路线,4节日，5酒店,6餐厅，
+        if (!$this->params['join_id']) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if ($this->params['log_join_type'] <= 0 || $this->params['log_join_type'] >= 7 ) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+
+            //记录登录日志
+            $logArr = [
+                'log_type' => \App\Models\Log::LOG_TYPE_2,
+                'log_time' => time(),
+                'user_id' => $this->userId,
+                'log_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                'join_id' => $this->params['join_id'],
+                'log_join_type' => $this->params['log_join_type'],
+            ];
+            \App\Models\Log::create($logArr);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('分享成功增加统计异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+        return response_success(['msg' => '操作成功']);
+
+    }
+
 
     //绑定用户手机
     public function bindMobile()
@@ -125,7 +168,6 @@ class UserController extends Controller
 
     /**
      * 上传到7牛
-     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function qiniu()
     {
@@ -160,7 +202,7 @@ class UserController extends Controller
 
         list($qiniuUrl, $res) = QiNiuService::uploadQiniu($fileName, $destinationPath);
 
-        return response_success(['url' => $qiniuUrl, 'file_name' => $res[0]['key']]);
+        return ['url' => $qiniuUrl, 'file_name' => $res[0]['key']];
     }
 
 

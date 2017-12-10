@@ -38,10 +38,33 @@ class FavController extends Controller
 
     }
 
-    public function index()
+    public function favList()
+    {
+
+        $this->params['limit'] = $this->params['limit'] ?? 10;//每页显示数
+        $this->params['limit'] = (int)$this->params['limit'];
+
+        $this->params['offset'] = $this->params['offset'] ?? 1;//页码
+        $this->params['offset'] = (int)$this->params['offset'];
+
+
+        $this->params['fav_type'] = $this->params['fav_type'] ?? 0; //1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $this->params['fav_type'] = (int)$this->params['fav_type'];
+
+        $this->params['user_id'] = (int)$this->userId;
+
+        if ($this->params['fav_type'] <= 0 || $this->params['fav_type'] >= 7) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        $data = $this->favService->getListData($this->params);
+        return response_success($data);
+    }
+
+    public function add()
     {
         $this->params['user_id'] = $this->params['user_id'] ?? 0;
-        $this->params['fav_type'] = $this->params['fav_type'] ?? 0; //1景点,2节日，3酒店,4餐厅
+        $this->params['fav_type'] = $this->params['fav_type'] ?? 0; //1景点,2目的地，3路线,4节日，5酒店,6餐厅
         $this->params['join_id'] = $this->params['join_id'] ?? 0; 
         $this->params['user_id'] = (int)$this->params['user_id'];
         $this->params['fav_type'] = (int)$this->params['fav_type'];

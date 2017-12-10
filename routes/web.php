@@ -81,7 +81,10 @@ $app->group($authGroup, function () use ($app) {
     $app->post('add_route', 'RouteController@add'); //添加线路
     $app->post('edit_route', 'RouteController@edit'); //编辑线路
     $app->get('my_route', 'RouteController@myRoute'); //我的线路
-    $app->post('fav', 'FavController@index'); //收藏/取消
+
+    $app->post('fav', 'FavController@add'); //收藏/取消
+    $app->get('fav_list', 'FavController@favList'); //收藏列表
+
     $app->post('add_score', 'ScoreController@add'); //发布评价
     $app->post('add_suggest', 'SuggestController@addSuggest'); //发布建议反馈
 
@@ -98,8 +101,11 @@ $app->group($authGroup, function () use ($app) {
 
 
 
+
     $app->post('send_sms', 'UserController@sendSms'); //发送短信
     $app->post('qiniu', 'UserController@qiniu'); //上传到7牛
+
+    $app->post('share_ok', 'UserController@shareOk'); //分享成功增加统计
 
     $app->get('logout', 'UserController@logout'); //登出
 
