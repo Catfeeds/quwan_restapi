@@ -36,3 +36,8 @@
 2. 安装 `vendor` 组件，`composer install --no-dev`（本地开发时，去掉 `--no-dev` 参数）。
 3. 修改 `.env` 文件的相关环境配置信息。
 5. 数据库连接标识，命名约定：`db_` + `database name`。
+
+
+
+### 队列启动
+`php artisan queue:work --tries=1`

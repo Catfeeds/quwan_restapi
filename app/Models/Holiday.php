@@ -80,4 +80,38 @@ class Holiday extends Model
         return $data;
     }
 
+
+    /**
+     * 节日详情页->节日详情
+     * @param $holidayId
+     * @return array
+     */
+    public static function getInfoData($holidayId)
+    {
+
+        $data = self::select('*')
+//            ->where('holiday_status', '=', self::HOLIDAY_STATUS_1)
+            ->where('holiday_id', $holidayId)
+            ->first();
+        if (true === empty($data)) {
+            return [];
+        }
+        $data = $data->toArray();
+
+        //图片
+        $data['img'] = Img::getJoinImgs($data['holiday_id'], Img::IMG_TYPE_B);
+
+        //关联线路
+        $routeIds = HolidayJoin::getJoinData($holidayId);
+        $data['route'] = Route::getListInfo($routeIds);
+
+        //@todo 关联的订单兑换码
+        //$data['code'] = Order::getTypeCode($userId, $joinId, $orderType);
+
+        //@todo 是否可以领红包
+        //$data['is_reward'] = 0;
+
+        return $data;
+    }
+
 }

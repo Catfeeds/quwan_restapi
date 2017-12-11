@@ -4,8 +4,10 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Jobs\XssJob;
 use App\Models\Score;
 use App\Services\ScoreService;
+use App\Services\XSService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\Cache;
@@ -19,7 +21,6 @@ use Illuminate\Support\Facades\Redis;
  */
 class ScoreController extends Controller
 {
-
     protected $tokenService;
     protected $request;
     protected $params;
@@ -138,7 +139,17 @@ class ScoreController extends Controller
         try {
             $res = $this->scoreService->addScore($this->params);
 
+            XSService::jobEditIndex(['type'=>$this->params['score_type'], 'id' => $this->params['join_id']]);
+
             DB::connection('db_quwan')->commit();
+
+            //调用队列并执行
+            //$job = new XssJob(['type'=>$this->params['score_type'], 'id' => $this->params['join_id']]);
+            //$res = $this->dispatch($job);
+
+
+            //var_dump($res);
+
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();
 

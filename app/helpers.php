@@ -1,5 +1,65 @@
 <?php
 
+if (!function_exists('post_curl_content')) {
+    /*
+    * 访问网址并取得其内容
+    * @param $url String 网址
+    * @param $postFields Array 将该数组中的内容用POST方式传递给网址中
+        * @param $cookie_file string cookie文件
+    * @param $r_or_w string 写cookie还是读cookie或是两都都有，r读，w写，a两者，null没有cookie
+    * @return String 返回网址内容
+    */
+    function post_curl_content($url, $postFields = null, $cookie_file = null, $r_or_w = null)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if(false === empty($_SERVER['HTTP_USER_AGENT'])){
+
+            curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // 模拟用户使用的浏览器
+        }
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // 使用自动跳转
+        curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // 自动设置Referer
+        if ($cookie_file && ($r_or_w == 'a' || $r_or_w == 'w')) {
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file); // 存放Cookie信息的文件名称
+        }
+        if ($cookie_file && ($r_or_w == 'a' || $r_or_w == 'r')) {
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file); // 读取上面所储存的Cookie信息
+        }
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 设置超时限制防止死循环
+        curl_setopt($ch, CURLOPT_HEADER, 0); // 显示返回的Header区域内容
+        curl_setopt($ch, CURLOPT_FAILONERROR, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if (is_array($postFields) && 0 < count($postFields))
+        {
+            $postBodyString = "";
+            foreach ($postFields as $k => $v)
+            {
+                $postBodyString .= "$k=" . urlencode($v) . "&";
+            }
+            unset($k, $v);
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, substr($postBodyString,0,-1));
+        }
+
+        $reponse = curl_exec($ch);
+        if (curl_errno($ch)){
+            throw new Exception(curl_error($ch),0);
+        }
+        else{
+            $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            /*if (200 !== $httpStatusCode){
+                throw new Exception($reponse,$httpStatusCode);
+                //print_r($reponse);exit;
+            }*/
+        }
+        curl_close($ch);
+        return $reponse;
+    }
+
+}
 if (!function_exists('get_distance')) {
     /**
      * 计算经纬度距离

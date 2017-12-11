@@ -64,9 +64,7 @@ class XSController extends Controller
         }
 
         //查找内容 1景点,2目的地，3路线,4节日，5酒店,6餐厅
-        $addData = $this->XSService->getInfo($params['type'], $params['id']);
-
-
+        $addData = $this->XSService::getInfo($params['type'], $params['id']);
 
         $res = $this->XSService::update($addData);
         return ['msg'=>'操作成功'];
@@ -112,10 +110,10 @@ class XSController extends Controller
         }
 
         //查找内容 1景点,2目的地，3路线,4节日，5酒店,6餐厅
-        $addData = $this->XSService->getInfo($params['type'], $params['id']);
+        $addData = $this->XSService::getInfo($params['type'], $params['id']);
 
 
-        $res = $this->XSService::add($addData);
+        $res = $this->XSService::update($addData);
         return ['msg'=>'操作成功'];
 
     }

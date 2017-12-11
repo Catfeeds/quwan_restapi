@@ -23,6 +23,7 @@ use App\Models\Img;
 use App\Models\Route;
 use App\Models\RouteDayJoin;
 use App\Models\User;
+use EasyWeChat\Support\Log;
 
 class XSService
 {
@@ -62,7 +63,6 @@ class XSService
         $this->user = $user;
         $this->holiday = $holiday;
         $this->hotel = $hotel;
-        $this->fav = $fav;
         $this->hall = $hall;
         $this->route = $route;
         $this->cidMap = $cidMap;
@@ -71,6 +71,17 @@ class XSService
         $this->img = $img;
         $this->attractions = $attractions;
 
+    }
+
+    //job更新文档
+    public static function jobEditIndex($params)
+    {
+        Log::error('队列进来',$params);
+        //查找内容 1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $addData = self::getInfo($params['type'], $params['id']);
+        $res = self::update($addData);
+
+        return $res;
     }
 
     //删除文档
@@ -481,25 +492,25 @@ class XSService
     }
 
     //获取数据
-    public function getInfo($type, $joinId){
+    public static function getInfo($type, $joinId){
         switch ($type) {
             case 1: //景点
-                $info = $this->getAttractionData($joinId);
+                $info = self::getAttractionData($joinId);
                 break;
             case 2: //目的地
                 $info = [];
                 break;
             case 3: //线路
-                $info = $this->getRouteData($joinId);
+                $info = self::getRouteData($joinId);
                 break;
             case 4: //节日
-                $info = $this->getHolidayData($joinId);
+                $info = self::getHolidayData($joinId);
                 break;
             case 5: //酒店
-                $info = $this->getHotelData($joinId);
+                $info = self::getHotelData($joinId);
                 break;
             case 6: //餐厅
-                $info = $this->getHallData($joinId);
+                $info = self::getHallData($joinId);
                 break;
             default: $info = []; break;
         }
@@ -527,9 +538,9 @@ class XSService
      * @param $value
      * @return array
      */
-    public function getRouteData($routeId)
+    public static function getRouteData($routeId)
     {
-        $info = $this->route::getInfo($routeId);
+        $info = Route::getInfo($routeId);
         $res = [];
         if (false === empty($info)) {
             //图片
@@ -556,14 +567,14 @@ class XSService
      * @param $value
      * @return array
      */
-    public function getAttractionData($attractionsId)
+    public static function getAttractionData($attractionsId)
     {
-        $info = $this->attractions::getInfo($attractionsId);
+        $info = Attractions::getInfo($attractionsId);
         $res = [];
         if (false === empty($info)) {
             $res = [
                 'id' => $info['attractions_id'],
-                'type' => $this->fav::FAV_TYPE_A,
+                'type' => Fav::FAV_TYPE_A,
                 'name' => $info['attractions_name'],
                 'img' => $info['img'],
                 'price' => $info['attractions_price'],
@@ -582,14 +593,14 @@ class XSService
      * @param $value
      * @return array
      */
-    public function getHolidayData($holidayId)
+    public static function getHolidayData($holidayId)
     {
-        $info = $this->holiday->getInfo($holidayId);
+        $info = Holiday::getInfoData($holidayId);
         $res = [];
         if (false === empty($info)) {
             $res = [
                 'id' => $info['holiday_id'],
-                'type' => $this->fav::FAV_TYPE_B,
+                'type' => Fav::FAV_TYPE_B,
                 'name' => $info['holiday_name'],
                 'img' => $info['img'],
                 'price' => $info['holiday_price'],
@@ -608,14 +619,14 @@ class XSService
      * @param $value
      * @return array
      */
-    public function getHotelData($hotelId)
+    public static function getHotelData($hotelId)
     {
-        $info = $this->hotel::getInfo($hotelId);
+        $info = Hotel::getInfo($hotelId);
         $res = [];
         if (false === empty($info)) {
             $res = [
                 'id' => $info['hotel_id'],
-                'type' => $this->fav::FAV_TYPE_C,
+                'type' => Fav::FAV_TYPE_C,
                 'name' => $info['hotel_name'],
                 'img' => $info['img'],
                 'price' => $info['hotel_price'],
@@ -634,14 +645,14 @@ class XSService
      * @param $value
      * @return array
      */
-    public function getHallData($hallId)
+    public static function getHallData($hallId)
     {
-        $info = $this->hall::getInfo($hallId);
+        $info = Hall::getInfo($hallId);
         $res = [];
         if (false === empty($info)) {
             $res = [
                 'id' => $info['hall_id'],
-                'type' => $this->fav::FAV_TYPE_D,
+                'type' => Fav::FAV_TYPE_D,
                 'name' => $info['hall_name'],
                 'img' => $info['img'],
                 'price' => $info['hall_price'],
