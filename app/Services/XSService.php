@@ -12,6 +12,17 @@ namespace App\Services;
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Cid;
 use App\Models\CidMap;
+use App\Models\Attractions;
+use App\Models\Destination;
+use App\Models\DestinationJoin;
+use App\Models\Hall;
+use App\Models\Fav;
+use App\Models\Holiday;
+use App\Models\Hotel;
+use App\Models\Img;
+use App\Models\Route;
+use App\Models\RouteDayJoin;
+use App\Models\User;
 
 class XSService
 {
@@ -21,10 +32,44 @@ class XSService
     protected $XSDocument;
     protected $XSSearch;
 
-    public function __construct()
+    protected $destinationJoin;
+    protected $destination;
+    protected $img;
+    protected $attractions;
+    protected $cidMap;
+    protected $route;
+    protected $hall;
+    protected $fav;
+    protected $hotel;
+    protected $holiday;
+    protected $user;
+
+    public function __construct(
+        User $user,
+        Holiday $holiday,
+        Hotel $hotel,
+        Fav $fav,
+        Hall $hall,
+        Route $route,
+        CidMap $cidMap,
+        DestinationJoin $destinationJoin,
+        Destination $destination,
+        Img $img,
+        Attractions $attractions
+    )
     {
 
-
+        $this->user = $user;
+        $this->holiday = $holiday;
+        $this->hotel = $hotel;
+        $this->fav = $fav;
+        $this->hall = $hall;
+        $this->route = $route;
+        $this->cidMap = $cidMap;
+        $this->destinationJoin = $destinationJoin;
+        $this->destination = $destination;
+        $this->img = $img;
+        $this->attractions = $attractions;
 
     }
 
@@ -347,9 +392,9 @@ class XSService
                         'type' => $valArr['type'] ?? 0,
                         'cid' => isset($valArr['cid']) ? json_decode($valArr['cid'],true) : [],
                         'name' => $valArr['name'] ?? '',
-                        'address' => $valArr['address'] ?? '',
+                        //'address' => $valArr['address'] ?? '',
                         'img' => $valArr['img'] ?? '',
-                        'phone' => $valArr['phone'] ?? '',
+                        //'phone' => $valArr['phone'] ?? '',
                         'price' => $valArr['price'] ?? 0,
                         'intro' => $valArr['intro'] ?? '',
                         'score' => $valArr['score'] ?? 0,
@@ -357,13 +402,13 @@ class XSService
                         'lon' => $valArr['lon'] ?? '',
                         'lat' => $valArr['lat'] ?? '',
                         'distance' => $distance ?? '',
-                        'geohash' => $valArr['geohash'] ?? '',
-                        'open_time' => $valArr['open_time'] ?? '',
-                        'sort' => $valArr['sort'] ?? 0,
-                        'created_at' => $valArr['created_at'] ?? 0,
-                        'suggest' => $valArr['suggest'] ?? '',
-                        'sales_num' => $valArr['sales_num'] ?? 0,
-                        'score_num' => $valArr['score_num'] ?? 0,
+                        //'geohash' => $valArr['geohash'] ?? '',
+                        //'open_time' => $valArr['open_time'] ?? '',
+                        //'sort' => $valArr['sort'] ?? 0,
+                        //'created_at' => $valArr['created_at'] ?? 0,
+                        //'suggest' => $valArr['suggest'] ?? '',
+                        //'sales_num' => $valArr['sales_num'] ?? 0,
+                        //'score_num' => $valArr['score_num'] ?? 0,
                         //迅搜
                         //docid() 取得搜索结果文档的 docid 值 (实际数据库内的 id，一般用不到)
                         //rank() 取得搜索结果文档的序号值 (第X条结果)
@@ -433,5 +478,180 @@ class XSService
             throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
         }
 
+    }
+
+    //获取数据
+    public function getInfo($type, $joinId){
+        switch ($type) {
+            case 1: //景点
+                $info = $this->getAttractionData($joinId);
+                break;
+            case 2: //目的地
+                $info = [];
+                break;
+            case 3: //线路
+                $info = $this->getRouteData($joinId);
+                break;
+            case 4: //节日
+                $info = $this->getHolidayData($joinId);
+                break;
+            case 5: //酒店
+                $info = $this->getHotelData($joinId);
+                break;
+            case 6: //餐厅
+                $info = $this->getHallData($joinId);
+                break;
+            default: $info = []; break;
+        }
+
+        if(true === empty($info)){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        $info['id'] = $info['type'].'-'.$info['id'];
+
+        //分类处理
+        $info['cid'] = '';
+        $cid = CidMap::getCidsInfo($info['id'], $info['type']);
+        if (false === empty($cid)) {
+            $info['cid'] = json_encode($cid);
+        }
+
+        $info['img'] = $info['img'][0] ?? '';
+
+        return $info;
+    }
+
+    /**
+     * 线路数据
+     * @param $value
+     * @return array
+     */
+    public function getRouteData($routeId)
+    {
+        $info = $this->route::getInfo($routeId);
+        $res = [];
+        if (false === empty($info)) {
+            //图片
+            $img = RouteDayJoin::getOneJoinImg($routeId);
+
+            $res = [
+                'id' => $info['route_id'],
+                'type' => 3,
+                'name' => $info['route_name'],
+                'img' => $img,
+                'price' => '',
+                'intro' => $info['route_intro'],
+                'score' => $info['route_day_num'],
+                'evaluation' => '',
+                'lon' => '',
+                'lat' => '',
+            ];
+        }
+        return $res;
+    }
+    
+    /**
+     * 景点数据
+     * @param $value
+     * @return array
+     */
+    public function getAttractionData($attractionsId)
+    {
+        $info = $this->attractions::getInfo($attractionsId);
+        $res = [];
+        if (false === empty($info)) {
+            $res = [
+                'id' => $info['attractions_id'],
+                'type' => $this->fav::FAV_TYPE_A,
+                'name' => $info['attractions_name'],
+                'img' => $info['img'],
+                'price' => $info['attractions_price'],
+                'intro' => $info['attractions_intro'],
+                'score' => $info['attractions_score'],
+                'evaluation' => $info['attractions_evaluation'],
+                'lon' => $info['attractions_lon'],
+                'lat' => $info['attractions_lat'],
+            ];
+        }
+        return $res;
+    }
+
+    /**
+     * 节日数据
+     * @param $value
+     * @return array
+     */
+    public function getHolidayData($holidayId)
+    {
+        $info = $this->holiday->getInfo($holidayId);
+        $res = [];
+        if (false === empty($info)) {
+            $res = [
+                'id' => $info['holiday_id'],
+                'type' => $this->fav::FAV_TYPE_B,
+                'name' => $info['holiday_name'],
+                'img' => $info['img'],
+                'price' => $info['holiday_price'],
+                'intro' => $info['holiday_intro'],
+                'score' => $info['holiday_score'],
+                'evaluation' => $info['holiday_evaluation'],
+                'lon' => $info['holiday_lon'],
+                'lat' => $info['holiday_lat'],
+            ];
+        }
+        return $res;
+    }
+
+    /**
+     * 酒店数据
+     * @param $value
+     * @return array
+     */
+    public function getHotelData($hotelId)
+    {
+        $info = $this->hotel::getInfo($hotelId);
+        $res = [];
+        if (false === empty($info)) {
+            $res = [
+                'id' => $info['hotel_id'],
+                'type' => $this->fav::FAV_TYPE_C,
+                'name' => $info['hotel_name'],
+                'img' => $info['img'],
+                'price' => $info['hotel_price'],
+                'intro' => $info['hotel_intro'],
+                'score' => $info['hotel_score'],
+                'evaluation' => $info['hotel_evaluation'],
+                'lon' => $info['hotel_lon'],
+                'lat' => $info['hotel_lat'],
+            ];
+        }
+        return $res;
+    }
+
+    /**
+     * 餐厅数据
+     * @param $value
+     * @return array
+     */
+    public function getHallData($hallId)
+    {
+        $info = $this->hall::getInfo($hallId);
+        $res = [];
+        if (false === empty($info)) {
+            $res = [
+                'id' => $info['hall_id'],
+                'type' => $this->fav::FAV_TYPE_D,
+                'name' => $info['hall_name'],
+                'img' => $info['img'],
+                'price' => $info['hall_price'],
+                'intro' => $info['hall_intro'],
+                'score' => $info['hall_score'],
+                'evaluation' => $info['hall_evaluation'],
+                'lon' => $info['hall_lon'],
+                'lat' => $info['hall_lat'],
+            ];
+        }
+        return $res;
     }
 }
