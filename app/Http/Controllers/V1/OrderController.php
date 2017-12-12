@@ -8,6 +8,7 @@ use App\Models\Attractions;
 use App\Models\Destination;
 use App\Models\Holiday;
 use App\Models\OrderCode;
+use App\Models\RedStatus;
 use App\Services\AttractionsService;
 use App\Services\HolidayService;
 use App\Services\OrderService;
@@ -39,8 +40,10 @@ class OrderController extends Controller
     protected $attractionsService;
     protected $holidayService;
     protected $orderService;
+    protected $redStatus;
 
     public function __construct(
+        RedStatus $redStatus,
         OrderService $orderService,
         HolidayService $holidayService,
         AttractionsService $attractionsService,
@@ -52,6 +55,7 @@ class OrderController extends Controller
 
         parent::__construct();
 
+        $this->redStatus = $redStatus;
         $this->orderService = $orderService;
         $this->holidayService = $holidayService;
         $this->attractionsService = $attractionsService;
@@ -62,6 +66,43 @@ class OrderController extends Controller
         //接受到的参数
         $this->params = $this->request->all();
 
+    }
+
+    //订单列表
+    public function orderList()
+    {
+
+        $this->params['limit'] = $this->params['limit'] ?? 10;//每页显示数
+        $this->params['limit'] = (int)$this->params['limit'];
+
+        $this->params['offset'] = $this->params['offset'] ?? 1;//页码
+        $this->params['offset'] = (int)$this->params['offset'];
+
+        //订单状态(10未付款,20已支付，30已核销，40已评价，0已取消
+        $this->params['order_status'] = $this->params['order_status'] ?? 0;
+        $this->params['order_status'] = (int)$this->params['order_status'];
+        $statusArr = [
+            \App\Models\Order::ORDER_STATUS_10,
+            \App\Models\Order::ORDER_STATUS_20,
+            \App\Models\Order::ORDER_STATUS_30,
+            \App\Models\Order::ORDER_STATUS_40,
+            \App\Models\Order::ORDER_STATUS_0,
+        ];
+        if (!in_array($this->params['order_status'],$statusArr)) {
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        $this->params['user_id'] = (int)$this->userId;
+
+        $data = $this->orderService->getListData($this->params);
+        return response_success($data);
+    }
+
+    //红包设置
+    public function hongbao(){
+        //获取红包设置
+        $res = $this->redStatus::getSet();
+        return $res;
     }
 
     //支付回调通知
@@ -118,15 +159,23 @@ class OrderController extends Controller
                     ];
                     \App\Models\Order::where('order_id','=',$order['order_id'])->update($arr);
 
-                    //@todo 增加销售量
-                    //if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
+                    //生成兑换码(一个订单一个)
+                    $codeArr = [
+                        'shop_id' => $order['shop_id'],
+                        'order_id' => $order['order_id'],
+                        'code' => create_order_code(),
+                        'created_at' => time(),
+                    ];
+                    OrderCode::create($codeArr);
+
+                    //@todo 增加销售量(退款时候要减少)
+                    if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
                         //景点
-
-
-                    //}elseif($order['order_type'] === \App\Models\Order::ORDER_TYPE_B){
+                        Attractions::where('attractions_id','=',$order['join_id'])->increment('attractions_sales_num');
+                    }elseif($order['order_type'] === \App\Models\Order::ORDER_TYPE_B){
                         //节日
-
-                    //}
+                        Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
+                    }
                 }
 
                 Log::error('修改订单状态成功: '.$notify->out_trade_no);

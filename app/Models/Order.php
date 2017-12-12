@@ -74,6 +74,10 @@ class Order extends Model
         'order_updated_at' => 'int',
     );
 
+
+
+
+
     //获取所有未兑换的兑换码
     public static function getTypeCode($userId, $joinId, $orderType)
     {

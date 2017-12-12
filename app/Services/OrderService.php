@@ -14,8 +14,10 @@ use App\Models\Attractions;
 use App\Models\CidMap;
 use App\Models\Destination;
 use App\Models\DestinationJoin;
+use App\Models\Fav;
 use App\Models\Order;
 use App\Models\Img;
+use App\Models\OrderCode;
 use App\Models\Route;
 use App\Models\User;
 use EasyWeChat\Foundation\Application;
@@ -31,8 +33,14 @@ class OrderService
     protected $route;
     protected $hall;
     protected $order;
+    protected $favService;
+    protected $fav;
+    protected $orderCode;
 
     public function __construct(
+        OrderCode $orderCode,
+        Fav $fav,
+        FavService $favService,
         Order $order,
         Route $route,
         CidMap $cidMap,
@@ -44,6 +52,9 @@ class OrderService
     {
 
 
+        $this->orderCode = $orderCode;
+        $this->fav = $fav;
+        $this->favService = $favService;
         $this->order = $order;
         $this->route = $route;
         $this->cidMap = $cidMap;
@@ -54,6 +65,61 @@ class OrderService
 
     }
 
+    //订单列表
+    public function getListData($data)
+    {
+        $limit = $data['limit'] ?? 12; //每页显示数
+        $offset = $data['offset'] ?? 1; //页码
+        $offset = ($offset - 1) * $limit;
+
+
+        $query = $this->order::select('*');
+
+        $wheres = [];
+        $condition = array(array('column' => 'user_id', 'value' => $data['user_id'], 'operator' => '='));
+        $wheres = array_merge($condition, $wheres);
+
+        //订单状态(10未付款,20已支付，30已核销，40已评价，0已取消
+        $statusArr = [$this->order::ORDER_STATUS_10,$this->order::ORDER_STATUS_20,
+            $this->order::ORDER_STATUS_30,$this->order::ORDER_STATUS_40,$this->order::ORDER_STATUS_0];
+        if (in_array($data['order_status'], $statusArr)) {
+            $condition = array(array('column' => 'order_status', 'value' => $data['order_status'], 'operator' => '='));
+            $wheres = array_merge($condition, $wheres);
+        }
+
+        //载入查询条件
+        $wheres = array_reverse($wheres);
+        foreach ($wheres as $value) {
+            $query->where($value['column'], $value['operator'], $value['value']);
+        }
+
+        $result['_count'] = $query->count();
+        $result['data'] = $query->skip($offset)->take($limit)->orderBy('order_id','DESC')->get()->toArray();
+        if (false === empty($result['data'])) {
+
+
+            foreach ($result['data'] as $key => &$value) {
+
+                //商品名称图片
+                $goodsInfo = $this->getGoodsInfo($value);
+                $value['join_img'] = $goodsInfo['join_img'] ?? '';
+                $value['join_name'] = $goodsInfo['join_name'] ?? '';
+
+
+                //@todo 倒计时订单取消时间 (15分钟) 注意计划任务取消订单
+                $countdown = 900 - (time() - $value['order_created_at']);
+                $countdown = $countdown > 0 ? $countdown : 0;
+                $value['order_created_at'] = date('Y-m-d H:i:s',$value['order_created_at']);
+                $value['order_cancel_countdown'] = $countdown;
+
+                //兑换码
+                $value['code'] = $this->orderCode::getOrderCode($value['order_id']);
+            }
+        }
+
+        return $result;
+
+    }
 
     //获取用户订单统计信息
     public function addOrder($params)
@@ -138,5 +204,40 @@ class OrderService
         $data = $this->order->getInfoToSn($orderSn);
         return $data;
 
+    }
+
+    /**
+     * 获取订单商品信息
+     * @param $value
+     * @return array
+     */
+    public function getGoodsInfo($value)
+    {
+        //1景点,2目的地，3路线,4节日，5酒店,6餐厅
+        $res = [];
+        switch ((int)$value['order_type']) {
+            case $this->fav::FAV_TYPE_A: //景点
+                $info = $this->favService->getAttractionData($value['join_id']);
+                break;
+            case $this->fav::FAV_TYPE_B: //节日
+                $info = $this->favService->getHolidayData($value['join_id']);
+                break;
+            case $this->fav::FAV_TYPE_C: //酒店
+                $info = $this->favService->getHotelData($value['join_id']);
+                break;
+            case $this->fav::FAV_TYPE_D: //餐厅
+                $info = $this->favService->getHallData($value['join_id']);
+                break;
+            default: $info = [];break;
+        }
+
+        if (false === empty($info)) {
+
+            //@todo 注意图片url处理
+            $res['join_img'] = $info['img'][0] ?? '';
+            $res['join_name'] = $info['name'];
+        }
+
+        return $res;
     }
 }

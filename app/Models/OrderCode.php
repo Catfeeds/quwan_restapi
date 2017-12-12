@@ -35,13 +35,22 @@ class OrderCode extends Model
      *
      * @var array
      */
-    protected $casts = array (
-  'order_code_id' => 'int',
-  'order_id' => 'int',
-  'is_exchange' => 'int',
-  'exchange_user_id' => 'int',
-  'exchange_at' => 'int',
-  'created_at' => 'int',
-);
+    protected $casts = array(
+        'order_code_id' => 'int',
+        'order_id' => 'int',
+        'is_exchange' => 'int',
+        'exchange_user_id' => 'int',
+        'exchange_at' => 'int',
+        'created_at' => 'int',
+    );
+
+    //获取订单兑换码
+    public static function getOrderCode($orderId)
+    {
+        $data = self::where('order_id', '=', $orderId)
+            ->pluck('code')
+            ->toArray();
+        return $data;
+    }
 
 }

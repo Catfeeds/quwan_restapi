@@ -61,6 +61,7 @@ $app->group($unAuthGroup, function () use ($app) {
 
 
     $app->get('score', 'ScoreController@index'); //评价列表
+    $app->get('hongbao', 'OrderController@hongbao'); //红包设置
 
 
 
@@ -96,6 +97,9 @@ $app->group($authGroup, function () use ($app) {
     $app->post('bind_mobile', 'UserController@bindMobile'); //绑定用户手机
 
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
+    $app->get('order_list', 'OrderController@orderList'); //订单列表
+
+
     $app->get('message_list', 'MessageController@messageList'); //消息列表
     $app->get('message_info/{message_id}', 'MessageController@messageInfo'); //消息详情
     $app->post('message_read', 'MessageController@messageRead'); //所有消息已读
@@ -109,7 +113,6 @@ $app->group($authGroup, function () use ($app) {
     $app->post('share_ok', 'UserController@shareOk'); //分享成功增加统计
 
 
-    $app->post('hongbao', 'OrderController@hongbao'); //领取红包
 
     $app->get('logout', 'UserController@logout'); //登出
 

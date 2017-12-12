@@ -1,5 +1,17 @@
 <?php
 
+
+if (!function_exists('create_order_code')) {
+
+    function create_order_code()
+    {
+        //16位兑换码，兑换码组成：时间日期+8位序号。
+        return date('Y').'-'.date('md').'-'.random_int(1000,9999).'-'.random_int(1000,9999);
+    }
+
+}
+
+
 if (!function_exists('post_curl_content')) {
     /*
     * 访问网址并取得其内容

@@ -21,6 +21,9 @@ use App\Models\User;
 
 class MessageService
 {
+    const MESSAGE_STATUS_0 = 0; //0删除
+    const MESSAGE_STATUS_1 = 1; //1有效
+
     protected $destinationJoin;
     protected $destination;
     protected $img;
@@ -91,9 +94,13 @@ class MessageService
 
 
         $query = $this->message::select('message_id', 'message_read', 'message_title','message_comment');
-        $query->where('user_id','=', $data['user_id'])->where('message_type','=', Message::MESSAGE_TYPE_2);
+        $query->where('user_id','=', $data['user_id'])
+            ->where('message_status','=',self::MESSAGE_STATUS_1)
+            ->where('message_type','=', Message::MESSAGE_TYPE_2);
         $query->orWhere(function ($query) {
-            $query->where('user_id','=', 0)->where('message_type','=', Message::MESSAGE_TYPE_1);
+            $query->where('user_id','=', 0)
+                ->where('message_status','=',self::MESSAGE_STATUS_1)
+                ->where('message_type','=', Message::MESSAGE_TYPE_1);
         });
 
         $query->orderBy('message_id', 'DESC');

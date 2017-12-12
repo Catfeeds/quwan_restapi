@@ -45,4 +45,19 @@ class RedStatus extends Model
         'red_end_num' => 'int',
     ];
 
+    //获取红包设置
+    public static function getSet()
+    {
+        $res = self::where('red_id','=',1)->first();
+        if(!$res){
+            return [
+                'red_status' => 0,
+                'red_start_num' => 0,
+                'red_end_num' => 0,
+            ];
+        }
+        $res = $res->toArray();
+        unset($res['red_id']);
+        return $res;
+    }
 }
