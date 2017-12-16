@@ -242,6 +242,7 @@ class API extends AbstractAPI
             'op_user_id' => $opUserId ?: $this->merchant->merchant_id,
         ];
 
+        Log::error('微信退款参数: ', $params);
         return $this->safeRequest($this->wrapApi(self::API_REFUND), $params);
     }
 

@@ -70,6 +70,73 @@ class OrderController extends Controller
     }
 
 
+    //订单退款
+    public function orderRefund()
+    {
+        $this->params['order_id'] = $this->params['order_id'] ?? 0;//订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+
+        if(!$this->params['order_id']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        Log::error('订单退款参数: ', $this->params);
+
+        $userId = $this->userId;
+
+        //获取订单信息
+        $orderInfo = $this->orderService->getInfo($this->params['order_id']);
+        if(true === empty($orderInfo)){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        //检测是否是可以退款的订单
+        if((int)$orderInfo['is_refund'] === \App\Models\Order::ORDER_IS_SCORE_0){
+            throw new UnprocessableEntityHttpException(850054);
+        }
+
+        //检测是否可以退款
+        if((int)$orderInfo['order_status'] === \App\Models\Order::ORDER_STATUS_10){
+            throw new UnprocessableEntityHttpException(850049);
+        }
+
+        //检测是否已核销
+        if((int)$orderInfo['order_status'] === \App\Models\Order::ORDER_STATUS_30){
+            throw new UnprocessableEntityHttpException(850050);
+        }
+
+        //检测是否已取消或者已退过款
+        if((int)$orderInfo['order_status'] === \App\Models\Order::ORDER_STATUS_0){
+            if((int)$orderInfo['order_cancel_type'] > \App\Models\Order::ORDER_CANCEL_TYPE_2){
+                throw new UnprocessableEntityHttpException(850051);
+            }
+
+            throw new UnprocessableEntityHttpException(850052);
+        }
+
+
+        //订单是否用户的
+        if((int)$orderInfo['user_id'] !== $userId){
+            throw new UnprocessableEntityHttpException(850000);
+        }
+
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $data = $this->orderService->sendRefundo($orderInfo);
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('订单退款异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+
+        return ['msg' => '退款成功'];
+    }
+
 
     //自动取消未支付订单
     public function autoOrderCancel()
@@ -274,7 +341,7 @@ class OrderController extends Controller
                     ];
                     OrderCode::create($codeArr);
 
-                    //@todo 增加销售量(退款时候要减少)
+                    //增加销售量(退款时候要减少)
                     if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
                         //景点
                         Attractions::where('attractions_id','=',$order['join_id'])->increment('attractions_sales_num');
@@ -300,6 +367,58 @@ class OrderController extends Controller
 
         return $response;
     }
+
+    //订单支付
+    public function orderBuy()
+    {
+        $this->params['order_id'] = $this->params['order_id'] ?? 0;//订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+        if(!$this->params['order_id']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        Log::error('订单支付参数: ', $this->params);
+
+        //检测用户是否已绑定手机
+        $userId = $this->userId;
+
+        //获取订单信息
+        $orderInfo = $this->orderService->getInfo($this->params['order_id']);
+        if(true === empty($orderInfo)){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        //检测状态是否已支付过
+        if((int)$orderInfo['order_status'] === \App\Models\Order::ORDER_STATUS_20){
+            throw new UnprocessableEntityHttpException(850048);
+        }
+
+        //订单是否用户的
+        if((int)$orderInfo['user_id'] !== $userId){
+            throw new UnprocessableEntityHttpException(850000);
+        }
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $orderInfo['order_sn'] = create_order_no();
+            $data = $this->orderService->createWxOrder($orderInfo);
+
+            //更新订单号
+            \App\Models\Order::where('order_id','=',$orderInfo['order_id'])->update(['order_sn'=>$orderInfo['order_sn']]);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('订单支付异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+
+        return $data;
+    }
+
 
     //购买 [景点,节日]
     public function buy()
@@ -358,15 +477,15 @@ class OrderController extends Controller
 
         //下单
         $orderInfo = [
-           'shop_id' => $goods['shop_id'],
-           'order_sn' => $this->params['order_sn'],
-           'join_id' => $this->params['join_id'],
-           'order_type' => $this->params['order_type'],
-           'order_num' => $this->params['order_num'],
-           'order_price' => $orderPrice,
-           'order_amount' => $orderAmount,
-           'user_id' => $userId,
-           'order_created_at' => time(),
+            'shop_id' => $goods['shop_id'],
+            'order_sn' => $this->params['order_sn'],
+            'join_id' => $this->params['join_id'],
+            'order_type' => $this->params['order_type'],
+            'order_num' => $this->params['order_num'],
+            'order_price' => $orderPrice,
+            'order_amount' => $orderAmount,
+            'user_id' => $userId,
+            'order_created_at' => time(),
         ];
 
         DB::connection('db_quwan')->beginTransaction();
@@ -385,7 +504,6 @@ class OrderController extends Controller
 
         return $data;
     }
-
 
 
     public function addOrder()

@@ -25,10 +25,11 @@ class Order extends Model
     const ORDER_STATUS_30 = 30;
     const ORDER_STATUS_40 = 40;
 
-    //'取消方式(1未付款手动取消,2未付款自动取消,3已付款手动取消[退款])',
+    //'取消方式(1未付款手动取消,2未付款自动取消,3已付款手动取消[退款中],4已付款手动取消[退款完成],
     const ORDER_CANCEL_TYPE_1 = 1;
     const ORDER_CANCEL_TYPE_2 = 2;
     const ORDER_CANCEL_TYPE_3 = 3;
+    const ORDER_CANCEL_TYPE_4 = 4;
 
 
     /**

@@ -76,8 +76,6 @@ $authGroup = [
 ];
 $app->group($authGroup, function () use ($app) {
 
-    $app->post('buy', 'OrderController@buy'); //购买 [景点,节日]
-    $app->post('buy_route', 'OrderController@buyRoute'); //购买线路
 
     $app->post('use_route', 'RouteController@use'); //使用线路
     $app->post('add_route', 'RouteController@add'); //添加线路
@@ -96,10 +94,15 @@ $app->group($authGroup, function () use ($app) {
     $app->post('edit_user_info', 'UserController@editUserInfo'); //编辑用户信息
     $app->post('bind_mobile', 'UserController@bindMobile'); //绑定用户手机
 
+
+    $app->post('buy', 'OrderController@buy'); //购买 [景点,节日]
+    $app->post('buy_route', 'OrderController@buyRoute'); //购买线路
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
     $app->get('order_list', 'OrderController@orderList'); //订单列表
     $app->get('order_info', 'OrderController@orderInfo'); //订单详情
+    $app->post('order_buy', 'OrderController@orderBuy'); //订单支付
     $app->post('order_cancel', 'OrderController@orderCancel'); //手动取消订单
+    $app->post('order_refund', 'OrderController@orderRefund'); //订单退款
 
 
     $app->get('message_list', 'MessageController@messageList'); //消息列表
