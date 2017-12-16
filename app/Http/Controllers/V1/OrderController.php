@@ -153,6 +153,27 @@ class OrderController extends Controller
     }
 
 
+    //订单详情
+    public function orderInfo()
+    {
+
+        $this->params['order_id'] = $this->params['order_id'] ?? 0;//订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+
+        $this->params['user_id'] = (int)$this->userId;
+
+        if(!$this->params['order_id']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        $data = $this->orderService->getListData($this->params);
+        if(true === empty($data['data'][0])){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        return $data['data'][0];
+    }
+
     //订单列表
     public function orderList()
     {

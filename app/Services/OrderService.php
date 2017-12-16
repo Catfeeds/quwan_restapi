@@ -117,13 +117,21 @@ class OrderService
             $wheres = array_merge($condition, $wheres);
         }
 
-        //订单状态(10未付款,20已支付，30已核销，40已评价，0已取消
-        $statusArr = [$this->order::ORDER_STATUS_10,$this->order::ORDER_STATUS_20,
-            $this->order::ORDER_STATUS_30,$this->order::ORDER_STATUS_40,$this->order::ORDER_STATUS_0];
-        if (in_array($data['order_status'], $statusArr)) {
-            $condition = array(array('column' => 'order_status', 'value' => $data['order_status'], 'operator' => '='));
+        if (false === empty($data['order_id'])) {
+            $condition = array(array('column' => 'order_id', 'value' => $data['order_id'], 'operator' => '='));
             $wheres = array_merge($condition, $wheres);
+
+        } else {
+            //订单状态(10未付款,20已支付，30已核销，40已评价，0已取消
+            $statusArr = [$this->order::ORDER_STATUS_10,$this->order::ORDER_STATUS_20,
+                $this->order::ORDER_STATUS_30,$this->order::ORDER_STATUS_40,$this->order::ORDER_STATUS_0];
+            if (in_array($data['order_status'], $statusArr)) {
+                $condition = array(array('column' => 'order_status', 'value' => $data['order_status'], 'operator' => '='));
+                $wheres = array_merge($condition, $wheres);
+            }
         }
+
+
 
         //载入查询条件
         $wheres = array_reverse($wheres);
@@ -142,7 +150,7 @@ class OrderService
                 $value['join_name'] = $goodsInfo['join_name'] ?? '';
 
 
-                //@todo 倒计时订单取消时间 (15分钟) 注意计划任务取消订单
+                //倒计时订单取消时间 (15分钟) 注意计划任务取消订单
                 $countdown = 900 - (time() - $value['order_created_at']);
                 $countdown = $countdown > 0 ? $countdown : 0;
                 $value['order_created_at'] = date('Y-m-d H:i:s',$value['order_created_at']);
@@ -191,6 +199,11 @@ class OrderService
         $payment = $app->payment;
 
         $result = $payment->prepare($order);
+
+        //如果有返回预支付订单,,记录起来
+        if(false === $result->prepay_id){
+            $this->order::where('order_id','=',$orderRes->id)->update(['prepay_id'=>$result->prepay_id]);
+        }
 
 //        'return_code' => string 'SUCCESS' (length=7)
 //      'return_msg' => string 'OK' (length=2)

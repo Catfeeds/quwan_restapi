@@ -98,6 +98,7 @@ $app->group($authGroup, function () use ($app) {
 
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
     $app->get('order_list', 'OrderController@orderList'); //订单列表
+    $app->get('order_info', 'OrderController@orderInfo'); //订单详情
     $app->post('order_cancel', 'OrderController@orderCancel'); //手动取消订单
 
 
