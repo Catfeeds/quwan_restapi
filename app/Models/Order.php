@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -65,6 +66,7 @@ class Order extends Model
         'order_is_exchange' => 'int',
         'order_is_score' => 'int',
         'order_status' => 'int',
+        'order_cancel_type' => 'int',
         'user_id' => 'int',
         'order_pay_at' => 'int',
         'order_refund_at' => 'int',
@@ -74,8 +76,17 @@ class Order extends Model
         'order_updated_at' => 'int',
     );
 
+    //订单完成
+    public function orderOK($orderId){
+        return self::where('order_id','=',$orderId)->update(['order_status'=>self::ORDER_STATUS_40]);
+    }
 
 
+    //取消订单
+    public function orderCance($orderId,$orderCancelType){
+        $arr = ['order_status'=>self::ORDER_STATUS_0,'order_cancel_type'=>$orderCancelType,'order_cancel_at'=>time()];
+        return self::where('order_id','=',$orderId)->update($arr);
+    }
 
 
     //获取所有未兑换的兑换码
@@ -131,6 +142,8 @@ class Order extends Model
         $res = $res->toArray();
         return $res;
     }
+
+
 
 
     //通过订单sn获取订单信息

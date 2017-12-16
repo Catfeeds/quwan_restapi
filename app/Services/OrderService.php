@@ -65,6 +65,41 @@ class OrderService
 
     }
 
+
+    //获取需啊哟自动取消的订单列表
+    public function getCancelList($data)
+    {
+        $limit = $data['limit'] ?? 100; //每页显示数
+        $offset = $data['offset'] ?? 1; //页码
+        $offset = ($offset - 1) * $limit;
+
+        $query = $this->order::select('order_id','order_created_at');
+
+        $wheres = [];
+        $condition = array(array('column' => 'order_status', 'value' => $data['order_status'], 'operator' => '='));
+        $wheres = array_merge($condition, $wheres);
+
+        //载入查询条件
+        $wheres = array_reverse($wheres);
+        foreach ($wheres as $value) {
+            $query->where($value['column'], $value['operator'], $value['value']);
+        }
+
+        $result = $query->skip($offset)->take($limit)->get()->toArray();
+
+        return $result;
+
+    }
+
+    //修改订单状态
+    public function orderCance($orderId,$orderCancelType)
+    {
+        $data = $this->order->orderCance($orderId,$orderCancelType);
+        return $data;
+
+    }
+
+
     //订单列表
     public function getListData($data)
     {
@@ -76,8 +111,11 @@ class OrderService
         $query = $this->order::select('*');
 
         $wheres = [];
-        $condition = array(array('column' => 'user_id', 'value' => $data['user_id'], 'operator' => '='));
-        $wheres = array_merge($condition, $wheres);
+
+        if (false === empty($data['user_id'])) {
+            $condition = array(array('column' => 'user_id', 'value' => $data['user_id'], 'operator' => '='));
+            $wheres = array_merge($condition, $wheres);
+        }
 
         //订单状态(10未付款,20已支付，30已核销，40已评价，0已取消
         $statusArr = [$this->order::ORDER_STATUS_10,$this->order::ORDER_STATUS_20,
@@ -96,8 +134,6 @@ class OrderService
         $result['_count'] = $query->count();
         $result['data'] = $query->skip($offset)->take($limit)->orderBy('order_id','DESC')->get()->toArray();
         if (false === empty($result['data'])) {
-
-
             foreach ($result['data'] as $key => &$value) {
 
                 //商品名称图片

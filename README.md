@@ -41,3 +41,6 @@
 
 ### 队列启动
 `php artisan queue:work --tries=1`
+
+### 自动取消订单
+`https://restapi.qu666.cn/quwan/auto_order_cancel`

@@ -114,9 +114,9 @@ class ScoreController extends Controller
         if (!$this->params['join_id']) {
             throw new UnprocessableEntityHttpException(850005);
         }
-        if (!$this->params['order_id']) {
-            throw new UnprocessableEntityHttpException(850005);
-        }
+//        if (!$this->params['order_id']) {
+//            throw new UnprocessableEntityHttpException(850005);
+//        }
         if (!$this->params['score']) {
             throw new UnprocessableEntityHttpException(850005);
         }

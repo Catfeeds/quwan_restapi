@@ -63,7 +63,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('score', 'ScoreController@index'); //评价列表
     $app->get('hongbao', 'OrderController@hongbao'); //红包设置
 
-
+    $app->get('auto_order_cancel', 'OrderController@autoOrderCancel'); //自动取消未支付订单
 
 });
 
@@ -98,6 +98,7 @@ $app->group($authGroup, function () use ($app) {
 
     $app->get('order_count', 'UserController@orderCount'); //订单统计信息
     $app->get('order_list', 'OrderController@orderList'); //订单列表
+    $app->post('order_cancel', 'OrderController@orderCancel'); //手动取消订单
 
 
     $app->get('message_list', 'MessageController@messageList'); //消息列表

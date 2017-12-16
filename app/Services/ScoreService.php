@@ -17,6 +17,7 @@ use App\Models\DestinationJoin;
 use App\Models\Hall;
 use App\Models\Holiday;
 use App\Models\Hotel;
+use App\Models\Order;
 use App\Models\Score;
 use App\Models\Img;
 use App\Models\Route;
@@ -36,8 +37,10 @@ class ScoreService
     protected $user;
     protected $hotel;
     protected $holiday;
+    protected $order;
 
     public function __construct(
+        Order $order,
         Holiday $holiday,
         Hotel $hotel,
         User $user,
@@ -53,6 +56,7 @@ class ScoreService
     {
 
 
+        $this->order = $order;
         $this->holiday = $holiday;
         $this->hotel = $hotel;
         $this->user = $user;
@@ -193,9 +197,13 @@ class ScoreService
                     break;
             }
 
+            //更改订单为已完成,如果评价中有订单号
+            if(false === empty($params['order_id'])){
+                $this->order->orderOK($params['order_id']);
+            }
+
             DB::connection('db_quwan')->commit();
 
-            //@todo 修改索引文档更新评分
 
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();

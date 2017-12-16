@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Redis;
  */
 class OrderController extends Controller
 {
+    const AUTO_CANCEL_TIME = 900; //自动取消订单时间 15分钟;
 
     protected $tokenService;
     protected $request;
@@ -67,6 +68,90 @@ class OrderController extends Controller
         $this->params = $this->request->all();
 
     }
+
+
+
+    //自动取消未支付订单
+    public function autoOrderCancel()
+    {
+        //获取需要自动取消的订单
+        $data = ['limit'=>100,'order_status'=>\App\Models\Order::ORDER_STATUS_10];
+        $orderRes = $this->orderService->getCancelList($data);
+        if(true === empty($orderRes)){
+            return '无需要取消数据';
+        }
+
+        $arr = [];
+        foreach ($orderRes as $key => $value) {
+            if(time() > $value['order_created_at'] + self::AUTO_CANCEL_TIME){
+                DB::connection('db_quwan')->beginTransaction();
+                try {
+                    $this->orderService->orderCance($value['order_id'], \App\Models\Order::ORDER_CANCEL_TYPE_2);
+                    $arr[] = $value['order_id'];
+                    Log::info('自动取消订单ok: '.$value['order_id']);
+                    DB::connection('db_quwan')->commit();
+                } catch (Exception $e) {
+                    DB::connection('db_quwan')->rollBack();
+
+                    //记错误日志
+                    Log::error('自动取消订单异常: '.$value['order_id'], ['error' => $e]);
+                    throw new UnprocessableEntityHttpException(850002);
+                }
+            }
+        }
+
+        return $arr;
+
+    }
+
+    //手动取消订单
+    public function orderCancel()
+    {
+        $this->params['order_id'] = $this->params['order_id'] ?? 0;//订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+
+        if(!$this->params['order_id']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        Log::error('手动取消订单参数: ', $this->params);
+
+        $userId = $this->userId;
+
+        //获取订单信息
+        $orderInfo = $this->orderService->getInfo($this->params['order_id']);
+        if(true === empty($orderInfo)){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        //检测状态是否已是取消
+        if((int)$orderInfo['order_status'] === \App\Models\Order::ORDER_STATUS_0){
+            throw new UnprocessableEntityHttpException(850047);
+        }
+
+        //订单是否用户的
+        if((int)$orderInfo['user_id'] !== $userId){
+            throw new UnprocessableEntityHttpException(850000);
+        }
+
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $data = $this->orderService->orderCance($this->params['order_id'], \App\Models\Order::ORDER_CANCEL_TYPE_1);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('手动取消订单异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+
+        return ['msg' => '取消成功'];
+    }
+
 
     //订单列表
     public function orderList()
