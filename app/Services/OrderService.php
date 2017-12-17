@@ -69,6 +69,104 @@ class OrderService
 
     }
 
+    //企业支付
+    public function sendMerchantPay($orderInfo,$amount)
+    {
+        $openid = User::where('user_id', '=', $orderInfo['user_id'])->value('openid');
+
+        $wxConfig = config('wx');
+
+        $wxConfig['app_id'] = $wxConfig['xiao_app_id'];
+        $wxConfig['secret'] = $wxConfig['xiao_secret'];
+        $app = new Application($wxConfig);
+
+        $merchantPay = $app->merchant_pay;
+
+
+        $merchantPayData = [
+            'partner_trade_no' => $orderInfo['order_sn'], //商家订单号
+            'openid' => $openid, //收款人的openid
+            'check_name' => 'NO_CHECK',  //文档中有三种校验实名的方法 NO_CHECK OPTION_CHECK FORCE_CHECK
+            //'re_user_name'=>'张三',     //OPTION_CHECK FORCE_CHECK 校验实名的时候必须提交
+            'amount' => $amount*100,  //单位为分
+            'desc' => '现金红包奖励',
+            'spbill_create_ip' => $_SERVER['REMOTE_ADDR'] ?? '192.168.0.1',  //发起交易的IP地址
+        ];
+        Log::error('企业支付参数: ', $merchantPayData);
+        $result = $merchantPay->send($merchantPayData);
+        // 返回
+        // 'return_code' => string 'SUCCESS' (length=7)
+        // 'return_msg' => null
+        // 'mchid' => string '1454303702' (length=10)
+        // 'nonce_str' => string '5a36149c20566' (length=13)
+        // 'result_code' => string 'SUCCESS' (length=7)
+        // 'partner_trade_no' => string '20171217020358176381593944' (length=26)
+        // 'payment_no' => string '1000018301201712172279848165' (length=28)
+        // 'payment_time' => string '2017-12-17 14:54:21' (length=19)
+
+
+        $result->return_code = $result->return_code ?? '';
+        $result->result_code = $result->result_code ?? '';
+        Log::error('企业支付返回: ', ['return_code' => $result->return_code, 'return_msg' => $result->return_msg]);
+        if ($result->return_code !== 'SUCCESS' && $result->result_code !== 'SUCCESS') {
+            throw new UnprocessableEntityHttpException(850057);
+        }
+
+        //更新红包奖励信息
+        $arr = [
+            'order_reward_amount' => $amount,
+            'payment_no' => $result->payment_no,
+            'order_updated_at' => time(),
+        ];
+        $this->order::where('order_id','=',$orderInfo['order_id'])->update($arr);
+
+
+        return ['payment_no'=>$result->payment_no];
+
+        //返回
+//        'return_code' => string 'SUCCESS' (length=7)
+//      'return_msg' => string 'OK' (length=2)
+//      'appid' => string 'wxd87a756c26460edd' (length=18)
+//      'mch_id' => string '1454303702' (length=10)
+//      'nonce_str' => string 'koSk2QfWZQziZNhQ' (length=16)
+//      'sign' => string '989381AF0315E3B540CB08DE8C1AF416' (length=32)
+//      'result_code' => string 'SUCCESS' (length=7)
+//      'transaction_id' => string '4200000027201712079741556061' (length=28)
+//      'out_trade_no' => string '20171207091444074848198308' (length=26)
+//      'out_refund_no' => string '20171207091444074848198308' (length=26)
+//      'refund_id' => string '50000505022017121602652036942' (length=29)
+//      'refund_channel' => null
+//      'refund_fee' => string '10' (length=2)
+//      'coupon_refund_fee' => string '0' (length=1)
+//      'total_fee' => string '10' (length=2)
+//      'cash_fee' => string '10' (length=2)
+//      'coupon_refund_count' => string '0' (length=1)
+//      'cash_refund_fee' => string '10' (length=2)
+
+
+
+
+//        $luckyMoney = $app->lucky_money;
+//
+//        $luckyMoneyData = [
+//            'mch_billno'       => 'xy123456',
+//            'send_name'        => '开发测试发红包',
+//            're_openid'        => 'ovwAZuBLwSiize3Zjd-DiCZPWTf8',
+//            'total_num'        => 1,  //固定为1，可不传
+//            'total_amount'     => 100,  //单位为分，不小于100
+//            'wishing'          => '祝福语',
+//            'client_ip'        => '192.168.0.1',  //可不传，不传则由 SDK 取当前客户端 IP
+//            'act_name'         => '测试活动',
+//            'remark'           => '测试备注',
+//        ];
+//        //$result = $luckyMoney->sendNormal($luckyMoneyData);
+//
+//        $mchBillNo = "xy123456";
+//        $result = $luckyMoney->query($mchBillNo);
+//        return $result;
+
+    }
+
     //订单退款
     public function sendRefundo($orderInfo)
     {

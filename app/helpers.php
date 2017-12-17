@@ -1,6 +1,12 @@
 <?php
 
 
+if (!function_exists('random_float')) {
+    //获得指定区间随机浮点数
+    function random_float($min = 0, $max = 1) {
+        return $min + mt_rand() / mt_getrandmax() * ($max - $min);
+    }
+}
 if (!function_exists('create_order_code')) {
 
     function create_order_code()

@@ -104,6 +104,7 @@ $app->group($authGroup, function () use ($app) {
     $app->post('order_buy', 'OrderController@orderBuy'); //订单支付
     $app->post('order_cancel', 'OrderController@orderCancel'); //手动取消订单
     $app->post('order_refund', 'OrderController@orderRefund'); //订单退款
+    $app->post('send_hongbao', 'OrderController@sendMerchantPay'); //发红包(企业支付)
 
 
     $app->get('message_list', 'MessageController@messageList'); //消息列表

@@ -548,27 +548,79 @@ class OrderController extends Controller
     }
 
 
-
+    //发红包(企业支付)
     public function sendMerchantPay()
     {
-        $wxConfig = config('wx');
-        $app = new Application($wxConfig);
-        $merchantPay = $app->merchant_pay;
 
-        $merchantPayData = [
-            'partner_trade_no' => str_random(16), //随机字符串作为订单号，跟红包和支付一个概念。
-            'openid' => 'oal4F0bkh9UTjvGaEEC21M5hv_cM', //收款人的openid
-            'check_name' => 'NO_CHECK',  //文档中有三种校验实名的方法 NO_CHECK OPTION_CHECK FORCE_CHECK
-            're_user_name'=>'张三',     //OPTION_CHECK FORCE_CHECK 校验实名的时候必须提交
-            'amount' => 100,  //单位为分
-            'desc' => '开发测试企业付款',
-            'spbill_create_ip' => '192.168.0.1',  //发起交易的IP地址
-        ];
-        //var_dump($merchantPayData);
-        $result = $merchantPay->send($merchantPayData);
-        return ['merchantPayData'=>$merchantPayData,'result'=>$result];
-        //$partnerTradeNo = "商户系统内部的订单号（partner_trade_no）";
-        //$merchantPay->query($partnerTradeNo);
+
+        $this->params['order_id'] = $this->params['order_id'] ?? 0;//订单id
+        $this->params['order_id'] = (int)$this->params['order_id'];
+
+        if(!$this->params['order_id']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        Log::error('发红包参数: ', $this->params);
+
+        $userId = $this->userId;
+
+        //红包功能是否开启
+        $res = $this->redStatus::getSet();
+        if(true === empty($res['red_status'])){
+            throw new UnprocessableEntityHttpException(850058);
+        }
+
+        //检测红包金额
+        $amount = random_float($res['red_start_num'], $res['red_end_num']);
+        $amount = sprintf('%.2f', $amount);
+
+        if($amount < 1){
+            throw new UnprocessableEntityHttpException(850059);
+        }
+        if($amount >= 100){
+            throw new UnprocessableEntityHttpException(850060);
+        }
+
+
+
+        //获取订单信息
+        $orderInfo = $this->orderService->getInfo($this->params['order_id']);
+        if(true === empty($orderInfo)){
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        //检测是否已领过红包
+        if($orderInfo['payment_no']){
+            throw new UnprocessableEntityHttpException(850055);
+        }
+
+        //检测是否是待评价或者已完成订单
+        if((int)$orderInfo['order_status'] <= \App\Models\Order::ORDER_STATUS_20){
+            throw new UnprocessableEntityHttpException(850056);
+        }
+
+
+        //订单是否用户的
+        if((int)$orderInfo['user_id'] !== $userId){
+            throw new UnprocessableEntityHttpException(850000);
+        }
+
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+
+            $data = $this->orderService->sendMerchantPay($orderInfo,$amount);
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('发红包异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+
+        return ['msg' => '发红包成功','amount'=>$amount];
     }
 
     public function sendRefundo()
