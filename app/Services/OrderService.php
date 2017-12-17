@@ -69,6 +69,14 @@ class OrderService
 
     }
 
+    //更新主订单信息
+    public function editOriginal($userId,$originalId)
+    {
+        return $this->order::where('user_id','=',$userId)
+            ->where('original_id','=',$originalId)
+            ->update(['original_id'=>'','order_updated_at'=>time()]);
+    }
+
     //企业支付
     public function sendMerchantPay($orderInfo,$amount)
     {
@@ -180,6 +188,14 @@ class OrderService
 
         $orderNo = $orderInfo['order_sn']; //商户订单号
         $refundNo = $orderInfo['order_sn']; //商户退款订单号
+
+        //如果是主订单下的子订单退款
+        if($orderInfo['original_id']){
+            $orderNo = $orderInfo['original_id']; //商户订单号
+            $refundNo = $orderInfo['order_sn']; //商户退款订单号
+        }
+
+
         $totalFee = $orderInfo['order_pay_amount'] * 100; //订单金额
         $refundRee = $orderInfo['order_pay_amount'] * 100; //退款金额
         //$result = $payment->refund($orderNo, $orderNo, 100, 80, 1900000109); // 总金额 100， 退款 80，操作员：1900000109
@@ -375,7 +391,30 @@ class OrderService
 
     }
 
-    //获取用户订单统计信息
+
+    //批量创建订单
+    public function addAllOrder($params,$wxAmount,$userId,$originalId)
+    {
+        Log::error('批量创建订单参数: ', $params);
+        //创建订单
+        $orderRes = $this->order::insert($params);
+        if(!$orderRes){
+            throw new UnprocessableEntityHttpException(850043);
+        }
+
+
+
+        //创建微信订单
+        $arr = [
+            'user_id' => $userId,
+            'order_amount' => $wxAmount,
+            'order_sn' => $originalId,
+            'original_id' => $originalId,
+        ];
+        return $this->createWxOrder($arr);
+    }
+
+    //创建订单
     public function addOrder($params)
     {
         Log::error('创建订单参数: ', $params);
@@ -469,7 +508,7 @@ class OrderService
             'out_trade_no' => $params['order_sn'],
             'total_fee' => $params['order_amount'] * 100, // 单位：分
             'openid' => $openid, // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识，
-            'attach' => '', // original_id
+            'attach' => $params['original_id'] ?? '', // original_id
         ];
 
         Log::error('创建微信订单参数: ', $attributes);
@@ -510,6 +549,7 @@ class OrderService
         return [
             'order_sn' => $params['order_sn'],
             'prepay_id' => $result->prepay_id,
+            'original_id' => $params['original_id'] ?? '',
         ];
     }
 }

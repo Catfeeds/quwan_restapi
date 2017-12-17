@@ -13,6 +13,7 @@ class Order extends Model
     const ORDER_TYPE_B = 4;
     const ORDER_TYPE_C = 5;
     const ORDER_TYPE_D = 6;
+    const ORDER_TYPE_E = 3;
 
     // '是否评价,0未,1已',
     const ORDER_IS_SCORE_0 = 0;
@@ -157,6 +158,8 @@ class Order extends Model
         $res = $res->toArray();
         return $res;
     }
+
+
 
     //获取线路详情中商品的支付状态
     public static function checkUserOrder($userId, $joinId, $orderType)

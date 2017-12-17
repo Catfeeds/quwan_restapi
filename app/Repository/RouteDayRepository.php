@@ -17,6 +17,39 @@ use App\Models\RouteDayJoin;
 class RouteDayRepository extends BaseRepository
 {
 
+
+    //获取用户线路下未支付的商品
+    public static  function getBuyGoodsData($routeId, $userId){
+
+        //获取线路下所有join信息
+        $dayJoin = RouteDayJoin::getJoinDataTo($routeId);
+
+        $joinNum = count($dayJoin);
+        $joinNumDuiBi = 0;
+        foreach ($dayJoin as $key => $value) {
+            // 检测支付状态
+            $res = Order::checkUserOrder($userId, $value['join_id'],$value['route_day_join_type']);
+            if($res){
+                $joinNumDuiBi++;
+            }
+        }
+
+        //0未支付,1已支付,2部分支付
+        if(!$joinNumDuiBi){
+            $status = 0;
+        }else{
+            if($joinNum === $joinNumDuiBi){
+                $status = 1;
+            }else if($joinNum > $joinNumDuiBi){
+                $status = 2;
+            }
+        }
+
+        // var_dump($joinNum, $joinNumDuiBi);die;
+
+        return $status;
+    }
+
     //获取线路下所有景点,节日
     public static  function getDayGoodsData($routeId, $userId){
 
