@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    //  '0女,1男',
+    // 0女,1男,2保密
     const USER_SEX_0 = 0;
     const USER_SEX_1 = 1;
+    const USER_SEX_2 = 2;
 
 
     //'手机绑定(0未绑定,1已绑定)',

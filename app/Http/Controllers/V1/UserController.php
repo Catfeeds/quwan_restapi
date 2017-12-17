@@ -256,7 +256,7 @@ class UserController extends Controller
     public function editUserInfo()
     {
         $this->params['user_nickname'] = $this->params['user_nickname'] ?? ''; //昵称
-        $this->params['user_sex'] = $this->params['user_sex'] ?? ''; //性别
+        $this->params['user_sex'] = $this->params['user_sex'] ?? 2; //性别
         $this->params['user_sex'] = (int)$this->params['user_sex']; //openid
         $this->params['user_avatar'] = $this->params['user_avatar'] ?? ''; //头像
         $this->params['user_mobile'] = $this->params['user_mobile'] ?? ''; //手机
