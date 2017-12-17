@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 
+use App\Models\CidMap;
 use App\Models\Order;
 use App\Services\AttractionsService;
 use Illuminate\Http\Request;
@@ -23,12 +24,14 @@ class AttractionsController extends Controller
     protected $request;
     protected $params;
     protected $attractionsService;
+    protected $cidMap;
 
-    public function __construct(TokenService $tokenService, Request $request,AttractionsService $attractionsService)
+    public function __construct(CidMap $cidMap,TokenService $tokenService, Request $request,AttractionsService $attractionsService)
     {
 
         parent::__construct();
 
+        $this->cidMap = $cidMap;
         $this->tokenService = $tokenService;
         $this->request = $request;
         $this->attractionsService = $attractionsService;
@@ -36,6 +39,14 @@ class AttractionsController extends Controller
         //接受到的参数
         $this->params = $this->request->all();
 
+    }
+
+    //景点分类列表
+    public function cid()
+    {
+        $data = $this->cidMap->getTypeCidLists($this->cidMap::CID_MAP_TYPE_1);
+
+        return $data;
     }
 
     public function index($attractions_id = 0)

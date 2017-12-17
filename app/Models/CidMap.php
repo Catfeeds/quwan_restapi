@@ -120,4 +120,21 @@ class CidMap extends Model
         return $data;
     }
 
+
+    /**
+     * 获取某个类型关联的分类
+     * @param $cidMapType
+     * @return mixed
+     */
+    public function getTypeCidLists($cidMapType)
+    {
+        $data = self::select('c.cid_id','c.cid_name')
+            ->leftJoin('cid as c', 'c.cid_id', '=', 'cid_map.cid_id')
+            ->where('cid_map.cid_map_type','=',$cidMapType)
+            ->orderBy('cid_map.cid_map_sort')
+            ->get()->toArray();
+
+        return $data;
+    }
+
 }
