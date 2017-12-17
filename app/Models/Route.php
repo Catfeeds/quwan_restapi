@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repository\RouteDayRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Route extends Model
@@ -153,7 +154,6 @@ class Route extends Model
         }
 
         foreach ($result['data'] as $keyR => &$valueR) {
-            //@todo 注意当前支付状态
 
             //图片
             $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['route_id']);

@@ -9,6 +9,7 @@ use App\Models\CidMap;
 use App\Models\DestinationJoin;
 use App\Models\Hall;
 use App\Models\Hotel;
+use App\Models\Order;
 use App\Models\RouteDay;
 use App\Models\Img;
 use App\Models\RouteDayJoin;
@@ -16,8 +17,40 @@ use App\Models\RouteDayJoin;
 class RouteDayRepository extends BaseRepository
 {
 
+    //获取线路下所有景点,节日
+    public static  function getDayGoodsData($routeId, $userId){
+
+        //获取线路下所有join信息
+        $dayJoin = RouteDayJoin::getJoinDataTo($routeId);
+
+        $joinNum = count($dayJoin);
+        $joinNumDuiBi = 0;
+        foreach ($dayJoin as $key => $value) {
+            // 检测支付状态
+            $res = Order::checkUserOrder($userId, $value['join_id'],$value['route_day_join_type']);
+            if($res){
+                $joinNumDuiBi++;
+            }
+        }
+
+        //0未支付,1已支付,2部分支付
+        if(!$joinNumDuiBi){
+            $status = 0;
+        }else{
+            if($joinNum === $joinNumDuiBi){
+                $status = 1;
+            }else if($joinNum > $joinNumDuiBi){
+                $status = 2;
+            }
+        }
+
+        // var_dump($joinNum, $joinNumDuiBi);die;
+
+        return $status;
+    }
+
     //获取页面内容
-    public  function getDayData($routeId){
+    public  function getDayData($routeId, $userId){
 
         //获取所有行程信息
         $day = RouteDay::getDayData($routeId);
@@ -29,10 +62,20 @@ class RouteDayRepository extends BaseRepository
         $dayJoin = RouteDayJoin::getJoinData($routeId);
 
         foreach ($dayJoin as $key => &$value) {
+            //支付状态 [0未支付,1已支付,2部分支付]
+            $value['pay_status'] = 0;
+
             //'1景点,2目的地，3路线,4节日，5酒店,6餐厅,7图片',
             switch ((int)$value['route_day_join_type']) {
                 case RouteDayJoin::ROUTE_DAY_JOIN_TYPE_A: //景点
                     $value['join_data'] = $this->getAttractionsList($value['join_id']);
+
+                    //支付信息
+                    if($userId){
+                        $tag = Order::checkUserOrder($userId, $value['join_id'],$value['route_day_join_type']);
+                        $value['pay_status'] = $tag ? 1 : 0;
+                    }
+
                     break;
                 case RouteDayJoin::ROUTE_DAY_JOIN_TYPE_D: //酒店
                     $value['join_data'] = $this->getHotelList($value['join_id']);

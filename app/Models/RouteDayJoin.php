@@ -96,6 +96,20 @@ class RouteDayJoin extends Model
     }
 
 
+
+    //获取线路下所有景点,节日join信息
+    public static function getJoinDataTo($routeId)
+    {
+        $dayJoin = RouteDayJoin::select('route_day_id', 'join_id', 'route_day_join_type')
+            ->where('route_id','=',$routeId)
+            ->whereIn('route_day_join_type',[self::ROUTE_DAY_JOIN_TYPE_A,self::ROUTE_DAY_JOIN_TYPE_C])
+            ->orderBy('route_day_join_sort')
+            ->get()
+            ->toArray();
+        return $dayJoin;
+    }
+
+
     //获取线路下所有景区图片
     public static function getAttractionsImgs($routeId)
     {

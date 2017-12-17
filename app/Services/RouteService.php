@@ -81,7 +81,7 @@ class RouteService
         $this->route->where('route_id', '=', $routeId)->increment('route_use_num');
     }
 
-    public function getData($routeId)
+    public function getData($routeId, $userId = 0)
     {
         $data = $this->route->getInfo($routeId);
         if (!$data) {
@@ -96,11 +96,13 @@ class RouteService
         $data['day'] = [];
 
         //关联数据
-        $dayJoin = $this->routeDayRepository->getDayData($routeId);
+        $dayJoin = $this->routeDayRepository->getDayData($routeId, $userId);
         if (false === empty($dayJoin)) {
             $data['day'] = $dayJoin;
             $data['img'] = $this->routeDayJoin::getAttractionsImgs($routeId);
         }
+
+
 
         return $data;
 

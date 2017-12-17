@@ -157,4 +157,19 @@ class Order extends Model
         $res = $res->toArray();
         return $res;
     }
+
+    //获取线路详情中商品的支付状态
+    public static function checkUserOrder($userId, $joinId, $orderType)
+    {
+        $where = [
+            'user_id'=>$userId,
+            'join_id'=>$joinId,
+            'order_type'=>$orderType,
+            'order_status'=>Order::ORDER_STATUS_20,
+        ];
+
+        $res = Order::where($where)->value('order_id');
+        return $res;
+    }
+
 }

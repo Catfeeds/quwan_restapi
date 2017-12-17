@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Route;
+use App\Repository\RouteDayRepository;
 use App\Services\RouteService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
@@ -48,8 +49,10 @@ class RouteController extends Controller
     //线路详情
     public function index($route_id = 0)
     {
+        $userId = $this->userId ?? 0;
+
         $routeId = $route_id ?? 0;
-        $data = $this->routeService->getData($routeId);
+        $data = $this->routeService->getData($routeId, $userId);
         return response_success($data);
     }
 
@@ -216,6 +219,15 @@ class RouteController extends Controller
     {
         $this->params['user_id'] = $this->userId;
         $data = $this->routeService->getList($this->params);
+        if (false === empty($data['data'])) {
+            foreach ($data['data'] as $key => &$value) {
+
+                //注意当前支付状态
+                $value['pay_status'] = RouteDayRepository::getDayGoodsData($value['route_id'], $this->userId);
+            }
+
+
+        }
         return response_success($data);
     }
 }
