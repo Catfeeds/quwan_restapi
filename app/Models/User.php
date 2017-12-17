@@ -118,6 +118,22 @@ class User extends Model
         return $tag;
     }
 
+    /**
+     * 获取用户经纬度
+     * @param $userId
+     * @return array
+     */
+    public static function getUserLon($userId)
+    {
+        $data = self::select('user_lon', 'user_lat')
+            ->where('user_id', '=', $userId)->first();
+        if (!$data) {
+            return [];
+        }
+        $data = $data->toArray();
+        return $data;
+    }
+
     //修改用户信息
     public function editInfo($userId,$params)
     {

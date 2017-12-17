@@ -12,12 +12,13 @@ use App\Models\HomePageValue;
 use App\Models\Img;
 use App\Models\Route;
 use App\Models\RouteDayJoin;
+use App\Models\User;
 
 class HomePageRepository extends BaseRepository
 {
 
     //获取页面内容
-    public  function getPageData($data){
+    public  function getPageData($data,$userId){
         $res = [
             'adv'=>[],
             'route'=>[],
@@ -43,13 +44,13 @@ class HomePageRepository extends BaseRepository
                     $res = $this->getCidList($value, $res);
                     break;
                 case HomePage::PAGE_TYPE_5: //景点
-                    $res = $this->getAttractionsList($value, $res);
+                    $res = $this->getAttractionsList($value, $res,$userId);
                     break;
                 case HomePage::PAGE_TYPE_6: //节日
                     $res = $this->getHolidayList($value, $res);
                     break;
                 case HomePage::PAGE_TYPE_7: //周边
-                    $res = $this->getNearbyList($value, $res);
+                    $res = $this->getNearbyList($value, $res,$userId);
                     break;
                 default: break;
             }
@@ -149,7 +150,7 @@ class HomePageRepository extends BaseRepository
      * @param $res
      * @return array
      */
-    private function getAttractionsList($value, $res)
+    private function getAttractionsList($value, $res,$userId)
     {
         $res['attractions'] = HomePageValue::select('a.attractions_id', 'a.attractions_name', 'a.attractions_intro', 'a.attractions_price', 'a.attractions_score', 'a.attractions_evaluation', 'a.attractions_lon', 'a.attractions_lat','a.attractions_suggest')
             ->leftJoin('attractions as a', 'a.attractions_id', '=', 'home_page_value.value_id')
@@ -158,9 +159,19 @@ class HomePageRepository extends BaseRepository
             ->get()
             ->toArray();
 
+        $userLon = User::getUserLon($userId);
+
 
         if (false === empty($res['attractions'])) {
             foreach ($res['attractions'] as $keyA => &$valueA) {
+
+                $valueA['distance'] = 0;
+
+                //距离
+                if(false === empty($userLon)){
+                    $valueA['distance'] =  get_distance($userLon['user_lon'], $userLon['user_lat'], $valueA['attractions_lon'], $valueA['attractions_lat']);
+                }
+
                 //图片
                 $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_A);
                 //分类
@@ -200,8 +211,18 @@ class HomePageRepository extends BaseRepository
      * @param $res
      * @return array
      */
-    private function getNearbyList($value, $res)
+    private function getNearbyList($value, $res,$userId)
     {
+        //获取用户经纬度
+        if(!$userId){
+            return $res;
+        }
+
+        $userLon = User::getUserLon($userId);
+        if(true === empty($userLon)){
+            return $res;
+        }
+
         $nearby = HomePageValue::select('value_id')
             ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
             ->orderBy('home_page_value.sort')
@@ -229,6 +250,8 @@ class HomePageRepository extends BaseRepository
                 ->whereIn('attractions_id', $nearby)->get()->toArray();
             if (false === empty($attractions)) {
                 foreach ($attractions as $keyAAA => &$valueAAA) {
+                    //距离
+                    $valueAAA['distance'] =  get_distance($userLon['user_lon'], $userLon['user_lat'], $valueAAA['attractions_lon'], $valueAAA['attractions_lat']);
 
                     //图片
                     $valueAAA['img'] = Img::getOneImg($valueAAA['attractions_id'], Img::IMG_TYPE_A);

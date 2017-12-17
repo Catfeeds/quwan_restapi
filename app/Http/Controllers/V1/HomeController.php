@@ -89,7 +89,7 @@ class HomeController extends Controller
 
         //获取首页数据
         $data = $this->homePage->getHomeData();
-        $data = $this->homePageRepository->getPageData($data);
+        $data = $this->homePageRepository->getPageData($data,$this->userId);
 
         //记录登录日志
         $logArr = [
