@@ -141,10 +141,12 @@ class OrderController extends Controller
     //自动取消未支付订单
     public function autoOrderCancel()
     {
+        Log::info('自动取消未支付订单开始================');
         //获取需要自动取消的订单
         $data = ['limit'=>100,'order_status'=>\App\Models\Order::ORDER_STATUS_10];
         $orderRes = $this->orderService->getCancelList($data);
         if(true === empty($orderRes)){
+            Log::info('无需要取消数据');
             return '无需要取消数据';
         }
 
@@ -167,6 +169,7 @@ class OrderController extends Controller
             }
         }
 
+        Log::info('自动取消未支付订单结束================');
         return $arr;
 
     }
