@@ -357,6 +357,7 @@ class OrderService
                 $goodsInfo = $this->getGoodsInfo($value);
                 $value['join_img'] = $goodsInfo['join_img'] ?? '';
                 $value['join_name'] = $goodsInfo['join_name'] ?? '';
+                $value['join_intro'] = $goodsInfo['join_intro'] ?? '';
 
 
                 //倒计时订单取消时间 (15分钟) 注意计划任务取消订单
@@ -445,6 +446,7 @@ class OrderService
             //@todo 注意图片url处理
             $res['join_img'] = $info['img'][0] ?? '';
             $res['join_name'] = $info['name'];
+            $res['join_intro'] = $info['intro'];
         }
 
         return $res;
