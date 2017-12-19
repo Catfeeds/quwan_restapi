@@ -89,6 +89,9 @@ if (!function_exists('get_distance')) {
      */
     function get_distance($lon1, $lat1, $lon2, $lat2)
     {
+        if(!$lon1 || !$lat1){
+            return 0;
+        }
         $dx = $lon1 - $lon2;
         $dy = $lat1 - $lat2;
         $b = ($lat1 + $lat2) / 2;
