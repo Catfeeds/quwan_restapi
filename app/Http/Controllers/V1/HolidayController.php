@@ -49,6 +49,10 @@ class HolidayController extends Controller
             //关联的订单兑换码
             $data['code'] = Order::getTypeCode($userId,Order::ORDER_TYPE_B,$holiday_id);
         }
+
+        $data['holiday_start_at'] = date('Y年m月d日', $data['holiday_start_at']);
+        $data['holiday_end_at']   = date('Y年m月d日', $data['holiday_end_at']);
+
         return response_success($data);
     }
 
