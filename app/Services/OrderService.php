@@ -407,6 +407,8 @@ class OrderService
             $goods[] = [
                 'join_type' => $value['order_type'],
                 'join_id' => $value['join_id'],
+                'join_price' => $value['order_price'],
+                'order_amount' => $value['order_amount'],
                 'order_sn' => $value['order_sn'],
             ];
         }
@@ -429,7 +431,8 @@ class OrderService
         ];
         $res =  $this->createWxOrder($arr);
         $res['order_sn'] = $goods;
-        // var_dump($goods,$res);die;
+        $res['wx_amount'] = $wxAmount;
+        //var_dump($goods,$res);die;
         return $res;
     }
 
