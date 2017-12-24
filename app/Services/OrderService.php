@@ -396,11 +396,27 @@ class OrderService
     public function addAllOrder($params,$wxAmount,$userId,$originalId)
     {
         Log::error('批量创建订单参数: ', $params);
+
         //创建订单
-        $orderRes = $this->order::insert($params);
-        if(!$orderRes){
-            throw new UnprocessableEntityHttpException(850043);
+        $goods = [];
+        foreach ($params as $key => $value) {
+            $orderRes = $this->order::create($value);
+            if(!$orderRes){
+                throw new UnprocessableEntityHttpException(850043);
+            }
+            $goods[] = [
+                'join_type' => $value['order_type'],
+                'join_id' => $value['join_id'],
+                'order_sn' => $value['order_sn'],
+            ];
         }
+
+
+
+        // $orderRes = $this->order::insert($params);
+        // if(!$orderRes){
+        //     throw new UnprocessableEntityHttpException(850043);
+        // }
 
 
 
@@ -411,7 +427,10 @@ class OrderService
             'order_sn' => $originalId,
             'original_id' => $originalId,
         ];
-        return $this->createWxOrder($arr);
+        $res =  $this->createWxOrder($arr);
+        $res['order_sn'] = $goods;
+        // var_dump($goods,$res);die;
+        return $res;
     }
 
     //创建订单
