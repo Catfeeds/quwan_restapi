@@ -179,7 +179,7 @@ class ScoreService
                     $this->attractions->where('attractions_id', '=', $params['join_id'])->update(['attractions_score'=>$stock]);
                     break;
                 case $this->score::SCORE_TYPE_B:
-                    $this->attractions->where('attractions_id', '=', $params['join_id'])->increment('holiday_evaluation');
+                    $this->holiday->where('holiday_id', '=', $params['join_id'])->increment('holiday_evaluation');
                     $this->holiday->where('holiday_id', '=', $params['join_id'])->increment('holiday_score_num');
                     $this->holiday->where('holiday_id', '=', $params['join_id'])->update(['holiday_score'=>$stock]);
                     break;
