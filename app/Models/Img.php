@@ -55,6 +55,19 @@ class Img extends Model
   'img_updated_at' => 'int',
 );
 
+    /**
+     * 字段过滤器(当查询获取这个字段时候会触发方法处理字段)
+     * @param $value
+     * @return string
+     */
+    public  function getImgUrlAttribute($value)
+    {
+        if(!substr_count($value, 'http')){
+            $value = config('qiniu.qiniuurl') . $value;
+        }
+        return $value;
+    }
+
 
     //获取类型下第一张图片
     public static function getOneImg($joinId,$imgType)

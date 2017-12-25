@@ -86,7 +86,7 @@ class FavController extends Controller
             Log::error('收藏/取消异常: ', ['error' => $e]);
             throw new UnprocessableEntityHttpException(850002);
         }
-        return response_success(['msg'=>'操作成功']);
+        return ['msg'=>$data];
     }
 
 }

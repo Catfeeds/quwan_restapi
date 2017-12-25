@@ -156,7 +156,7 @@ class ScoreService
             if (false === empty($params['img'])) {
                 foreach ($params['img'] as $key => $value) {
                     $arr = [
-                        'join_id' => $params['join_id'],
+                        'join_id' => $res->id,
                         'img_sort' => $key + 1,
                         'img_type' => $this->img::IMG_TYPE_E,
                         'img_url' => $value,
