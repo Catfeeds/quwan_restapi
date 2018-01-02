@@ -7,6 +7,7 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Attractions;
 use App\Models\Destination;
 use App\Models\DestinationJoin;
+use App\Models\Fav;
 use App\Services\MudiService;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
@@ -52,6 +53,7 @@ class MudiController extends Controller
     {
         $destinationId = $destination_id ?? 0;
         $data = $this->mudiService->getData($destinationId);
+
         return response_success($data);
     }
 

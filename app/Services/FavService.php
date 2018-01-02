@@ -66,6 +66,12 @@ class FavService
 
     }
 
+    //检测用户是否收藏
+    public function isFav($favType, $userId, $joinId)
+    {
+        return $this->fav->isFav($favType,$userId,$joinId);
+    }
+
     /**
      * 添加或取消收藏
      * @param $data
@@ -74,7 +80,7 @@ class FavService
     public function addOrDel($data)
     {
         $msg = '收藏成功';
-        $favId = $this->fav->isFav($data['fav_type'],$data['user_id'],$data['join_id']);
+        $favId = $this->isFav($data['fav_type'],$data['user_id'],$data['join_id']);
         if ($favId) {
             $this->fav::where('fav_id','=',$favId)->delete();
             $msg = '取消收藏成功';
