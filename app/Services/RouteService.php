@@ -56,6 +56,15 @@ class RouteService
 
     }
 
+    //删除线路
+    public function delRoute($routeId){
+        $tag = $this->route->where('route_id','=',$routeId)->delete();
+        if ($tag) {
+            $this->routeDay->where('route_id','=',$routeId)->delete();
+            $this->routeDayJoin->where('route_id','=',$routeId)->delete();
+        }
+    }
+
     //复制线路到用户
     public function useRoute($routeId, $userId)
     {

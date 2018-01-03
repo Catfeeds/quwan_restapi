@@ -156,6 +156,8 @@ class RouteDayRepository extends BaseRepository
             'join_suggest' => '',
             'join_score' => $res['hotel_score'],
             'join_evaluation' => $res['hotel_evaluation'],
+            'join_lon' => $res['hotel_lon'],
+            'join_lat' => $res['hotel_lat'],
             'join_img' => $img,
         ];
 
@@ -183,6 +185,8 @@ class RouteDayRepository extends BaseRepository
             'join_suggest' => $res['attractions_suggest'],
             'join_score' => $res['attractions_score'],
             'join_evaluation' => $res['attractions_evaluation'],
+            'join_lon' => $res['attractions_lon'],
+            'join_lat' => $res['attractions_lat'],
             'join_img' => $img,
         ];
 
@@ -210,6 +214,8 @@ class RouteDayRepository extends BaseRepository
             'join_suggest' => '',
             'join_score' => $res['hall_score'],
             'join_evaluation' => $res['hall_evaluation'],
+            'join_lon' => $res['hall_lon'],
+            'join_lat' => $res['hall_lat'],
             'join_img' => $img,
         ];
 

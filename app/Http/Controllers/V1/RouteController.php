@@ -230,4 +230,44 @@ class RouteController extends Controller
         }
         return response_success($data);
     }
+
+
+    //删除线路
+    public function del()
+    {
+
+        $this->params['route_id'] = $this->params['route_id'] ?? 0; //线路id
+        $this->params['route_id'] = (int)$this->params['route_id'];
+
+        $this->params['user_id'] = (int)$this->userId;
+
+
+        Log::error('删除线路参数: ', $this->params);
+
+        //检测线路是否存在
+        $res = $this->routeService->checkRoute($this->params['route_id']);
+
+        //检测线路是否是自己的
+        if($this->params['user_id'] !== (int)$res['user_id']){
+            throw new UnprocessableEntityHttpException(850062);
+        }
+
+
+
+        DB::connection('db_quwan')->beginTransaction();
+        try {
+            $this->routeService->delRoute($this->params['route_id']);
+
+            DB::connection('db_quwan')->commit();
+        } catch (Exception $e) {
+            DB::connection('db_quwan')->rollBack();
+
+            //记错误日志
+            Log::error('删除线路异常: ', ['error' => $e]);
+            throw new UnprocessableEntityHttpException(850002);
+        }
+
+        return response_success(['msg' => '删除成功']);
+    }
+
 }

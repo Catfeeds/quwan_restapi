@@ -82,6 +82,7 @@ $app->group($authGroup, function () use ($app) {
     $app->post('add_route', 'RouteController@add'); //添加线路
     $app->post('edit_route', 'RouteController@edit'); //编辑线路
     $app->get('my_route', 'RouteController@myRoute'); //我的线路
+    $app->post('del_route', 'RouteController@del'); //删除我的线路
 
     $app->post('fav', 'FavController@add'); //收藏/取消
     $app->get('fav_list', 'FavController@favList'); //收藏列表
