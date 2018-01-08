@@ -66,7 +66,7 @@ class UserService
     {
         $data = $this->user->getInfo($userId);
         if (!$data) {
-            throw new UnprocessableEntityHttpException(850004);
+            throw new UnprocessableEntityHttpException(850063);
         }
 
         return $data;
