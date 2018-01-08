@@ -47,6 +47,16 @@ class XSController extends Controller
     }
 
 
+    //清空索引
+    public function cleanIndex()
+    {
+
+        //清空索引
+        $res = $this->XSService::clean();
+        return $res;
+
+    }
+
     //修改文档
     public function editIndex()
     {

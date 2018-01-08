@@ -73,6 +73,35 @@ class XSService
 
     }
 
+    //清空索引
+    public static function clean()
+    {
+
+        try {
+            $indexName = config('xs.xs_index');
+            $xs = new \XS($indexName);
+
+            //初始化索引
+            $index = $xs->index;
+
+            // 执行清空操作
+            $tag = $index->clean();
+
+
+            //刷新索引缓存
+            $index->flushIndex();
+            sleep(2);
+
+            //刷新搜索日志
+            $index->flushLogging();
+            sleep(2);
+            return response_success(['msg' => $tag]);
+
+        } catch (\XSException $e) {
+            throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
+        }
+    }
+
     //job更新文档
     public static function jobEditIndex($params)
     {

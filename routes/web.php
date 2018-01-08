@@ -25,6 +25,7 @@ $unAuthGroup = [
 $app->group($unAuthGroup, function () use ($app) {
 
 
+    $app->post('clean_index', 'XSController@cleanIndex'); //清空索引
     $app->post('add_index', 'XSController@addIndex'); //添加文档到索引
     $app->post('edit_index', 'XSController@editIndex'); //修改文档
     $app->post('del_index', 'XSController@delIndex'); //删除文档
