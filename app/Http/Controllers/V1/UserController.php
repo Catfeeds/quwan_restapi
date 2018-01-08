@@ -268,13 +268,16 @@ class UserController extends Controller
         if (!$this->params['user_avatar']) {
             throw new UnprocessableEntityHttpException(850005);
         }
-        if (!$this->params['user_mobile']) {
-            throw new UnprocessableEntityHttpException(850005);
+
+        if ($this->params['user_mobile'] && !$this->yanzhenService::isMobile($this->params['user_mobile'])) {
+            // throw new UnprocessableEntityHttpException(850005);
+
+            //验证手机号
+            // if(){
+                throw new UnprocessableEntityHttpException(850009);
+            // }
         }
-        //验证手机号
-        if(!$this->yanzhenService::isMobile($this->params['user_mobile'])){
-            throw new UnprocessableEntityHttpException(850009);
-        }
+
 
         DB::connection('db_quwan')->beginTransaction();
         try {
