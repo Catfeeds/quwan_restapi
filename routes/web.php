@@ -47,7 +47,7 @@ $app->group($unAuthGroup, function () use ($app) {
 
 //    $app->post('send_sms', 'TestController@sendSms'); //发送短信
     //$app->post('qiniu', 'TestController@qiniu'); //上传到7牛
-//    $app->post('del_cache', 'TestController@delCache'); //删除指定缓存
+   $app->post('del_cache', 'TestController@delCache'); //删除指定缓存
 
 
 //    $app->get('add_data', 'HomeController@addData'); //增加默认
