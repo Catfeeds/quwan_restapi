@@ -124,7 +124,7 @@ class FavService
         }
 
         $result['_count'] = $query->count();
-        $result['data'] = $query->skip($offset)->take($limit)->get()->toArray();
+         $result['data'] = $query->skip($offset)->take($limit)->get()->toArray();
 
         $res = [];
         if (false === empty($result['data'])) {
@@ -167,7 +167,9 @@ class FavService
             }
         }
 
-        return $res;
+        $result['data'] = $res;
+
+        return $result;
 
     }
 
