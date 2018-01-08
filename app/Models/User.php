@@ -101,9 +101,10 @@ class User extends Model
     //添加用户
     public function register($params)
     {
+
         //检测用户是否存在不存在注册
-        $userId = User::where('openid','=', $params['openid'])->value('user_id');
-        if (!$userId) {
+        $newUserId = User::where('openid','=', $params['openid'])->value('user_id');
+        if (!$newUserId) {
             $arr = [
                 'user_nickname' => $params['user_nickname'],
                 'user_sex'  => $params['user_sex'],
@@ -112,10 +113,14 @@ class User extends Model
                 'user_created_at' => time(),
                 'user_updated_at'  => time(),
             ];
-            $userId = User::create($arr);
+            $userRes = User::create($arr);
+            if($userRes){
+                $newUserId = $userRes->id;
+            }
         }
-        
-        return $userId;
+
+        // var_dump($userId,$params);die;
+        return $newUserId;
     }
 
     //修改用户经纬度

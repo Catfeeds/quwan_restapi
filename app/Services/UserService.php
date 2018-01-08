@@ -64,6 +64,7 @@ class UserService
     //获取用户信息
     public function getUserInfo($userId)
     {
+
         $data = $this->user->getInfo($userId);
         if (!$data) {
             throw new UnprocessableEntityHttpException(850063);
