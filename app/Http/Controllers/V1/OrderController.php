@@ -75,6 +75,41 @@ class OrderController extends Controller
 
 
 
+    //获取微信openid
+    public function getOpenid()
+    {
+
+        $params['appid'] = $this->params['appid'] ?? '';//小程序唯一标识
+        $params['secret'] = $this->params['secret'] ?? '';//小程序的 app secret
+        $params['js_code'] = $this->params['js_code'] ?? '';//登录时获取的 code
+        $params['grant_type'] = $this->params['grant_type'] ?? 'authorization_code';//authorization_code
+
+        Log::info('获取微信openid参数: ', $params);
+
+
+
+        if(!$params['appid']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if(!$params['secret']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        if(!$params['js_code']){
+            throw new UnprocessableEntityHttpException(850005);
+        }
+
+        $www = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$params['appid']
+                .'&secret='.$params['secret'].'&js_code='.$params['js_code'].'&grant_type='.$params['grant_type'];
+        $res = get_web_contents($www);
+        // var_dump($res);die;
+        Log::info('获取微信openid返回: '. $res['Body']);
+
+        return $res['Body'];
+
+    }
+
     //更新主订单信息(购买线路,离开后调用)
     public function editOriginal()
     {

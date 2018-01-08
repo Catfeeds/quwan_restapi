@@ -34,6 +34,7 @@ $app->group($unAuthGroup, function () use ($app) {
     //$app->get('/', 'HomeController@wx'); //添加文档到索引
 
 //    $app->get('oauth_callback', 'TestController@oauthCallback'); //授权回调
+    $app->post('get_openid', 'OrderController@getOpenid'); //获取微信openid
     $app->get('send_merchant_pay', 'OrderController@sendMerchantPay'); //企业支付
     $app->get('send_refund', 'OrderController@sendRefundo'); //退款
     $app->get('send_hong_bao', 'OrderController@sendHongBao'); //发送红包
