@@ -25,7 +25,7 @@ use Qcloud\Sms\SmsSingleSender;
  */
 class TestController extends Controller
 {
-
+    const CACHE_TAG = 'QUWAN'; //缓存模块tag
     protected $tokenService;
     protected $request;
     protected $XS;
