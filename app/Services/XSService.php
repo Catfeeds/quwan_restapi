@@ -23,7 +23,7 @@ use App\Models\Img;
 use App\Models\Route;
 use App\Models\RouteDayJoin;
 use App\Models\User;
-use EasyWeChat\Support\Log;
+use Illuminate\Support\Facades\Log;
 
 class XSService
 {
