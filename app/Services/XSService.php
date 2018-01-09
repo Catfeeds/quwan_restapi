@@ -565,6 +565,10 @@ class XSService
 
         $info['id'] = $info['type'].'-'.$info['id'];
 
+        var_dump($info['intro']);
+        $info['intro'] = strip_tags($info['intro']);
+        var_dump($info['intro']);die;
+
         //分类处理
         $info['cid'] = '';
         $cid = CidMap::getCidsInfo($info['id'], $info['type']);

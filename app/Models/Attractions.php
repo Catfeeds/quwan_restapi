@@ -71,6 +71,8 @@ class Attractions extends Model
         }
 
         foreach ($data as $keyA => &$valueA) {
+
+            $valueA['attractions_intro'] = htmlspecialchars_decode($valueA['attractions_intro']);
             //图片
             $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_A);
             //分类
@@ -96,10 +98,9 @@ class Attractions extends Model
             return [];
         }
         $data = $data->toArray();
-var_dump($data['attractions_intro']);
-var_dump(htmlspecialchars_decode($data['attractions_intro']));
 
-die;
+        $data['attractions_intro'] = htmlspecialchars_decode($data['attractions_intro']);
+
         //图片
         $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_A);
         //分类

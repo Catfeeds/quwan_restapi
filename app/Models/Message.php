@@ -56,6 +56,10 @@ class Message extends Model
         if (!$data) {
             return [];
         }
-        return $data->toArray();
+
+        $data = $data->toArray();
+
+        $data['message_comment'] = htmlspecialchars_decode($data['message_comment']);
+        return $data;
     }
 }

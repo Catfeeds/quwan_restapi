@@ -64,6 +64,9 @@ class Hotel extends Model
         }
         $data = $data->toArray();
 
+
+        $data['hotel_intro'] = htmlspecialchars_decode($data['hotel_intro']);
+
         //图片
         $data['img'] = Img::getJoinImgs($data['hotel_id'], Img::IMG_TYPE_C);
 

@@ -66,6 +66,9 @@ class Hall extends Model
         }
         $data = $data->toArray();
 
+
+        $data['hall_intro'] = htmlspecialchars_decode($data['hall_intro']);
+
         //图片
         $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_D);
 
