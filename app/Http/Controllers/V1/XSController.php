@@ -66,8 +66,6 @@ class XSController extends Controller
         $params['id'] = $this->params['id'] ?? 0;       //主键
         $params['id'] = (int) $params['id'];
 
-        Log::info('接收参数=====',$params);
-
         if (!$params['type']) {
             throw new UnprocessableEntityHttpException(850015);
         }

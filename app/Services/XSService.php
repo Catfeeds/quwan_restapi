@@ -117,6 +117,8 @@ class XSService
     public static function del($params)
     {
 
+        Log::info('索引删除开始=======================');
+        Log::info('参数',$params);
         try {
             $indexName = config('xs.xs_index');
             $xs = new \XS($indexName);
@@ -125,8 +127,6 @@ class XSService
             $index = $xs->index;
 
 
-            Log::info('索引删除开始=======================');
-            Log::info('参数',$params);
 
             //删除
             $tag = $index->del($params);
@@ -140,13 +140,14 @@ class XSService
             sleep(2);
 
 
-            Log::info('结果'.$tag);
-            Log::info('索引删除结束=======================');
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
+            Log::info('索引删除异常',['msg' => $e->getTraceAsString()]);
             throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
         }
+
+        Log::info('索引删除结束=======================');
     }
 
     //添加文档
@@ -276,7 +277,8 @@ class XSService
         // if (!$params['id'] || !$params['author'] || !$params['title'] || !$params['content'] || !$params['post_time']) {
 //            throw new UnprocessableEntityHttpException(850005);
         // }
-
+        Log::info('索引更新开始=======================');
+        Log::info('参数',$params);
         try {
             $indexName = config('xs.xs_index');
             $xs = new \XS($indexName);
@@ -287,8 +289,7 @@ class XSService
             // 创建文档对象
             $doc = new \XSDocument();
 
-            Log::info('索引更新开始=======================');
-            Log::info('参数',$params);
+
 
             $doc->setFields($params);
 
@@ -303,11 +304,11 @@ class XSService
             $index->flushLogging();
             sleep(2);
 
-            Log::info('结果'.$tag);
-            Log::info('索引更新结束=======================');
+
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
+            Log::info('索引更新异常',['msg' => $e->getTraceAsString()]);
 
             throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
 //            echo $e;               // 直接输出异常描述
@@ -316,6 +317,7 @@ class XSService
 //                echo "\n" . $e->getTraceAsString() . "\n";
 //            }
         }
+        Log::info('索引更新结束=======================');
     }
 
     //搜索
