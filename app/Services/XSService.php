@@ -124,6 +124,10 @@ class XSService
             //初始化索引
             $index = $xs->index;
 
+
+            Log::info('索引删除开始=======================');
+            Log::info('参数',$params);
+
             //删除
             $tag = $index->del($params);
 
@@ -134,6 +138,10 @@ class XSService
             //刷新搜索日志
             $index->flushLogging();
             sleep(2);
+
+
+            Log::info('结果'.$tag);
+            Log::info('索引删除结束=======================');
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
@@ -279,6 +287,8 @@ class XSService
             // 创建文档对象
             $doc = new \XSDocument();
 
+            Log::info('索引更新开始=======================');
+            Log::info('参数',$params);
 
             $doc->setFields($params);
 
@@ -292,6 +302,9 @@ class XSService
             //刷新搜索日志
             $index->flushLogging();
             sleep(2);
+
+            Log::info('结果'.$tag);
+            Log::info('索引更新结束=======================');
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
