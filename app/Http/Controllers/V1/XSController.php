@@ -14,6 +14,7 @@ use App\Services\YanzhenService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class XSController
