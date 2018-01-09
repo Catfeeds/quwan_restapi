@@ -565,9 +565,9 @@ class XSService
 
         $info['id'] = $info['type'].'-'.$info['id'];
 
-        var_dump($info['intro']);
+        echo($info['intro']);
         $info['intro'] = strip_tags($info['intro']);
-        var_dump($info['intro']);die;
+        echo($info['intro']);die;
 
         //分类处理
         $info['cid'] = '';
