@@ -598,7 +598,7 @@ class XSService
         $info['id'] = $info['type'].'-'.$info['id'];
 
         //描述简介处理
-        $info['intro'] = strip_tags($info['intro']);
+        $info['intro'] = lose_space(strip_tags($info['intro']));
 
         //图片处理
         $info['img'] = $info['img'][0] ?? '';
