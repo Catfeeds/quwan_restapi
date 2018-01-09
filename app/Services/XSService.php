@@ -164,6 +164,7 @@ class XSService
             sleep(2);
 
 
+            Log::info('索引删除结束=======================');
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
@@ -171,7 +172,6 @@ class XSService
             throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
         }
 
-        Log::info('索引删除结束=======================');
     }
 
     //添加文档
@@ -328,7 +328,7 @@ class XSService
             $index->flushLogging();
             sleep(2);
 
-
+            Log::info('索引更新结束=======================');
             return response_success(['msg' => $tag]);
 
         } catch (\XSException $e) {
@@ -341,7 +341,7 @@ class XSService
 //                echo "\n" . $e->getTraceAsString() . "\n";
 //            }
         }
-        Log::info('索引更新结束=======================');
+
     }
 
     //搜索
