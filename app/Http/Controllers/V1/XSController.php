@@ -48,6 +48,16 @@ class XSController extends Controller
     }
 
 
+    //参看索引的文档总量
+    public function getDbTotal()
+    {
+
+        $res = $this->XSService::getDbTotal();
+        return $res;
+
+    }
+
+
     //清空索引
     public function cleanIndex()
     {

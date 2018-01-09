@@ -70,7 +70,7 @@ class AttractionsController extends Controller
             $data['is_fav'] = $this->favService->isFav(Fav::FAV_TYPE_A, $userId, $attractions_id) ? 1 : 0;
         }
 
-        return response_success($data);
+        return $data;
     }
 
 }

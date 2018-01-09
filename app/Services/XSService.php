@@ -73,6 +73,30 @@ class XSService
 
     }
 
+
+    //参看索引的文档总量
+    public static function getDbTotal()
+    {
+
+        try {
+
+            $indexName = config('xs.xs_index');
+            $xs = new \XS($indexName);
+
+
+            $search = $xs->search;
+
+            $count = $search->getDbTotal();
+
+
+
+            return ['_count'=>$count];
+
+        } catch (\XSException $e) {
+            throw new UnprocessableEntityHttpException(850014, [], '', ['msg' => $e->getTraceAsString()]);
+        }
+    }
+
     //清空索引
     public static function clean()
     {
