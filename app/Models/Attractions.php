@@ -100,7 +100,9 @@ class Attractions extends Model
         $data = $data->toArray();
 
         $data['attractions_intro'] = htmlspecialchars_decode($data['attractions_intro']);
-
+echo($data['attractions_intro']);
+        $data['attractions_intro'] = strip_tags($data['attractions_intro']);
+        echo($data['attractions_intro']);die;
         //图片
         $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_A);
         //分类
