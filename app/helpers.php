@@ -7,9 +7,10 @@ if (!function_exists('lose_space')) {
         // $pcon = preg_replace("/ /","",$pcon);
         // $pcon = preg_replace("/&nbsp;/","",$pcon);
         // $pcon = preg_replace("/　/","",$pcon);
+        $pcon = preg_replace("/\t/","",$pcon);
         $pcon = preg_replace("/\r\n/","",$pcon);
 
-        $pcon = str_replace(array("/r/n", "/r", "/n"), "", $pcon);
+        $pcon = str_replace(array("/r/n", "/r", "/n","/t"), "", $pcon);
 
         // $pcon = str_replace(chr(13),"",$pcon);
         // $pcon = str_replace(chr(10),"",$pcon);
