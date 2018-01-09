@@ -96,7 +96,10 @@ class Attractions extends Model
             return [];
         }
         $data = $data->toArray();
-var_dump($data);die;
+var_dump($data['attractions_intro']);
+var_dump(htmlspecialchars_decode($data['attractions_intro']));
+
+die;
         //图片
         $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_A);
         //分类
