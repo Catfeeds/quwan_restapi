@@ -86,7 +86,7 @@ class XSService
 
             $search = $xs->search;
 
-            $count = $search->getDbTotal();
+            $count = $search->dbTotal;
 
 
 
