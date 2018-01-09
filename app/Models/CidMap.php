@@ -81,7 +81,6 @@ class CidMap extends Model
             ->where('cid_map.cid_map_type','=',$cidMapType)
             ->orderBy('cid_map.cid_map_sort')
             ->get()->toArray();
-
         return $data;
     }
 

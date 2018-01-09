@@ -587,10 +587,6 @@ class XSService
             throw new UnprocessableEntityHttpException(850004);
         }
 
-        $info['id'] = $info['type'].'-'.$info['id'];
-
-        $info['intro'] = strip_tags($info['intro']);
-
         //分类处理
         $info['cid'] = '';
         $cid = CidMap::getCidsInfo($info['id'], $info['type']);
@@ -598,6 +594,13 @@ class XSService
             $info['cid'] = json_encode($cid);
         }
 
+        //id处理
+        $info['id'] = $info['type'].'-'.$info['id'];
+
+        //描述简介处理
+        $info['intro'] = strip_tags($info['intro']);
+
+        //图片处理
         $info['img'] = $info['img'][0] ?? '';
 
         return $info;
