@@ -589,9 +589,7 @@ class XSService
 
         $info['id'] = $info['type'].'-'.$info['id'];
 
-        echo($info['intro']);
         $info['intro'] = strip_tags($info['intro']);
-        echo($info['intro']);die;
 
         //分类处理
         $info['cid'] = '';
