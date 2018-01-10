@@ -98,6 +98,8 @@ class HomePageRepository extends BaseRepository
                 $valueR['cid'] = CidMap::getCidsInfo($valueR['route_id'], CidMap::CID_MAP_TYPE_3);
 
                 $valueR['route_intro'] = htmlspecialchars_decode($valueR['route_intro']);
+
+                $valueR['route_intro'] = lose_space(strip_tags($valueR['route_intro']));
             }
 
         }
@@ -179,8 +181,9 @@ class HomePageRepository extends BaseRepository
                 //分类
                 $valueA['cid'] = CidMap::getCidsInfo($valueA['attractions_id'], CidMap::CID_MAP_TYPE_1);
 
+                //描述简介处理
                 $valueA['attractions_intro'] = htmlspecialchars_decode($valueA['attractions_intro']);
-
+                $valueA['attractions_intro'] = lose_space(strip_tags($valueA['attractions_intro']));
             }
 
         }
