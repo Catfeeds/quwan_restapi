@@ -230,6 +230,34 @@ class HomePageRepository extends BaseRepository
             return $res;
         }
 
+        ////===========================
+        ////获取所有的经纬度景点信息
+        //$list = Attractions::select('attractions_id','attractions_name','attractions_intro','attractions_lon as lon','attractions_lat as lat','attractions_sales_num')->where('attractions_status','=',Attractions::ATTRACTIONS_STATUS_1)->orderBy('attractions_sales_num')->get()->toArray();
+        //
+        //$Lbs = new  LbsRepository();
+        //
+        //
+        //$result = $Lbs->range($userLon['user_lat'],$userLon['user_lon'],$list);
+        //$data = [];
+        //if(false === empty($result)){
+        //    foreach ($result as $key => $value)
+        //    {
+        //        if($value['km'] <= 800){
+        //            $data[] = $value;
+        //        }
+        //    }
+        //}
+        //
+        //$data = new_array_sort($data, 'attractions_sales_num', 'desc');
+        //
+        //var_dump($data[0]);die;
+        //
+        //
+        ////==========================
+
+
+
+
         $nearby = HomePageValue::select('value_id')
             ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
             ->orderBy('home_page_value.sort')
