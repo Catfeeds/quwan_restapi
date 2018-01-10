@@ -119,12 +119,14 @@ class XSController extends Controller
 //            'score_num' => 8933,
 //        );
         Log::info('索引更新开始=======================');
-        Log::info('参数',$this->params);
+
+
+
         $params['type'] = $this->params['type'] ?? 0;   //类型 1景点,2目的地，3路线,4节日，5酒店,6餐厅
         $params['type'] = (int) $params['type'];
         $params['id'] = $this->params['id'] ?? 0;       //主键
         $params['id'] = (int) $params['id'];
-
+        Log::info('参数',$params);
         if (!$params['type']) {
             throw new UnprocessableEntityHttpException(850015);
         }

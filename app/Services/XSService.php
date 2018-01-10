@@ -142,7 +142,7 @@ class XSService
     {
 
         Log::info('索引删除开始=======================');
-        Log::info('参数',$params);
+        Log::info('参数'.$params);
         try {
             $indexName = config('xs.xs_index');
             $xs = new \XS($indexName);
