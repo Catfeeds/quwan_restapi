@@ -173,7 +173,7 @@ class Route extends Model
 
 
             $valueR['route_intro'] = htmlspecialchars_decode($valueR['route_intro']);
-            $data['route_intro'] = lose_space(strip_tags($data['route_intro']));
+            $valueR['route_intro'] = lose_space(strip_tags($valueR['route_intro']));
 
             //图片
             $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['route_id']);
