@@ -470,10 +470,10 @@ class OrderController extends Controller
         $app = new Application($wxConfig);
         $response = $app->payment->handleNotify(function($notify, $successful){
 
-            Log::error('支付回调参数: '. typeOf($notify));
+            Log::info('支付回调参数: '. typeOf($notify));
 
             if($notify->attach){
-                Log::error('主订单: '.$notify->attach);
+                Log::info('主订单: '.$notify->attach);
                 //通过主订单获取所有的子订单与状态
                 $attachData = \App\Models\Order::select('order_id','order_pay_amount','shop_id','order_type','join_id')
                     ->where('original_id','=',$notify->attach)
@@ -481,7 +481,7 @@ class OrderController extends Controller
                     ->get()
                     ->toArray();
                if(true === empty($attachData)){
-                   Log::error('主订单: '.$notify->attach.' 下没有子订单');
+                   Log::info('主订单: '.$notify->attach.' 下没有子订单');
                    return 'SUCCESS';
                }
 
@@ -489,20 +489,20 @@ class OrderController extends Controller
                 // 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单
                 $order = $this->orderService->getInfoToSn($notify->out_trade_no);
                 if (!$order) { // 如果订单不存在
-                    Log::error('订单不存在: '.$notify->out_trade_no);
+                    Log::info('订单不存在: '.$notify->out_trade_no);
                     return 'SUCCESS';// 告诉微信，我已经处理完了，订单没找到，别再通知我了
                 }
 
                 //`order_status` tinyint(1) NOT NULL DEFAULT '10' COMMENT '订单状态(10未付款,20已支付，30已核销，40已评价，0已取消',
                 // 如果已支付,不在执行
                 if((int)$order['order_status'] !== \App\Models\Order::ORDER_STATUS_10){
-                    Log::error('订单已支付过: '.$notify->out_trade_no);
+                    Log::info('订单已支付过: '.$notify->out_trade_no);
                     return 'SUCCESS';// 告诉微信，我已经处理完了，订单没找到，别再通知我了
                 }
 
                 // 用户是否支付成功
                 if (!$successful) {
-                    Log::error('微信支付失败: '.$successful);
+                    Log::info('微信支付失败: '.$successful);
                     return 'FAIL';
                 }
             }
@@ -515,14 +515,14 @@ class OrderController extends Controller
 
                 //是否主订单
                 if($notify->attach){
-                    Log::error('主订单: '.$notify->attach);
+                    Log::info('主订单: '.$notify->attach);
                     foreach ($attachData as $key => $value) {
                         $this->notifyAttachBack($notify,$value);
                     }
 
                 }else{
 
-                    Log::error('子订单: '.$notify->out_trade_no);
+                    Log::info('子订单: '.$notify->out_trade_no);
                     //订单后置操作
                     $this->notifyBack($notify,$order);
 
@@ -548,6 +548,7 @@ class OrderController extends Controller
     //主订单支付成功后续处理
     private function notifyAttachBack($notify,$order)
     {
+        Log::info('主订单后置'.$notify->transaction_id, $order);
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
             'order_pay_amount' => $order['order_pay_amount'],
@@ -557,6 +558,8 @@ class OrderController extends Controller
         ];
         \App\Models\Order::where('order_id','=',$order['order_id'])->update($arr);
 
+        Log::info('修改订单状态,订单时间,第三方订单号,实际支付金额ok');
+
         //生成兑换码(一个订单一个)
         $codeArr = [
             'shop_id' => $order['shop_id'],
@@ -566,6 +569,8 @@ class OrderController extends Controller
         ];
         OrderCode::create($codeArr);
 
+        Log::info('生成兑换码(一个订单一个)ok');
+
         //增加销售量(退款时候要减少)
         if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
             //景点
@@ -574,11 +579,14 @@ class OrderController extends Controller
             //节日
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
         }
+
+        Log::info('增加销售量(退款时候要减少)ok');
     }
 
     //子订单支付成功后续处理
     private function notifyBack($notify,$order)
     {
+        Log::info('子订单后置'.$notify->transaction_id, $order);
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
             'order_pay_amount' => $notify->total_fee / 100, //返回是分,要转换
@@ -588,6 +596,8 @@ class OrderController extends Controller
         ];
         \App\Models\Order::where('order_id','=',$order['order_id'])->update($arr);
 
+        Log::info('修改订单状态,订单时间,第三方订单号,实际支付金额ok');
+
         //生成兑换码(一个订单一个)
         $codeArr = [
             'shop_id' => $order['shop_id'],
@@ -597,6 +607,8 @@ class OrderController extends Controller
         ];
         OrderCode::create($codeArr);
 
+        Log::info('生成兑换码(一个订单一个)ok');
+
         //增加销售量(退款时候要减少)
         if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
             //景点
@@ -605,6 +617,8 @@ class OrderController extends Controller
             //节日
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
         }
+
+        Log::info('增加销售量(退款时候要减少)ok');
     }
 
     //订单支付
