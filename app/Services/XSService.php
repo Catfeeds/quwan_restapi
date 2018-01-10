@@ -301,8 +301,7 @@ class XSService
         // if (!$params['id'] || !$params['author'] || !$params['title'] || !$params['content'] || !$params['post_time']) {
 //            throw new UnprocessableEntityHttpException(850005);
         // }
-        Log::info('索引更新开始=======================');
-        Log::info('参数',$params);
+
         try {
             $indexName = config('xs.xs_index');
             $xs = new \XS($indexName);
