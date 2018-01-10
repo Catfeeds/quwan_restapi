@@ -29,7 +29,8 @@ class HomePageRepository extends BaseRepository
             'nearby'=>[],
         ];
         foreach ($data as $key => $value) {
-            //1首页广告 2首页热门线路 3首页热门目的地 4首页景点分类 5首页热门景点 6首页节日 7首页推荐周边
+
+            //1首页广告 2首页热门线路 3首页热门目的地 4首页景点 5首页节日 6首页推荐周边 7景点分类
             switch ($value['home_page_type']) {
                 case HomePage::PAGE_TYPE_1: //广告
                     $res = $this->getAdvList($value, $res);
@@ -40,17 +41,17 @@ class HomePageRepository extends BaseRepository
                 case HomePage::PAGE_TYPE_3: //目的地
                     $res = $this->getDestinationList($value, $res);
                     break;
-                case HomePage::PAGE_TYPE_4: //景点分类
-                    $res = $this->getCidList($value, $res);
-                    break;
-                case HomePage::PAGE_TYPE_5: //景点
+                case HomePage::PAGE_TYPE_4: //景点
                     $res = $this->getAttractionsList($value, $res,$userId);
                     break;
-                case HomePage::PAGE_TYPE_6: //节日
+                case HomePage::PAGE_TYPE_5: //节日
                     $res = $this->getHolidayList($value, $res);
                     break;
-                case HomePage::PAGE_TYPE_7: //周边
+                case HomePage::PAGE_TYPE_6: //周边
                     $res = $this->getNearbyList($value, $res,$userId);
+                    break;
+                case HomePage::PAGE_TYPE_7: //景点分类
+                    $res = $this->getCidList($value, $res);
                     break;
                 default: break;
             }

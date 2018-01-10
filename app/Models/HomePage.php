@@ -11,8 +11,7 @@ class HomePage extends Model
     const PAGE_STATUS_1 = 1;
 
 
-
-    //页面类型，1首页广告 2首页热门线路 3首页热门目的地 4首页景点分类 5首页热门景点 6首页节日 7首页推荐周边
+    //1首页广告 2首页热门线路 3首页热门目的地 4首页景点 5首页节日 6首页推荐周边 7景点分类
     const PAGE_TYPE_1 = 1;
     const PAGE_TYPE_2 = 2;
     const PAGE_TYPE_3 = 3;
