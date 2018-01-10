@@ -43,7 +43,7 @@ class MessageController extends Controller
     {
         DB::connection('db_quwan')->beginTransaction();
         try {
-            $data = $this->messageService->setAllRead($this->userId);
+            $this->messageService->setAllRead($this->userId);
             DB::connection('db_quwan')->commit();
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();
@@ -68,6 +68,10 @@ class MessageController extends Controller
         $this->params['user_id'] = (int)$this->userId;
 
         $data = $this->messageService->getListData($this->params);
+
+        //所有消息已读
+        $this->messageService->setAllRead($this->params['user_id']);
+
         return response_success($data);
     }
 
