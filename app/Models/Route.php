@@ -69,6 +69,8 @@ class Route extends Model
 
             $valueR['route_intro'] = htmlspecialchars_decode($valueR['route_intro']);
 
+            $valueR['route_intro'] = lose_space(strip_tags($valueR['route_intro']));
+
             //图片
             $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['route_id']);
             //分类
@@ -101,6 +103,8 @@ class Route extends Model
 
             $valueR['route_intro'] = htmlspecialchars_decode($valueR['route_intro']);
 
+            $valueR['route_intro'] = lose_space(strip_tags($valueR['route_intro']));
+
             //图片
             $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['route_id']);
             //分类
@@ -130,6 +134,8 @@ class Route extends Model
 
 
         $data['route_intro'] = htmlspecialchars_decode($data['route_intro']);
+
+        $data['route_intro'] = lose_space(strip_tags($data['route_intro']));
 
         //分类
         $data['cid'] = CidMap::getCidsInfo($data['route_id'], CidMap::CID_MAP_TYPE_3);
@@ -167,6 +173,7 @@ class Route extends Model
 
 
             $valueR['route_intro'] = htmlspecialchars_decode($valueR['route_intro']);
+            $data['route_intro'] = lose_space(strip_tags($data['route_intro']));
 
             //图片
             $valueR['img'] = RouteDayJoin::getOneJoinImg($valueR['route_id']);

@@ -67,6 +67,8 @@ class Hotel extends Model
 
         $data['hotel_intro'] = htmlspecialchars_decode($data['hotel_intro']);
 
+        $data['hotel_intro'] = lose_space(strip_tags($data['hotel_intro']));
+
         //图片
         $data['img'] = Img::getJoinImgs($data['hotel_id'], Img::IMG_TYPE_C);
 

@@ -67,6 +67,8 @@ class Holiday extends Model
 
         $data['holiday_intro'] = htmlspecialchars_decode($data['holiday_intro']);
 
+        $data['holiday_intro'] = lose_space(strip_tags($data['holiday_intro']));
+
         //图片
         $data['img'] = Img::getJoinImgs($data['holiday_id'], Img::IMG_TYPE_B);
 
@@ -102,6 +104,8 @@ class Holiday extends Model
         $data = $data->toArray();
 
         $data['holiday_intro'] = htmlspecialchars_decode($data['holiday_intro']);
+
+        $data['holiday_intro'] = lose_space(strip_tags($data['holiday_intro']));
 
         //图片
         $data['img'] = Img::getJoinImgs($data['holiday_id'], Img::IMG_TYPE_B);

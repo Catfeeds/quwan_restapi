@@ -73,6 +73,7 @@ class Attractions extends Model
         foreach ($data as $keyA => &$valueA) {
 
             $valueA['attractions_intro'] = htmlspecialchars_decode($valueA['attractions_intro']);
+            $valueA['attractions_intro'] = lose_space(strip_tags($valueA['attractions_intro']));
             //图片
             $valueA['img'] = Img::getOneImg($valueA['attractions_id'], Img::IMG_TYPE_A);
             //分类
@@ -100,6 +101,7 @@ class Attractions extends Model
         $data = $data->toArray();
 
         $data['attractions_intro'] = htmlspecialchars_decode($data['attractions_intro']);
+        $data['attractions_intro'] = lose_space(strip_tags($data['attractions_intro']));
 
         //图片
         $data['img'] = Img::getJoinImgs($data['attractions_id'], Img::IMG_TYPE_A);

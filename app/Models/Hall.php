@@ -69,6 +69,8 @@ class Hall extends Model
 
         $data['hall_intro'] = htmlspecialchars_decode($data['hall_intro']);
 
+        $data['hall_intro'] = lose_space(strip_tags($data['hall_intro']));
+
         //图片
         $data['img'] = Img::getJoinImgs($data['hall_id'], Img::IMG_TYPE_D);
 
