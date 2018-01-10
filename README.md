@@ -16,20 +16,28 @@
 
 * PHP扩展：openssl、mbstring、PDO、pdo_mysql。
 
-* 依赖服务：Mysql、Redis、Supervisor
+* 依赖服务：Mysql、Redis、迅搜搜索引擎
 
 ### 系统架构说明
 
 * 系统分层结构：MRSCP（Model+Repository+Service+Controller+Presenter）。
 
+* 项目文档在doc目录。
+
+* 项目文档在重要配置信息在.env文件。
+
 * 帮助助手(app/helpers.php)，在 `composer.json` 配置自动加载。
 
-```
-"autoload": {
-    "files": [
-        "app/helpers.php"
-    ]
-}
+* 迅搜搜索引擎
+```$xslt
+索引目录
+   /usr/local/xunsearch/data
+
+运行
+   /usr/local/xunsearch/bin/xs-ctl.sh restart
+
+监控
+     sudo /usr/local/xunsearch/bin/xs-ctl.sh -b local start
 ```
 
 ### 初始化说明
@@ -37,10 +45,6 @@
 3. 修改 `.env` 文件的相关环境配置信息。
 5. 数据库连接标识，命名约定：`db_` + `database name`。
 
-
-
-### 队列启动
-`php artisan queue:work --tries=1`
 
 ### 自动取订单计划任务
 ` */1 * * * * /usr/bin/curl https://restapi.qu666.cn/quwan/auto_order_cancel #订单取消时间 `
