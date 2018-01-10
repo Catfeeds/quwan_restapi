@@ -159,9 +159,15 @@ class User extends Model
             'user_nickname'=>$params['user_nickname'],
             'user_sex'=>$params['user_sex'],
             'user_avatar'=>$params['user_avatar'],
-            'user_mobile'=>$params['user_mobile'],
             'user_updated_at'=>time(),
         ];
+
+        //是否有传手机号
+        if(false === empty($params['user_mobile'])){
+
+            $arr['user_mobile'] = $params['user_mobile'];
+        }
+
         $tag = User::where('user_id','=', $userId)->update($arr);
 
         return $tag;
