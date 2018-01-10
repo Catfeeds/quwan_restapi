@@ -54,7 +54,57 @@ class MudiController extends Controller
         $destinationId = $destination_id ?? 0;
         $data = $this->mudiService->getData($destinationId);
 
-        return response_success($data);
+        return $data;
     }
+
+
+    //目的地->相关景点
+    public function attractions()
+    {
+
+        $destinationId = $this->params['destination_id'] ?? 0;
+        $destinationId = (int)$destinationId;
+
+        $data = $this->mudiService->getDataList($destinationId,'attractions');
+
+        return $data;
+    }
+
+    //目的地->相关酒店
+    public function hotel()
+    {
+
+        $destinationId = $this->params['destination_id'] ?? 0;
+        $destinationId = (int)$destinationId;
+
+        $data = $this->mudiService->getDataList($destinationId,'hotel');
+
+        return $data;
+    }
+
+    //目的地->相关线路
+    public function route()
+    {
+
+        $destinationId = $this->params['destination_id'] ?? 0;
+        $destinationId = (int)$destinationId;
+
+        $data = $this->mudiService->getDataList($destinationId,'route');
+
+        return $data;
+    }
+
+    //目的地->相关餐厅
+    public function hall()
+    {
+
+        $destinationId = $this->params['destination_id'] ?? 0;
+        $destinationId = (int)$destinationId;
+
+        $data = $this->mudiService->getDataList($destinationId,'hall');
+
+        return $data;
+    }
+
 
 }

@@ -56,39 +56,7 @@ class MudiService
 
     public function getData($destinationId)
     {
-        $data = $this->destination->getInfo($destinationId);
-        if (!$data) {
-            throw new UnprocessableEntityHttpException(850004);
-        }
-        $data = $data->toArray();
-
-        //获取目的地下关联数据
-        $joinData = $this->destinationJoin->getJoinData($destinationId);
-        if (true === empty($joinData)) {
-            throw new UnprocessableEntityHttpException(850004);
-        }
-
-        $attractions = $route = $hotel = $hall = [];
-
-        foreach ($joinData as $key => $value) {
-            //1景点,2路线,3酒店,4餐厅
-            switch ((int)$value['destination_join_type']) {
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_A:
-                    $attractions[] = $value['join_id'];
-                    break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_B:
-                    $route[] = $value['join_id'];
-                    break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_C:
-                    $hotel[] = $value['join_id'];
-                    break;
-                case $this->destinationJoin::DESTINATION_JOIN_TYPE_D:
-                    $hall[] = $value['join_id'];
-                    break;
-                default:
-                    break;
-            }
-        }
+        list($data, $hall, $route, $attractions) = $this->getMuDiInfo($destinationId);
 
         //所有景点图片
         $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_A);
@@ -109,5 +77,88 @@ class MudiService
         $data['hall'] = $this->hall->getMudiList($hall);
 
         return $data;
+    }
+
+
+
+    public function getDataList($destinationId,$key)
+    {
+        list($data, $hall, $route, $attractions) = $this->getMuDiInfo($destinationId);
+
+
+
+        $res = [];
+        switch ($key)
+        {
+            case 'attractions':
+                //景点
+                $res = $this->attractions->getMudiLists($attractions,0);
+                break;
+            case 'route':
+                //线路
+                $res = $this->route->getMudiList($route,0);
+                break;
+            case 'hotel':
+                //酒店
+                $res = $this->hotel->getMudiList($hall,0);
+                break;
+            case 'hall':
+                //餐厅
+                $res = $this->hall->getMudiList($hall,0);
+                break;
+
+            default:
+                break;
+        }
+
+        return $res;
+    }
+
+    /**
+     * @param $destinationId
+     *
+     * @return array
+     */
+    public function getMuDiInfo($destinationId): array
+    {
+        $data = $this->destination->getInfo($destinationId);
+        if (!$data)
+        {
+            throw new UnprocessableEntityHttpException(850004);
+        }
+        $data = $data->toArray();
+
+        //获取目的地下关联数据
+        $joinData = $this->destinationJoin->getJoinData($destinationId);
+        if (true === empty($joinData))
+        {
+            throw new UnprocessableEntityHttpException(850004);
+        }
+
+        $attractions = $route = $hotel = $hall = [];
+
+        foreach ($joinData as $key => $value)
+        {
+            //1景点,2路线,3酒店,4餐厅
+            switch ((int)$value['destination_join_type'])
+            {
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_A:
+                    $attractions[] = $value['join_id'];
+                    break;
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_B:
+                    $route[] = $value['join_id'];
+                    break;
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_C:
+                    $hotel[] = $value['join_id'];
+                    break;
+                case $this->destinationJoin::DESTINATION_JOIN_TYPE_D:
+                    $hall[] = $value['join_id'];
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return array($data, $hall, $route, $attractions);
     }
 }
