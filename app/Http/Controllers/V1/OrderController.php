@@ -495,7 +495,7 @@ class OrderController extends Controller
 
                 //`order_status` tinyint(1) NOT NULL DEFAULT '10' COMMENT '订单状态(10未付款,20已支付，30已核销，40已评价，0已取消',
                 // 如果已支付,不在执行
-                if((int)$order['order_status'] !== \App\Models\Order::ORDER_STATUS_10){
+                if((int)$order['order_status'] >= \App\Models\Order::ORDER_STATUS_20){
                     Log::info('订单已支付过: '.$notify->out_trade_no);
                     return 'SUCCESS';// 告诉微信，我已经处理完了，订单没找到，别再通知我了
                 }
