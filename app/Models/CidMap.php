@@ -131,8 +131,8 @@ class CidMap extends Model
             ->leftJoin('cid as c', 'c.cid_id', '=', 'cid_map.cid_id')
             ->where('cid_map.cid_map_type','=',$cidMapType)
             ->orderBy('cid_map.cid_map_sort')
+            ->groupBy('c.cid_id')
             ->get()->toArray();
-
         return $data;
     }
 
