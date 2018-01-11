@@ -86,7 +86,9 @@ class Order extends Model
 
     //取消订单
     public function orderCance($orderId,$orderCancelType){
+
         $arr = ['order_status'=>self::ORDER_STATUS_0,'order_cancel_type'=>$orderCancelType,'order_cancel_at'=>time()];
+        \Illuminate\Support\Facades\Log::info('订单: '.$orderId.' 取消参数',$arr);
         return self::where('order_id','=',$orderId)->update($arr);
     }
 
