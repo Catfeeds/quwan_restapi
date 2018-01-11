@@ -370,7 +370,7 @@ class XSService
 
             $search = $xs->search;
 
-            //$search->setFuzzy(true); //开启模糊搜索
+            $search->setFuzzy(true); //开启模糊搜索
 
             //$search->setQuery('type:"2" AND '.$key);
 
