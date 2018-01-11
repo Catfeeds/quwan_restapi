@@ -446,8 +446,11 @@ class OrderService
             throw new UnprocessableEntityHttpException(850043);
         }
 
+
         //创建微信订单
-        return $this->createWxOrder($params);
+        $res =  $this->createWxOrder($params);
+        $res['order_id'] = $orderRes->id;
+        return $res;
     }
 
 
