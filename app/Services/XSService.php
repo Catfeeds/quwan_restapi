@@ -360,7 +360,7 @@ class XSService
             } else {
                 //分词 setIgnore过滤标点 setMulti分词长短 getResult获取分词结果
                 $tokenizer = new \XSTokenizerScws();
-                $key = $tokenizer->setIgnore(true)->setMulti(5)->getResult($key);
+                $key = $tokenizer->setIgnore(true)->setMulti(15)->getResult($key);
                 $key = array_pluck($key, 'word');
                 $logKey = implode(' ', $key);
                 $key = implode('OR', $key);
