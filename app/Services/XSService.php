@@ -364,7 +364,7 @@ class XSService
                 $key = array_pluck($key, 'word');
                 $logKey = implode(' ', $key);
                 $key = implode('OR', $key);
-                //var_dump('-------分词-------', $key);
+                var_dump('-------分词-------', $key);
             }
             $key = '('.$key.')';
 
