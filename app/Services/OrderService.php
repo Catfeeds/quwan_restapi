@@ -215,6 +215,7 @@ class OrderService
             'order_status' => $this->order::ORDER_STATUS_0,
             'order_cancel_type' => $this->order::ORDER_CANCEL_TYPE_4,
             'order_refund_at' => time(),
+            'order_cancel_at' => time(),
         ];
         $this->order::where('order_id','=',$orderInfo['order_id'])->update($arr);
 
