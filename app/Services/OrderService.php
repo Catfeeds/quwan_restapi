@@ -383,6 +383,11 @@ class OrderService
                 $value['order_created_at'] = date('Y-m-d H:i:s',$value['order_created_at']);
                 $value['order_cancel_countdown'] = $countdown;
 
+                $value['order_pay_at'] = $value['order_pay_at']?date('Y-m-d H:i:s',$value['order_pay_at']):'';
+                $value['order_refund_at'] = $value['order_refund_at']?date('Y-m-d H:i:s',$value['order_refund_at']):'';
+                $value['order_cancel_at'] = $value['order_cancel_at']?date('Y-m-d H:i:s',$value['order_cancel_at']):'';
+                $value['order_check_at'] = $value['order_check_at']?date('Y-m-d H:i:s',$value['order_check_at']):'';
+
                 //兑换码
                 $value['code'] = $this->orderCode::getOrderCode($value['order_id']);
             }

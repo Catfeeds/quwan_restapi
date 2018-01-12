@@ -160,9 +160,9 @@ class HomePageRepository extends BaseRepository
                                    ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
                                    ->where('a.cid_type', '=', Cid::CID_TYPE_A)
                                    ->orderBy('home_page_value.sort')
+                                    ->groupBy('a.cid_id')
                                    ->get()
                                    ->toArray();
-
         return $res;
     }
 
