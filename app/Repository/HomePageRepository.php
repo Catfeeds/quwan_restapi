@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 
+use App\Models\Adv;
 use App\Models\Attractions;
 use App\Models\Cid;
 use App\Models\CidMap;
@@ -73,12 +74,15 @@ class HomePageRepository extends BaseRepository
      */
     private function getAdvList($value, $res)
     {
-        $res['adv'] = HomePageValue::select('a.adv_id', 'a.adv_title', 'a.adv_url', 'a.adv_type', 'a.adv_img', 'a.adv_content')
-                                   ->leftJoin('adv as a', 'a.adv_id', '=', 'home_page_value.value_id')
-                                   ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
-                                   ->orderBy('home_page_value.sort')
-                                   ->get()
-                                   ->toArray();
+        //$res['adv'] = HomePageValue::select('a.adv_id', 'a.adv_title', 'a.adv_url', 'a.adv_type', 'a.adv_img', 'a.adv_content')
+        //                           ->leftJoin('adv as a', 'a.adv_id', '=', 'home_page_value.value_id')
+        //                           ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
+        //                           ->orderBy('home_page_value.sort')
+        //                           ->get()
+        //                           ->toArray();
+
+        $res['adv'] = Adv::select('adv_id', 'adv_title', 'adv_url', 'adv_type', 'adv_img')
+                         ->where('adv_status', '=', Adv::ADV_STATUS_1)->orderBy('adv_weight')->get()->toArray();
 
         return $res;
     }
@@ -160,9 +164,10 @@ class HomePageRepository extends BaseRepository
                                    ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
                                    ->where('a.cid_type', '=', Cid::CID_TYPE_A)
                                    ->orderBy('home_page_value.sort')
-                                    ->groupBy('a.cid_id')
+                                   ->groupBy('a.cid_id')
                                    ->get()
                                    ->toArray();
+
         return $res;
     }
 
