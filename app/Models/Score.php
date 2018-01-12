@@ -11,6 +11,7 @@ class Score extends Model
     const SCORE_TYPE_B = 4;
     const SCORE_TYPE_C = 5;
     const SCORE_TYPE_D = 6;
+    const SCORE_TYPE_E = 3;
 
     // '0禁用,1启用',
     const SCORE_STATUS_0 = 0;

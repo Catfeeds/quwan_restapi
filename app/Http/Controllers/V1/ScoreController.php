@@ -48,14 +48,14 @@ class ScoreController extends Controller
         $this->params['offset'] = $this->params['offset'] ?? 1;//页码
         $this->params['offset'] = (int)$this->params['offset'];
 
-        $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2节日，3酒店,4餐厅
+        $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2目的地，3路线,4节日，5酒店,6餐厅
         $this->params['score_type'] = (int)$this->params['score_type'];
 
         $this->params['join_id'] = $this->params['join_id'] ?? 0; //关联id
         $this->params['join_id'] = (int)$this->params['join_id'];
 
 
-        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D];
+        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D,Score::SCORE_TYPE_E];
         if (!in_array($this->params['score_type'], $arr)) {
             throw new UnprocessableEntityHttpException(850005);
         }
@@ -79,7 +79,7 @@ class ScoreController extends Controller
     public function add()
     {
 
-        $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2节日，3酒店,4餐厅
+        $this->params['score_type'] = $this->params['score_type'] ?? 0; //1景点,2目的地，3路线,4节日，5酒店,6餐厅
         $this->params['score_type'] = (int)$this->params['score_type'];
 
         $this->params['join_id'] = $this->params['join_id'] ?? 0; //评价对象id
@@ -102,7 +102,7 @@ class ScoreController extends Controller
 
         Log::error('添加评价参数: ', $this->params);
 
-        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D];
+        $arr = [Score::SCORE_TYPE_A, Score::SCORE_TYPE_B, Score::SCORE_TYPE_C, Score::SCORE_TYPE_D,Score::SCORE_TYPE_E];
         if (!in_array($this->params['score_type'], $arr)) {
             throw new UnprocessableEntityHttpException(850005);
         }
