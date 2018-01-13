@@ -329,6 +329,7 @@ class OrderService
     //订单列表
     public function getListData($data)
     {
+        // $data['user_id'] = 41;
         $limit = $data['limit'] ?? 12; //每页显示数
         $offset = $data['offset'] ?? 1; //页码
         $offset = ($offset - 1) * $limit;
@@ -367,6 +368,7 @@ class OrderService
 
         $result['_count'] = $query->count();
         $result['data'] = $query->skip($offset)->take($limit)->orderBy('order_id','DESC')->get()->toArray();
+// var_dump(11111);die;
         if (false === empty($result['data'])) {
             foreach ($result['data'] as $key => &$value) {
 
