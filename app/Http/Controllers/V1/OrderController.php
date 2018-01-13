@@ -520,16 +520,17 @@ class OrderController extends Controller
                     Log::info('主订单: '.$notify->attach);
 
                     $userId = '';
-                    $goodsName = '';
+                    $goodsName = [];
                     foreach ($attachData as $key => $value) {
                         $userId = $value['user_id'];
                         $resBack = $this->notifyAttachBack($notify,$value);
-                        $goodsName .= $resBack;
+                        $goodsName[] = $resBack;
                     }
 
                     //发购买成功短信
                     $orderPayAmount =$notify->total_fee / 100; //返回是分,要转换
                     $orderPayAmount = sprintf('%0.2f', $orderPayAmount);
+                    $goodsName = implode(',', $goodsName);
                     $this->sendPaySms($orderPayAmount, $userId, $goodsName);
 
                 }else{
