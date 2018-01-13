@@ -189,6 +189,9 @@ class UserController extends Controller
 
         //类型限制
         $allowed_extensions = config('qiniu.extensions');
+        var_dump($allowed_extensions);
+        var_dump($file->getClientMimeType());
+        die;
         if (!in_array($file->getClientMimeType(), $allowed_extensions)) {
             throw new UnprocessableEntityHttpException(850008);
         }
