@@ -19,6 +19,7 @@ use App\Models\Fav;
 use App\Models\Holiday;
 use App\Models\Hotel;
 use App\Models\Img;
+use App\Models\Log;
 use App\Models\Route;
 use App\Models\User;
 
@@ -88,6 +89,7 @@ class FavService
         }
 
         $favId = $this->fav->add($data);
+
 
         return $msg;
 

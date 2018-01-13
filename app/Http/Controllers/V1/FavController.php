@@ -80,6 +80,16 @@ class FavController extends Controller
         try {
             $data = $this->favService->addOrDel($this->params);
 
+
+            //记录收藏日志
+            $logArr = [
+                'log_type' => \App\Models\Log::LOG_TYPE_4,
+                'log_time' => time(),
+                'user_id' => $this->userId,
+                'log_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            ];
+            \App\Models\Log::create($logArr);
+
             DB::connection('db_quwan')->commit();
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();

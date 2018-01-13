@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Log extends Model
 {
-    //'1登录，2分享，3首页浏览',
+    //'1登录，2分享，3首页浏览' 4收藏,
     const LOG_TYPE_1 = 1;
     const LOG_TYPE_2 = 2;
     const LOG_TYPE_3 = 3;
+    const LOG_TYPE_4 = 4;
 
     //'1景点,2目的地，3路线,4节日，5酒店,6餐厅，7图片',
     const LOG_JOIN_TYPE_1 = 1;
