@@ -5,5 +5,5 @@ return array(
     'accesskey' => env('QINIU_ACCESSKEY', ''),
     'secretkey' => env('QINIU_SECRETKEY', ''),
     'qiniuurl' => env('QINIU_QINIUURL', ''),
-    'extensions' =>  ['image/jpeg', 'image/png', 'image/gif','application/octet-stream'],
+    'extensions' =>  ['image/jpeg', 'image/png', 'image/gif','application/octet-stream','image/jpg'],
 );
