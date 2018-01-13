@@ -243,7 +243,7 @@ class OrderService
                 $num = $goods['holiday_sales_num'] - $orderInfo['order_num'];
             }
 
-            $this->attractions::where('holiday_id','=',$orderInfo['join_id'])->update(['holiday_sales_num'=>$num]);
+            $this->holiday::where('holiday_id','=',$orderInfo['join_id'])->update(['holiday_sales_num'=>$num]);
         }
 
         return ['refund_id'=>$result->refund_id];
