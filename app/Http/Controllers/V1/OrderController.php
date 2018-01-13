@@ -9,10 +9,12 @@ use App\Models\Destination;
 use App\Models\Holiday;
 use App\Models\OrderCode;
 use App\Models\RedStatus;
+use App\Models\User;
 use App\Services\AttractionsService;
 use App\Services\HolidayService;
 use App\Services\OrderService;
 use App\Services\RouteService;
+use App\Services\SmsService;
 use App\Services\UserService;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order;
@@ -528,6 +530,8 @@ class OrderController extends Controller
 
                 }
 
+
+
                 Log::error('修改订单状态成功: '.$notify->out_trade_no);
 
                 DB::connection('db_quwan')->commit();
@@ -587,9 +591,12 @@ class OrderController extends Controller
     private function notifyBack($notify,$order)
     {
         Log::info('子订单后置'.$notify->transaction_id, $order);
+
+        $orderPayAmount =$notify->total_fee / 100; //返回是分,要转换
+
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
-            'order_pay_amount' => $notify->total_fee / 100, //返回是分,要转换
+            'order_pay_amount' => $orderPayAmount,
             'order_status' => \App\Models\Order::ORDER_STATUS_20,
             'order_pay_at' => time(),
             'transaction_id' => $notify->transaction_id,
@@ -612,13 +619,19 @@ class OrderController extends Controller
         //增加销售量(退款时候要减少)
         if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
             //景点
+            $goodsName = Attractions::getKeyValue($order['join_id'], 'attractions_name');
             Attractions::where('attractions_id','=',$order['join_id'])->increment('attractions_sales_num');
         }elseif($order['order_type'] === \App\Models\Order::ORDER_TYPE_B){
             //节日
+            $goodsName = Holiday::getKeyValue($order['join_id'], 'holiday_name');
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
         }
 
         Log::info('增加销售量(退款时候要减少)ok');
+
+        //发购买成功短信
+        $this->sendPaySms($orderPayAmount, $order, $goodsName);
+
     }
 
     //订单支付
@@ -925,6 +938,20 @@ class OrderController extends Controller
                 ->get()
                 ->toArray();
         return $code;
+    }
+
+    //发够购买成功短信
+    public function sendPaySms ($orderPayAmount, $order, $goodsName)
+    {
+        //获取用户手机号
+        $mobile = User::getKeyValue($order['user_id'], 'user_mobile');
+        if ($mobile) {
+            Log::info('发短信参数: '.$mobile. ','.$goodsName.','. $orderPayAmount);
+
+            //发短信 58477	普通短信		你购买了{1}，消费了{2}元
+            $res = SmsService::send(58477, $mobile, [$goodsName, $orderPayAmount]);
+            Log::info('发短信结果: ', $res);
+        }
     }
 
 }

@@ -120,4 +120,10 @@ class Attractions extends Model
 
         return $data;
     }
+
+    //获取单个字段值
+    public static function getKeyValue($attractionsId, $key)
+    {
+       return self::where('attractions_id','=',$attractionsId)->value($key);
+    }
 }

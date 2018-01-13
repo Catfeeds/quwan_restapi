@@ -362,7 +362,9 @@ class TestController extends Controller
             throw new UnprocessableEntityHttpException(850009);
         }
 
-        $res = $this->smsService::send($phone);
+        // $res = $this->smsService::send($phone);
+        // 58477	普通短信		你购买了{1}，消费了{2}元
+        $res = $this->smsService::send(58477, $phone, ['商品名称','123.56']);
 
         return response_success($res);
 

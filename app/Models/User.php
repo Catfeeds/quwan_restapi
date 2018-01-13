@@ -186,4 +186,11 @@ class User extends Model
         return $tag;
     }
 
+
+    //获取单个字段值
+    public static function getKeyValue($userId, $key)
+    {
+        return self::where('user_id','=',$userId)->value($key);
+    }
+
 }

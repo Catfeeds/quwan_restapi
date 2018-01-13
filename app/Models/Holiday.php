@@ -123,4 +123,11 @@ class Holiday extends Model
         return $data;
     }
 
+
+    //获取单个字段值
+    public static function getKeyValue($holidayId, $key)
+    {
+        return self::where('holiday_id','=',$holidayId)->value($key);
+    }
+
 }
