@@ -477,7 +477,7 @@ class OrderController extends Controller
             if($notify->attach){
                 Log::info('主订单: '.$notify->attach);
                 //通过主订单获取所有的子订单与状态
-                $attachData = \App\Models\Order::select('order_id','order_pay_amount','shop_id','order_type','join_id')
+                $attachData = \App\Models\Order::select('order_id','order_pay_amount','shop_id','order_type','join_id','user_id')
                     ->where('original_id','=',$notify->attach)
                     ->where('order_status','=',\App\Models\Order::ORDER_STATUS_10)
                     ->get()
@@ -518,9 +518,19 @@ class OrderController extends Controller
                 //是否主订单
                 if($notify->attach){
                     Log::info('主订单: '.$notify->attach);
+
+                    $userId = '';
+                    $goodsName = '';
                     foreach ($attachData as $key => $value) {
-                        $this->notifyAttachBack($notify,$value);
+                        $userId = $value['user_id'];
+                        $resBack = $this->notifyAttachBack($notify,$value);
+                        $goodsName .= $resBack;
                     }
+
+                    //发购买成功短信
+                    $orderPayAmount =$notify->total_fee / 100; //返回是分,要转换
+                    $orderPayAmount = sprintf('%0.2f', $orderPayAmount);
+                    $this->sendPaySms($orderPayAmount, $userId, $goodsName);
 
                 }else{
 
@@ -553,6 +563,7 @@ class OrderController extends Controller
     private function notifyAttachBack($notify,$order)
     {
         Log::info('主订单后置'.$notify->transaction_id, $order);
+
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
             'order_pay_amount' => $order['order_pay_amount'],
@@ -578,13 +589,17 @@ class OrderController extends Controller
         //增加销售量(退款时候要减少)
         if($order['order_type'] === \App\Models\Order::ORDER_TYPE_A){
             //景点
+            $goodsName = Attractions::getKeyValue($order['join_id'], 'attractions_name');
             Attractions::where('attractions_id','=',$order['join_id'])->increment('attractions_sales_num');
         }elseif($order['order_type'] === \App\Models\Order::ORDER_TYPE_B){
             //节日
+            $goodsName = Holiday::getKeyValue($order['join_id'], 'holiday_name');
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
         }
 
         Log::info('增加销售量(退款时候要减少)ok');
+
+        return $goodsName;
     }
 
     //子订单支付成功后续处理
@@ -593,6 +608,7 @@ class OrderController extends Controller
         Log::info('子订单后置'.$notify->transaction_id, $order);
 
         $orderPayAmount =$notify->total_fee / 100; //返回是分,要转换
+        $orderPayAmount = sprintf('%0.2f', $orderPayAmount);
 
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
@@ -630,7 +646,7 @@ class OrderController extends Controller
         Log::info('增加销售量(退款时候要减少)ok');
 
         //发购买成功短信
-        $this->sendPaySms($orderPayAmount, $order, $goodsName);
+        $this->sendPaySms($orderPayAmount, $order['user_id'], $goodsName);
 
     }
 
@@ -941,10 +957,10 @@ class OrderController extends Controller
     }
 
     //发够购买成功短信
-    public function sendPaySms ($orderPayAmount, $order, $goodsName)
+    public function sendPaySms ($orderPayAmount, $userId, $goodsName)
     {
         //获取用户手机号
-        $mobile = User::getKeyValue($order['user_id'], 'user_mobile');
+        $mobile = User::getKeyValue($userId, 'user_mobile');
         if ($mobile) {
             Log::info('发短信参数: '.$mobile. ','.$goodsName.','. $orderPayAmount);
 
