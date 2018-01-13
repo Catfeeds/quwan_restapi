@@ -71,6 +71,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('score', 'ScoreController@index'); //评价列表
     $app->get('hongbao', 'OrderController@hongbao'); //红包设置
 
+    $app->get('auto_holiday_sms', 'OrderController@autoHolidaySms'); //节日来临提醒
     $app->get('auto_order_cancel', 'OrderController@autoOrderCancel'); //自动取消未支付订单
 
 });

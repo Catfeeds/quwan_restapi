@@ -8,6 +8,7 @@ use App\Models\Attractions;
 use App\Models\Destination;
 use App\Models\Holiday;
 use App\Models\OrderCode;
+use App\Models\OrderSms;
 use App\Models\RedStatus;
 use App\Models\User;
 use App\Services\AttractionsService;
@@ -73,6 +74,57 @@ class OrderController extends Controller
         //接受到的参数
         $this->params = $this->request->all();
 
+    }
+
+
+
+
+    //节日来临提醒
+    public function autoHolidaySms()
+    {
+        Log::info('节日来临提醒开始==================== ');
+
+        //获取所有2天后就开始的节日
+        $time = time() + 172800;
+        $list = Holiday::select('holiday_id','holiday_name')->where('holiday_status','=',Holiday::HOLIDAY_STATUS_1)
+            ->where('holiday_start_at','>',time())
+            ->where('holiday_start_at','<',$time)
+            ->get()->toArray();
+
+        // var_dump($list);
+        if($list){
+            foreach ($list as $key => $value) {
+                DB::connection('db_quwan')->beginTransaction();
+                try {
+
+                    //获取相关未核销订单
+                    $orderRes = \App\Models\Order::select('user_id','order_id')
+                        ->where('order_status','=',\App\Models\Order::ORDER_STATUS_20)
+                        ->where('order_type','=',\App\Models\Order::ORDER_TYPE_B)
+                        ->where('join_id','=',$value['holiday_id'])
+                        ->first();
+                    if($orderRes){
+                        //是否有发送记录
+                        $tag = OrderSms::where('order_id','=', $orderRes->order_id)->count();
+                       // var_dump($tag);die;
+                        if(!$tag){
+                            $this->sendHolidaySms ($orderRes->user_id, $value['holiday_name'], $orderRes->order_id);
+                        }
+                    }
+
+                    DB::connection('db_quwan')->commit();
+                } catch (Exception $e) {
+                    DB::connection('db_quwan')->rollBack();
+
+                    //记错误日志
+                    Log::error('节日来临提醒异常: ', ['error' => $e]);
+
+                    continue;
+                }
+            }
+        }
+
+        Log::info('节日来临提醒结束==================== ');
     }
 
 
@@ -969,6 +1021,28 @@ class OrderController extends Controller
             $res = SmsService::send(58477, $mobile, [$goodsName, $orderPayAmount]);
             Log::info('发短信结果: ', $res);
         }
+    }
+
+    //发节日提醒短信
+    public function sendHolidaySms ($userId, $goodsName, $orderId,  $num = 2)
+    {
+        //获取用户手机号
+        $mobile = User::getKeyValue($userId, 'user_mobile');
+        if ($mobile) {
+            Log::info('发短信参数: '.$mobile. ','.$goodsName.','. $num);
+
+            //发短信 58480	节日提醒	你报名的节日{1}，将在{2}天后开始，请注意准备。
+            $res = SmsService::send(58480, $mobile, [$goodsName, $num]);
+            Log::info('发短信结果: ', $res);
+
+            //记录发送日志
+            $arr = [
+                'order_id' => $orderId,
+                'created_at' => time(),
+            ];
+            OrderSms::create($arr);
+        }
+
     }
 
 }
