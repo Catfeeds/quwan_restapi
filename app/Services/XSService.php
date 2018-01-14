@@ -451,7 +451,7 @@ class XSService
 
             $search_cost = microtime(true) - $search_begin; //执行结束时间
             //var_dump('-------执行时间-------', $search_cost);
-            Log::Info('经纬度:',$params);
+
             $arr = [];
             if (false === empty($docs)) {
                 foreach ($docs as $key => $value) {
