@@ -1,6 +1,26 @@
 <?php
 
 
+if (!function_exists('xcx_send_template')){
+
+    function xcx_send_template($star,$token)
+    {
+        $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token;
+
+        $ch = curl_init($wwwB);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS,$star);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($star))
+        );
+        $result = curl_exec($ch);
+
+
+        return $result;
+    }
+}
 if (!function_exists('new_array_sort'))
 {
     function new_array_sort($arr, $keys, $type = 'asc')
@@ -205,16 +225,22 @@ if (!function_exists('post_curl_content'))
 
         if (is_array($postFields) && 0 < count($postFields))
         {
-            $postBodyString = "";
-            foreach ($postFields as $k => $v)
-            {
-                $postBodyString .= "$k=" . urlencode($v) . "&";
-            }
-            unset($k, $v);
+            // $postBodyString = "";
+            // foreach ($postFields as $k => $v)
+            // {
+            //
+            //     $postBodyString .= "$k=" . urlencode($v) . "&";
+            // }
+            // unset($k, $v);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, substr($postBodyString, 0, -1));
+            // curl_setopt($ch, CURLOPT_POSTFIELDS, substr($postBodyString, 0, -1));
+
+            // 把post的变量加上
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postFields));  //所需传的数组用http_bulid_query()函数处理一下，就ok了
+
+
         }
 
         $reponse = curl_exec($ch);

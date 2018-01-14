@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Redis;
 class OrderController extends Controller
 {
     const AUTO_CANCEL_TIME = 900; //自动取消订单时间 15分钟;
+    const TOKEN_KEY = 'quwan:wx:token'; // 微信token;
 
     protected $tokenService;
     protected $request;
@@ -85,48 +86,80 @@ class OrderController extends Controller
         $wxConfig['secret'] = $wxConfig['xiao_secret'];
 
 
-        $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
-        $res = get_web_contents($wwwa);
-        $token = json_decode($res['Body'], true);
-        //获取模板消息
-        // $arr = [
-        //     'access_token' =>$token['access_token'],
-        //     'offset' =>0,
-        //     'count' =>20,
-        // ];
-        // $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/list';
+        // $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
+        // $res = get_web_contents($wwwa);
+        // $token = json_decode($res['Body'], true);
+
+       // $token = Cache::get(self::TOKEN_KEY);
+       //  if(!$token){
+            $app = new Application($wxConfig);
+            $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
+            $token = $accessToken->getToken();
+
+            //$app['access_token']->setToken('$token', 6600); //秒
+            // Cache::put(self::TOKEN_KEY, $token, 110); //分
+        // }
+        // var_dump($token);
+
+        if(!$token){
+            return 'token不存在';
+        }
+        // var_dump($token);die;
 
 
-        $arr = [
-            'touser' => 'oal4F0a2WLj1z7o569TMPeHvQPhg',
-            'template_id' => 'Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM',
-        ];
-        $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token['access_token'];
+        $star = '{
+          "touser": "oal4F0a2WLj1z7o569TMPeHvQPhg",  
+          "template_id": "Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM", 
+          "form_id": "wx20180114174646be82f1936e0852851880",         
+          "data": {
+              "keyword1": {
+                  "value": "339208499", 
+                  "color": "#173177"
+              }, 
+              "keyword2": {
+                  "value": "2015年01月05日 12:30", 
+                  "color": "#173177"
+              }, 
+              "keyword3": {
+                  "value": "粤海喜来登酒店", 
+                  "color": "#173177"
+              } , 
+              "keyword4": {
+                  "value": "广州市天河区天河路208号", 
+                  "color": "#173177"
+              } 
+          },
+          "emphasis_keyword": "" 
+        }';
 
-        $res = get_web_contents($wwwB,'POST',$arr);
+        // $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token;
+        //
+        // $ch = curl_init($wwwB);
+        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        // curl_setopt($ch, CURLOPT_POSTFIELDS,$star);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        //         'Content-Type: application/json',
+        //         'Content-Length: ' . strlen($star))
+        // );
 
-        return  $res['Body'];
+        $x=0;
 
-        $app = new Application($wxConfig);
+        // do {
+        //     $result = xcx_send_template($star,$token);
+        //
+        //
+        //     if(strpos($result,'40001')){
+        //         var_dump('发送:'. $x);
+        //         xcx_send_template($star,$token);
+        //     }
+        //     $x++;
+        // } while ($x<=3);
+        // return  $result;
+        $result = xcx_send_template($star,$token);
 
+        return  $result;
 
-// 获取 access token 实例
-        $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
-        $token = $accessToken->getToken(); // token 字符串
-       // $token = $accessToken->getToken(true); // 强制重新从微信服务器获取 token.
-        $arr = [
-            'access_token' =>$token,
-            'offset' =>0,
-            'count' =>20,
-        ];
-        $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/list';
-
-        $res = get_web_contents($www,'POST',$arr);
-
-        // var_dump($res);die;
-        Log::info('发送模板消息: '. $res['Body']);
-
-        return  $res['Body'];
 
         //购买成功通知 Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM
         // 订单号 {{keyword1.DATA}}
@@ -140,24 +173,7 @@ class OrderController extends Controller
         // 退款时间 {{keyword3.DATA}}
         // 订单金额 {{keyword4.DATA}}
 
-        // $wxConfig = config('wx');
-        //
-        // $app = new Application($wxConfig);
-        //
-        // $notice = $app->notice;
-        // $userId = 'ovwAZuBLwSiize3Zjd-DiCZPWTf8';
-        // $templateId = 'khV6wM2PO7inzv9octCaRQvp_HbvdHG4J1zIZFSn8xU';
-        // $url = 'http://www.baidu.com';
-        // $data = array(
-        //     "first"  => "恭喜你购买成功！",
-        //     "product"   => "巧克力",
-        //     "price"  => "39.8元",
-        //     "time"  => date('Y-m-d H:i:s', time()),
-        //     "remark" => "欢迎再次购买！",
-        // );
-        //
-        // $result = $notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
-        // return $result;
+
 
     }
 
