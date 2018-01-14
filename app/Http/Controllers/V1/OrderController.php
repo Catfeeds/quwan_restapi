@@ -101,7 +101,7 @@ class OrderController extends Controller
             'touser' => 'oal4F0a2WLj1z7o569TMPeHvQPhg',
             'template_id' => 'Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM',
         ];
-        $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token['access_token']
+        $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token['access_token'];
 
         $res = get_web_contents($wwwB,'POST',$arr);
 
