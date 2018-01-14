@@ -1,6 +1,19 @@
 <?php
 
+//获取小程序token
+if (!function_exists('get_xcx_token')){
 
+    function get_xcx_token($app_id,$secret)
+    {
+        $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$app_id.'&secret='.$secret;
+        $res = get_web_contents($wwwa);
+        $token = json_decode($res['Body'], true);
+        $token = $token['access_token'];
+        return $token;
+    }
+}
+
+//发送小程序模板消息
 if (!function_exists('xcx_send_template')){
 
     function xcx_send_template($star,$token)
@@ -21,6 +34,7 @@ if (!function_exists('xcx_send_template')){
         return $result;
     }
 }
+
 if (!function_exists('new_array_sort'))
 {
     function new_array_sort($arr, $keys, $type = 'asc')

@@ -86,20 +86,22 @@ class OrderController extends Controller
         $wxConfig['secret'] = $wxConfig['xiao_secret'];
 
 
-        // $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
-        // $res = get_web_contents($wwwa);
-        // $token = json_decode($res['Body'], true);
 
-       // $token = Cache::get(self::TOKEN_KEY);
-       //  if(!$token){
-            $app = new Application($wxConfig);
-            $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
-            $token = $accessToken->getToken();
+
+       $token = Cache::get(self::TOKEN_KEY);
+        if(!$token){
+
+            $token = get_xcx_token($wxConfig['app_id'],$wxConfig['secret']);
+
+
+       //      $app = new Application($wxConfig);
+       //      $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
+       //      $token = $accessToken->getToken();
 
             //$app['access_token']->setToken('$token', 6600); //秒
-            // Cache::put(self::TOKEN_KEY, $token, 110); //分
-        // }
-        // var_dump($token);
+            Cache::put(self::TOKEN_KEY, $token, 110); //分
+        }
+        // var_dump($token);die;
 
         if(!$token){
             return 'token不存在';
@@ -110,7 +112,7 @@ class OrderController extends Controller
         $star = '{
           "touser": "oal4F0a2WLj1z7o569TMPeHvQPhg",  
           "template_id": "Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM", 
-          "form_id": "wx20180114174646be82f1936e0852851880",         
+          "form_id": "wx20180114175357f0e5fe3b9f0291433297",         
           "data": {
               "keyword1": {
                   "value": "339208499", 
