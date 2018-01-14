@@ -424,6 +424,7 @@ class OrderService
                 'order_amount' => $value['order_amount'],
                 'order_sn' => $value['order_sn'],
             ];
+
         }
 
 
@@ -446,6 +447,10 @@ class OrderService
         $res['order_sn'] = $goods;
         $res['wx_amount'] = $wxAmount;
         //var_dump($goods,$res);die;
+
+        //更新订单信息prepay_id
+        Order::where('original_id','=',$originalId)->update(['prepay_id'=>$res['prepay_id']]);
+
         return $res;
     }
 
@@ -463,6 +468,10 @@ class OrderService
         //创建微信订单
         $res =  $this->createWxOrder($params);
         $res['order_id'] = $orderRes->id;
+
+        //更新订单信息prepay_id
+        Order::updateKeyValue ($res['order_id'], ['prepay_id'=>$res['prepay_id']]);
+
         return $res;
     }
 

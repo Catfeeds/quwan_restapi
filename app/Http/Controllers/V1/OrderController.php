@@ -266,6 +266,9 @@ class OrderController extends Controller
 
             $data = $this->orderService->editOriginal($userId,$originalId);
 
+            //更新订单信息prepay_id
+            \App\Models\Order::where('original_id','=',$originalId)->update(['prepay_id'=>'']);
+
             DB::connection('db_quwan')->commit();
         } catch (Exception $e) {
             DB::connection('db_quwan')->rollBack();
