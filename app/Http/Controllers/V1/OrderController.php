@@ -85,20 +85,27 @@ class OrderController extends Controller
         $wxConfig['secret'] = $wxConfig['xiao_secret'];
 
 
-        // $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
-        // $res = get_web_contents($wwwa);
-        // $token = json_decode($res['Body'], true);
-        //
+        $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
+        $res = get_web_contents($wwwa);
+        $token = json_decode($res['Body'], true);
+        //获取模板消息
         // $arr = [
         //     'access_token' =>$token['access_token'],
         //     'offset' =>0,
         //     'count' =>20,
         // ];
         // $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/list';
-        //
-        // $res = get_web_contents($www,'POST',$arr);
-        //
-        // return  $res['Body'];
+
+
+        $arr = [
+            'touser' => 'oal4F0a2WLj1z7o569TMPeHvQPhg',
+            'template_id' => 'Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM',
+        ];
+        $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token['access_token']
+
+        $res = get_web_contents($www,'POST',$arr);
+
+        return  $res['Body'];
 
         $app = new Application($wxConfig);
 
@@ -120,6 +127,18 @@ class OrderController extends Controller
         Log::info('发送模板消息: '. $res['Body']);
 
         return  $res['Body'];
+
+        //购买成功通知 Iet7uQTSZGPRfMseJEBTJ4OIrJ6279hH41G1rPmo6tM
+        // 订单号 {{keyword1.DATA}}
+        // 备注 {{keyword2.DATA}}
+        // 订单总价 {{keyword3.DATA}}
+        // 购买时间 {{keyword4.DATA}}
+
+        //退款成功通知	niaRW0RTvNuhhG_t0M8kjRuM1-OxZQVhLLktMsec8vI
+        // 订单号 {{keyword1.DATA}}
+        // 备注 {{keyword2.DATA}}
+        // 退款时间 {{keyword3.DATA}}
+        // 订单金额 {{keyword4.DATA}}
 
         // $wxConfig = config('wx');
         //
@@ -1097,8 +1116,7 @@ class OrderController extends Controller
             Log::info('发短信参数: '.$mobile. ','.$goodsName.','. $orderPayAmount);
 
             //发短信 58477	普通短信		你购买了{1}，消费了{2}元
-            $res = SmsService::send(58477, $mobile, [$goodsName, $orderPayAmount]);
-            Log::info('发短信结果: ', $res);
+            SmsService::sendOrder(58477, $mobile, [$goodsName, $orderPayAmount]);
         }
     }
 
@@ -1111,8 +1129,7 @@ class OrderController extends Controller
             Log::info('发短信参数: '.$mobile. ','.$goodsName.','. $num);
 
             //发短信 58480	节日提醒	你报名的节日{1}，将在{2}天后开始，请注意准备。
-            $res = SmsService::send(58480, $mobile, [$goodsName, $num]);
-            Log::info('发短信结果: ', $res);
+            SmsService::sendOrder(58480, $mobile, [$goodsName, $num]);
 
             //记录发送日志
             $arr = [

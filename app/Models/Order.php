@@ -176,4 +176,12 @@ class Order extends Model
         return $res;
     }
 
+
+
+    //更新值
+    public static function updateKeyValue ($orderId, $arr)
+    {
+        return self::where('order_id', '=', $orderId)->update($arr);
+    }
+
 }
