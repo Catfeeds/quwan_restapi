@@ -87,9 +87,12 @@ class FavController extends Controller
                     'log_time' => time(),
                     'user_id' => $this->userId,
                     'log_ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                    'join_id' => $this->params['join_id'],
+                    'log_join_type' => $this->params['fav_type'],
                 ];
                 \App\Models\Log::create($logArr);
             }
+
 
 
             DB::connection('db_quwan')->commit();
