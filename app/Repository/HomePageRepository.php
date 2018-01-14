@@ -323,7 +323,7 @@ class HomePageRepository extends BaseRepository
                         $tmp[] = $value;
                     }
                 }
-                $tmp = new_array_sort($tmp, 'attractions_sales_num', 'desc');
+                $tmp = new_array_sort($tmp, 'route_day_num', 'desc');
                 $route = $tmp[0] ?? [];
             }
 
