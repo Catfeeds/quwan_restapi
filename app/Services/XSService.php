@@ -463,6 +463,7 @@ class XSService
                     //$arr[] = $valArr;
 
                     if(false === empty($params['lon'])){
+                        Log::Info('经纬度:',$params);
                         $distance = round($xs::geoDistance($params['lon'], $params['lat'], $valArr['lon'], $valArr['lat']));
                     }
                     $arr[] = [
