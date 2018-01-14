@@ -91,6 +91,14 @@ class FavController extends Controller
                     'log_join_type' => $this->params['fav_type'],
                 ];
                 \App\Models\Log::create($logArr);
+            }else{
+                $logArr = [
+                    'log_type' => \App\Models\Log::LOG_TYPE_4,
+                    'user_id' => $this->userId,
+                    'join_id' => $this->params['join_id'],
+                    'log_join_type' => $this->params['fav_type'],
+                ];
+                \App\Models\Log::where($logArr)->delete();
             }
 
 
