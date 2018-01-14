@@ -103,7 +103,7 @@ class OrderController extends Controller
         ];
         $wwwB = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token='.$token['access_token']
 
-        $res = get_web_contents($www,'POST',$arr);
+        $res = get_web_contents($wwwB,'POST',$arr);
 
         return  $res['Body'];
 
