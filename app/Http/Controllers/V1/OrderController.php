@@ -654,6 +654,7 @@ class OrderController extends Controller
             //节日
             $goodsName = Holiday::getKeyValue($order['join_id'], 'holiday_name');
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
+            Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_total');
         }
 
         Log::info('增加销售量(退款时候要减少)ok');
@@ -700,6 +701,8 @@ class OrderController extends Controller
             //节日
             $goodsName = Holiday::getKeyValue($order['join_id'], 'holiday_name');
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
+            Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_total');
+
         }
         Log::info('增加销售量(退款时候要减少)ok');
 
