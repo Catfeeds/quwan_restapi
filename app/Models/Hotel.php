@@ -89,13 +89,13 @@ class Hotel extends Model
                      ->where('hotel_status', '=', self::HOTEL_STATUS_1)
                      ->whereIn('hotel_id', $hotelIds)
                      ->orderBy('hotel_score_num', 'desc');
-
         if ($limit)
         {
             $query->limit(2);
         }
 
         $data = $query->get()->toArray();
+        //var_dump($data);die;
 
         if (true === empty($data))
         {

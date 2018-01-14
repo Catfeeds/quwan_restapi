@@ -56,7 +56,7 @@ class MudiService
 
     public function getData($destinationId)
     {
-        list($data, $hall, $route, $attractions) = $this->getMuDiInfo($destinationId);
+        list($data, $hall, $hotel,$route, $attractions) = $this->getMuDiInfo($destinationId);
 
         //所有景点图片
         $data['img'] = $this->img->getImgs($attractions, $this->img::IMG_TYPE_A);
@@ -71,7 +71,7 @@ class MudiService
         $data['route'] = $this->route->getMudiList($route);
 
         //两个评价最多的酒店
-        $data['hotel'] = $this->hotel->getMudiList($hall);
+        $data['hotel'] = $this->hotel->getMudiList($hotel);
 
         //两个评价最多的餐厅
         $data['hall'] = $this->hall->getMudiList($hall);
@@ -83,7 +83,7 @@ class MudiService
 
     public function getDataList($destinationId,$key)
     {
-        list($data, $hall, $route, $attractions) = $this->getMuDiInfo($destinationId);
+        list($data, $hall, $hotel,$route, $attractions) = $this->getMuDiInfo($destinationId);
 
 
 
@@ -100,7 +100,7 @@ class MudiService
                 break;
             case 'hotel':
                 //酒店
-                $res = $this->hotel->getMudiList($hall,0);
+                $res = $this->hotel->getMudiList($hotel,0);
                 break;
             case 'hall':
                 //餐厅
@@ -130,6 +130,7 @@ class MudiService
 
         //获取目的地下关联数据
         $joinData = $this->destinationJoin->getJoinData($destinationId);
+
         if (true === empty($joinData))
         {
             throw new UnprocessableEntityHttpException(850004);
@@ -158,7 +159,6 @@ class MudiService
                     break;
             }
         }
-
-        return array($data, $hall, $route, $attractions);
+        return array($data, $hall, $hotel,$route, $attractions);
     }
 }
