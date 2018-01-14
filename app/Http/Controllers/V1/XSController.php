@@ -189,7 +189,7 @@ class XSController extends Controller
         $this->params['lat'] = $this->params['lat'] ?? ''; //用户纬度
 
         //获取用户经纬度
-        if (!$this->userId)
+        if ($this->userId)
         {
             $userLon = User::getUserLon($this->userId);
             Log::Info('用户:',$userLon);
