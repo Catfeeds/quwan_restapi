@@ -47,11 +47,11 @@ class User extends Model
      * @var array
      */
     protected $casts = array(
-        'user_id' => 'int',
-        'user_sex' => 'int',
+        'user_id'         => 'int',
+        'user_sex'        => 'int',
         'user_is_binding' => 'int',
-        'user_msg_num' => 'int',
-        'user_status' => 'int',
+        'user_msg_num'    => 'int',
+        'user_status'     => 'int',
         'user_created_at' => 'int',
         'user_updated_at' => 'int',
     );
@@ -61,11 +61,12 @@ class User extends Model
      * @param $value
      * @return string
      */
-    public  function getUserAvatarAttribute($value)
+    public function getUserAvatarAttribute ($value)
     {
-        if(!substr_count($value, 'http')){
+        if (!substr_count($value, 'http')) {
             $value = config('qiniu.qiniuurl') . $value;
         }
+
         return $value;
     }
 
@@ -75,9 +76,10 @@ class User extends Model
      * @param $value
      * @return string
      */
-    public  function getUserSexAttribute($value)
+    public function getUserSexAttribute ($value)
     {
         $value = (int)$value === self::USER_SEX_0 ? '女' : '男';
+
         return $value;
     }
 
@@ -86,7 +88,7 @@ class User extends Model
      * @param $userId
      * @return array
      */
-    public function getInfo($userId)
+    public function getInfo ($userId)
     {
         $data = self::select('user_id', 'user_nickname', 'user_sex', 'user_avatar', 'user_mobile', 'user_is_binding',
             'openid', 'user_lon', 'user_lat', 'user_geohash', 'user_msg_num', 'user_status', 'user_created_at')
@@ -95,26 +97,27 @@ class User extends Model
             return [];
         }
         $data = $data->toArray();
+
         return $data;
     }
 
     //添加用户
-    public function register($params)
+    public function register ($params)
     {
 
         //检测用户是否存在不存在注册
-        $newUserId = User::where('openid','=', $params['openid'])->value('user_id');
+        $newUserId = User::where('openid', '=', $params['openid'])->value('user_id');
         if (!$newUserId) {
             $arr = [
-                'user_nickname' => $params['user_nickname'],
-                'user_sex'  => $params['user_sex'],
-                'user_avatar'  => $params['user_avatar'],
-                'openid'  => $params['openid'],
+                'user_nickname'   => $params['user_nickname'],
+                'user_sex'        => $params['user_sex'],
+                'user_avatar'     => $params['user_avatar'],
+                'openid'          => $params['openid'],
                 'user_created_at' => time(),
-                'user_updated_at'  => time(),
+                'user_updated_at' => time(),
             ];
             $userRes = User::create($arr);
-            if($userRes){
+            if ($userRes) {
                 $newUserId = $userRes->id;
             }
         }
@@ -124,14 +127,14 @@ class User extends Model
     }
 
     //修改用户经纬度
-    public function editLbs($userId,$params)
+    public function editLbs ($userId, $params)
     {
         $arr = [
-            'user_lon'=>$params['user_lon'],
-            'user_lat'=>$params['user_lat'],
-            'user_updated_at'=>time(),
+            'user_lon'        => $params['user_lon'],
+            'user_lat'        => $params['user_lat'],
+            'user_updated_at' => time(),
         ];
-        $tag = User::where('user_id','=', $userId)->update($arr);
+        $tag = User::where('user_id', '=', $userId)->update($arr);
 
         return $tag;
     }
@@ -141,7 +144,7 @@ class User extends Model
      * @param $userId
      * @return array
      */
-    public static function getUserLon($userId)
+    public static function getUserLon ($userId)
     {
         $data = self::select('user_lon', 'user_lat')
             ->where('user_id', '=', $userId)->first();
@@ -149,48 +152,72 @@ class User extends Model
             return [];
         }
         $data = $data->toArray();
+
         return $data;
     }
 
     //修改用户信息
-    public function editInfo($userId,$params)
+    public function editInfo ($userId, $params)
     {
         $arr = [
-            'user_nickname'=>$params['user_nickname'],
-            'user_sex'=>$params['user_sex'],
-            'user_avatar'=>$params['user_avatar'],
-            'user_updated_at'=>time(),
+            'user_nickname'   => $params['user_nickname'],
+            'user_sex'        => $params['user_sex'],
+            'user_avatar'     => $params['user_avatar'],
+            'user_updated_at' => time(),
         ];
 
         //是否有传手机号
-        if(false === empty($params['user_mobile'])){
+        if (false === empty($params['user_mobile'])) {
 
             $arr['user_mobile'] = $params['user_mobile'];
         }
 
-        $tag = User::where('user_id','=', $userId)->update($arr);
+        $tag = User::where('user_id', '=', $userId)->update($arr);
 
         return $tag;
     }
 
     //绑定用户手机
-    public function bindMobile($userId,$userMobile)
+    public function bindMobile ($userId, $userMobile)
     {
         $arr = [
-            'user_is_binding'=>self::USER_IS_BINDING_1,
-            'user_mobile'=>$userMobile,
-            'user_updated_at'=>time(),
+            'user_is_binding' => self::USER_IS_BINDING_1,
+            'user_mobile'     => $userMobile,
+            'user_updated_at' => time(),
         ];
-        $tag = User::where('user_id','=', $userId)->update($arr);
+        $tag = User::where('user_id', '=', $userId)->update($arr);
 
         return $tag;
     }
 
 
     //获取单个字段值
-    public static function getKeyValue($userId, $key)
+    public static function getKeyValue ($userId, $key)
     {
-        return self::where('user_id','=',$userId)->value($key);
+        return self::where('user_id', '=', $userId)->value($key);
     }
+
+
+    //增加单个字段值
+    public static function incKeyValue ($userId, $key, $num = 0)
+    {
+        if ($num) {
+            return self::where('user_id', '=', $userId)->increment($key, $num);
+        } else {
+            return self::where('user_id', '=', $userId)->increment($key);
+        }
+    }
+
+
+    //减少单个字段值
+    public static function decKeyValue ($userId, $key, $num = 0)
+    {
+        if ($num) {
+            return self::where('user_id', '=', $userId)->decrement($key, $num);
+        } else {
+            return self::where('user_id', '=', $userId)->decrement($key);
+        }
+    }
+
 
 }

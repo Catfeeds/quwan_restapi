@@ -246,6 +246,11 @@ class OrderService
             $this->holiday::where('holiday_id','=',$orderInfo['join_id'])->update(['holiday_sales_num'=>$num]);
         }
 
+
+        //减少用户累计消费金额',
+        User::incKeyValue ($orderInfo['user_id'], 'user_total_money', $orderInfo['order_pay_amount']);
+        Log::info('减少用户累计消费金额ok ');
+
         return ['refund_id'=>$result->refund_id];
 
         //返回

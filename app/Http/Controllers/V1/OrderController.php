@@ -579,9 +579,15 @@ class OrderController extends Controller
                         $goodsName[] = $resBack;
                     }
 
-                    //发购买成功短信
+
                     $orderPayAmount =$notify->total_fee / 100; //返回是分,要转换
                     $orderPayAmount = sprintf('%0.2f', $orderPayAmount);
+
+                    //累加用户累计消费金额',
+                    User::incKeyValue ($userId, 'user_total_money', $orderPayAmount);
+                    Log::info('累加用户累计消费金额ok ');
+
+                    //发购买成功短信
                     $goodsName = implode(',', $goodsName);
                     $this->sendPaySms($orderPayAmount, $userId, $goodsName);
 
@@ -695,8 +701,11 @@ class OrderController extends Controller
             $goodsName = Holiday::getKeyValue($order['join_id'], 'holiday_name');
             Holiday::where('holiday_id','=',$order['join_id'])->increment('holiday_sales_num');
         }
-
         Log::info('增加销售量(退款时候要减少)ok');
+
+        //累加用户累计消费金额',
+        User::incKeyValue ($order['user_id'], 'user_total_money', $orderPayAmount);
+        Log::info('累加用户累计消费金额ok ');
 
         //发购买成功短信
         $this->sendPaySms($orderPayAmount, $order['user_id'], $goodsName);
