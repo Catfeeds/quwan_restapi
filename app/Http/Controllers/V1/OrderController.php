@@ -76,6 +76,55 @@ class OrderController extends Controller
 
     }
 
+    //发送模板消息
+    public function sendMoban()
+    {
+
+        $wxConfig = config('wx');
+        $wxConfig['app_id'] = $wxConfig['xiao_app_id'];
+        $wxConfig['secret'] = $wxConfig['xiao_secret'];
+        $app = new Application($wxConfig);
+
+
+// 获取 access token 实例
+        $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
+        $token = $accessToken->getToken(); // token 字符串
+       // $token = $accessToken->getToken(true); // 强制重新从微信服务器获取 token.
+
+        $arr = [
+            'access_token' =>$token,
+            'offset' =>0,
+            'count' =>20,
+        ];
+        $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/library/list';
+
+        $res = get_web_contents($www,'POST',$arr);
+
+        // var_dump($res);die;
+        Log::info('发送模板消息: '. $res['Body']);
+
+        return  $res['Body'];
+
+        // $wxConfig = config('wx');
+        //
+        // $app = new Application($wxConfig);
+        //
+        // $notice = $app->notice;
+        // $userId = 'ovwAZuBLwSiize3Zjd-DiCZPWTf8';
+        // $templateId = 'khV6wM2PO7inzv9octCaRQvp_HbvdHG4J1zIZFSn8xU';
+        // $url = 'http://www.baidu.com';
+        // $data = array(
+        //     "first"  => "恭喜你购买成功！",
+        //     "product"   => "巧克力",
+        //     "price"  => "39.8元",
+        //     "time"  => date('Y-m-d H:i:s', time()),
+        //     "remark" => "欢迎再次购买！",
+        // );
+        //
+        // $result = $notice->uses($templateId)->withUrl($url)->andData($data)->andReceiver($userId)->send();
+        // return $result;
+
+    }
 
 
 
@@ -599,6 +648,8 @@ class OrderController extends Controller
 
                 }
 
+
+                //推送模板消息
 
 
                 Log::error('修改订单状态成功: '.$notify->out_trade_no);

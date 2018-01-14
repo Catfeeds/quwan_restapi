@@ -43,6 +43,7 @@ $app->group($unAuthGroup, function () use ($app) {
 //    $app->get('add_order', 'OrderController@addOrder'); //创建订单
     $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
     $app->post('notify_url', 'OrderController@notifyUrl'); //订单回调
+   $app->get('send_xcx_moban', 'OrderController@sendMoban'); //发送小程序模板消息
 //    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
     $app->post('login', 'LoginController@login'); //登录
