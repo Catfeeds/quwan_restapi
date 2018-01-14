@@ -7,6 +7,7 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Attractions;
 use App\Models\Cid;
 use App\Models\CidMap;
+use App\Models\User;
 use App\Services\FavService;
 use App\Services\SmsService;
 use App\Services\XSService;
@@ -182,8 +183,22 @@ class XSController extends Controller
         $this->params['filter'] = (int)$this->params['filter'];
 
         $this->params['sortby'] = $this->params['sortby'] ?? 'key'; //搜索排序 [key相关优先, distance距离优先, score评分优先]
+
+
         $this->params['lon'] = $this->params['lon'] ?? ''; //用户经度
         $this->params['lat'] = $this->params['lat'] ?? ''; //用户纬度
+        //获取用户经纬度
+        if (!$this->userId)
+        {
+            $userLon = User::getUserLon($this->userId);
+            if (false === empty($userLon))
+            {
+                $this->params['lon'] = $userLon['user_lon']; //用户经度
+                $this->params['lat'] = $userLon['user_lat']; //用户纬度
+            }
+        }
+
+
 
         $this->params['cid'] = $this->params['cid'] ?? 0; //搜索分类id
         $this->params['cid'] = (int)$this->params['cid'];

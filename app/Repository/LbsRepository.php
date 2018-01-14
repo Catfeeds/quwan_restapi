@@ -17,8 +17,8 @@ class LbsRepository extends BaseRepository
         {
             foreach ($list as $row)
             {
-                $row['km'] = $this->nearbyDistance($u_lat, $u_lon, $row['lat'], $row['lon']);
-                $row['km'] = round($row['km'], 1);
+                $row['distance'] = $this->nearbyDistance($u_lat, $u_lon, $row['lat'], $row['lon']);
+                $row['distance'] = round($row['distance'], 1);
                 $res[]     = $row;
             }
 
@@ -26,7 +26,7 @@ class LbsRepository extends BaseRepository
             {
                 foreach ($res as $user)
                 {
-                    $ages[] = $user['km'];
+                    $ages[] = $user['distance'];
                 }
                 array_multisort($ages, SORT_ASC, $res);
 

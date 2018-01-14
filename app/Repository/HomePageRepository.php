@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomePageRepository extends BaseRepository
 {
+    const NEARBY_DISTANCE = 200; //200公里 推荐范围
 
     //获取页面内容
     public function getPageData($data, $userId)
@@ -299,48 +300,35 @@ class HomePageRepository extends BaseRepository
         //die;
 
 
-        ////获取所有的经纬度景点信息
-        //$list = Attractions::select('attractions_id','attractions_name','attractions_intro','attractions_lon as lon','attractions_lat as lat','attractions_sales_num')->where('attractions_status','=',Attractions::ATTRACTIONS_STATUS_1)->orderBy('attractions_sales_num')->get()->toArray();
-        //
-        //$Lbs = new  LbsRepository();
-        //
-        //
-        //$result = $Lbs->range($userLon['user_lat'],$userLon['user_lon'],$list);
-        //$data = [];
-        //if(false === empty($result)){
-        //    foreach ($result as $key => $value)
-        //    {
-        //        if($value['km'] <= 800){
-        //            $data[] = $value;
-        //        }
-        //    }
-        //}
-        //
-        //$data = new_array_sort($data, 'attractions_sales_num', 'desc');
-        //
-        //var_dump($data[0]);die;
-        //
-        //
-        ////==========================
 
 
-        $nearby = HomePageValue::select('value_id')
-                               ->where('home_page_value.home_page_id', '=', $value['home_page_id'])
-                               ->orderBy('home_page_value.sort')
-                               ->get()
-                               ->toArray();
+
+        //==========================
 
 
-        if (false === empty($nearby))
-        {
+
 
             //推荐线路
-            $routeId = array_shift($nearby);
-            $route   = Route::select('route_id', 'route_name', 'route_name', 'route_day_num', 'route_intro')
-                            ->first($routeId);
+            $list = Route::select('route_id', 'route_name', 'route_name', 'route_day_num', 'route_intro','route_lon as lon','route_lat as lat')
+                ->where('route_status','=',Route::ROUTE_STATUS_1)->orderBy('route_use_num')->get()->toArray();
+            $Lbs = new  LbsRepository();
+            $result = $Lbs->range($userLon['user_lat'],$userLon['user_lon'],$list);
+            $route = [];
+            if(false === empty($result)){
+                $tmp = [];
+                foreach ($result as $key => $value)
+                {
+                    //附近200公里内使用量（用户可以使用一条路线，称之为使用量）最大的路线
+                    if($value['distance'] <= self::NEARBY_DISTANCE){
+                        $tmp[] = $value;
+                    }
+                }
+                $tmp = new_array_sort($tmp, 'attractions_sales_num', 'desc');
+                $route = $tmp[0] ?? [];
+            }
+
             if (false === empty($route))
             {
-                $route = $route->toArray();
                 //图片
                 $route['img'] = RouteDayJoin::getOneJoinImg($route['route_id']);
                 //分类
@@ -349,14 +337,40 @@ class HomePageRepository extends BaseRepository
             $res['nearby']['route'] = $route;
 
 
-            $attractions = Attractions::select('attractions_id', 'attractions_name', 'attractions_intro', 'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon', 'attractions_lat')
-                                      ->whereIn('attractions_id', $nearby)->get()->toArray();
+
+
+            //推荐景点
+            $listA = Attractions::select('attractions_id', 'attractions_name', 'attractions_name', 'attractions_sales_num',  'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon as lon', 'attractions_lat as lat')
+                ->where('attractions_status','=',Attractions::ATTRACTIONS_STATUS_1)
+                ->orderBy('attractions_sales_num')->get()->toArray();
+            $Lbs = new  LbsRepository();
+            $resultA = $Lbs->range($userLon['user_lat'],$userLon['user_lon'],$listA);
+
+            $attractions = [];
+            if(false === empty($resultA)){
+                $tmp = [];
+                foreach ($resultA as $key => $value)
+                {
+                    //附近200公里内使用量（用户可以使用一条路线，称之为使用量）最大的路线
+                    if($value['distance'] <= self::NEARBY_DISTANCE){
+                        $tmp[] = $value;
+                    }
+                }
+
+                $tmp = new_array_sort($tmp, 'attractions_sales_num', 'desc');
+                if(false === empty($tmp)){
+                    foreach ($tmp as $key => $value) {
+                        if($key <= 1){
+                            $attractions[] = $value;
+                        }
+                    }
+                }
+            }
+
             if (false === empty($attractions))
             {
                 foreach ($attractions as $keyAAA => &$valueAAA)
                 {
-                    //距离
-                    $valueAAA['distance'] = get_distance($userLon['user_lon'], $userLon['user_lat'], $valueAAA['attractions_lon'], $valueAAA['attractions_lat']);
 
                     //图片
                     $valueAAA['img'] = Img::getOneImg($valueAAA['attractions_id'], Img::IMG_TYPE_A);
@@ -367,7 +381,7 @@ class HomePageRepository extends BaseRepository
             }
 
             $res['nearby']['attractions'] = $attractions;
-        }
+
 
         return $res;
     }

@@ -83,6 +83,23 @@ class OrderController extends Controller
         $wxConfig = config('wx');
         $wxConfig['app_id'] = $wxConfig['xiao_app_id'];
         $wxConfig['secret'] = $wxConfig['xiao_secret'];
+
+
+        // $wwwa = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$wxConfig['app_id'].'&secret='.$wxConfig['secret'];
+        // $res = get_web_contents($wwwa);
+        // $token = json_decode($res['Body'], true);
+        //
+        // $arr = [
+        //     'access_token' =>$token['access_token'],
+        //     'offset' =>0,
+        //     'count' =>20,
+        // ];
+        // $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/list';
+        //
+        // $res = get_web_contents($www,'POST',$arr);
+        //
+        // return  $res['Body'];
+
         $app = new Application($wxConfig);
 
 
@@ -90,13 +107,12 @@ class OrderController extends Controller
         $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
         $token = $accessToken->getToken(); // token 字符串
        // $token = $accessToken->getToken(true); // 强制重新从微信服务器获取 token.
-
         $arr = [
             'access_token' =>$token,
             'offset' =>0,
             'count' =>20,
         ];
-        $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/library/list';
+        $www = 'https://api.weixin.qq.com/cgi-bin/wxopen/template/list';
 
         $res = get_web_contents($www,'POST',$arr);
 
