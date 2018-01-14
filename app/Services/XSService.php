@@ -451,7 +451,7 @@ class XSService
 
             $search_cost = microtime(true) - $search_begin; //执行结束时间
             //var_dump('-------执行时间-------', $search_cost);
-
+            Log::Info('经纬度:',$params);
             $arr = [];
             if (false === empty($docs)) {
                 foreach ($docs as $key => $value) {
@@ -463,7 +463,7 @@ class XSService
                     //$arr[] = $valArr;
 
                     if(false === empty($params['lon'])){
-                        Log::Info('经纬度:',$params);
+
                         $distance = round($xs::geoDistance($params['lon'], $params['lat'], $valArr['lon'], $valArr['lat']));
                     }
                     $arr[] = [
