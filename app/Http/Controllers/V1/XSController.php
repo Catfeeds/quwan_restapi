@@ -192,7 +192,6 @@ class XSController extends Controller
         if ($this->userId)
         {
             $userLon = User::getUserLon($this->userId);
-            Log::Info('用户:',$userLon);
             if (false === empty($userLon))
             {
                 $this->params['lon'] = $userLon['user_lon']; //用户经度

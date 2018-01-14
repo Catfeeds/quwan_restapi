@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomePageRepository extends BaseRepository
 {
-    const NEARBY_DISTANCE = 200; //200公里 推荐范围
+    const NEARBY_DISTANCE = 200000; //200公里 推荐范围
 
     //获取页面内容
     public function getPageData($data, $userId)
@@ -345,7 +345,6 @@ class HomePageRepository extends BaseRepository
                 ->orderBy('attractions_sales_num')->get()->toArray();
             $Lbs = new  LbsRepository();
             $resultA = $Lbs->range($userLon['user_lat'],$userLon['user_lon'],$listA);
-
             $attractions = [];
             if(false === empty($resultA)){
                 $tmp = [];
