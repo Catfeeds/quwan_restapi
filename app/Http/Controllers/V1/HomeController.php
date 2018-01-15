@@ -91,6 +91,8 @@ class HomeController extends Controller
         $data = $this->homePage->getHomeData();
         $data = $this->homePageRepository->getPageData($data,$this->userId);
 
+
+
         //记录登录日志
         $logArr = [
             'log_type' => \App\Models\Log::LOG_TYPE_3,

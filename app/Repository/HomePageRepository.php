@@ -31,7 +31,14 @@ class HomePageRepository extends BaseRepository
             'attractions' => [],
             'holiday'     => [],
             'nearby'      => [],
+            'order'       => [],
         ];
+
+        //获取模块排序
+        $res['order'] = HomePage::select('home_page_type','home_page_status')
+                ->where('home_page_status','=',HomePage::PAGE_STATUS_1)
+                ->orderBy('home_page_sort')->get()->toArray();
+
         foreach ($data as $key => $value)
         {
 
