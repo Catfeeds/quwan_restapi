@@ -131,7 +131,8 @@ class Route extends Model
      */
     public static function getInfo($routeId)
     {
-        $data = self::select('route_id', 'route_name', 'route_name', 'route_day_num', 'route_intro')
+
+        $data = self::select('route_id', 'route_name', 'route_name', 'route_day_num', 'route_intro','route_lon','route_lat')
                     ->where('route_status', '=', self::ROUTE_STATUS_1)
                     ->where('route_id', '=', $routeId)
                     ->first();

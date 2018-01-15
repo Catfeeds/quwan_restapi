@@ -630,8 +630,8 @@ class XSService
                 'intro' => $info['route_intro'],
                 'score' => $info['route_day_num'],
                 'evaluation' => '',
-                'lon' => '',
-                'lat' => '',
+                'lon' => $info['route_lon'],
+                'lat' => $info['route_lat'],
             ];
         }
         return $res;
