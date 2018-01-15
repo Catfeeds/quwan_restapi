@@ -346,6 +346,8 @@ class XSService
     //搜索
     public static function search($params)
     {
+        Log::Info('搜索开始===============================');
+        Log::Info('参数:',$params);
         try {
             $search_begin = microtime(true); //开始执行搜索时间
 
