@@ -634,7 +634,7 @@ class OrderController extends Controller
             if($notify->attach){
                 Log::info('主订单: '.$notify->attach);
                 //通过主订单获取所有的子订单与状态
-                $attachData = \App\Models\Order::select('order_id','order_pay_amount','shop_id','order_type','join_id','user_id')
+                $attachData = \App\Models\Order::select('order_id','order_pay_amount','order_amount','shop_id','order_type','join_id','user_id')
                     ->where('original_id','=',$notify->attach)
                     ->where('order_status','=',\App\Models\Order::ORDER_STATUS_10)
                     ->get()
