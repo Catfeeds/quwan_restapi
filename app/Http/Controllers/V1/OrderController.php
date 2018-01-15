@@ -732,7 +732,7 @@ class OrderController extends Controller
 
         // 修改订单状态,订单时间,第三方订单号,实际支付金额
         $arr = [
-            'order_pay_amount' => $order['order_pay_amount'],
+            'order_pay_amount' => $order['order_amount'],
             'order_status' => \App\Models\Order::ORDER_STATUS_20,
             'order_pay_at' => time(),
             'transaction_id' => $notify->transaction_id,
