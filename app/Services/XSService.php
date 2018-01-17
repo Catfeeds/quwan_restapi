@@ -312,8 +312,8 @@ class XSService
             // 创建文档对象
             $doc = new \XSDocument();
 
-
-
+            Log::info('参数:',$params);
+            
             $doc->setFields($params);
 
             //添加到索引
