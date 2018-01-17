@@ -313,7 +313,7 @@ class XSService
             $doc = new \XSDocument();
 
             Log::info('参数:',$params);
-            
+
             $doc->setFields($params);
 
             //添加到索引

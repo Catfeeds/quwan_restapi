@@ -44,6 +44,7 @@ $app->group($unAuthGroup, function () use ($app) {
     $app->get('notify_url', 'OrderController@notifyUrl'); //订单回调
     $app->post('notify_url', 'OrderController@notifyUrl'); //订单回调
    $app->get('send_xcx_moban', 'OrderController@sendMoban'); //发送小程序模板消息
+   $app->get('get_access_token', 'OrderController@getAccessToken'); //获取微信get_access_token
 //    $app->get('send_moban', 'TestController@sendMoban'); //发送模板消息
 
     $app->post('login', 'LoginController@login'); //登录
