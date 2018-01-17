@@ -460,7 +460,11 @@ class XSService
                     $valArr = $value->getFieldsArray();
                     $valArr['id'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
 
-                    //@todo 注意图片处理
+                    ////如果是线路,注意图片处理
+                    //if((int)$value['type'] === 3){
+                    //    //图片
+                    //    $valArr['img'] = RouteDayJoin::getOneJoinImg($valArr['id']);
+                    //}
                     //$valArr['img'] = substr($valArr['id'], strrpos( $valArr['id'] ,'-')+1);
                     //$arr[] = $valArr;
 
@@ -616,6 +620,7 @@ class XSService
     public static function getRouteData($routeId)
     {
         $info = Route::getInfo($routeId);
+
         $res = [];
         if (false === empty($info)) {
             //图片
@@ -625,7 +630,7 @@ class XSService
                 'id' => $info['route_id'],
                 'type' => 3,
                 'name' => $info['route_name'],
-                'img' => $img,
+                'img' => [$img],
                 'price' => '',
                 'intro' => $info['route_intro'],
                 'score' => $info['route_day_num'],
