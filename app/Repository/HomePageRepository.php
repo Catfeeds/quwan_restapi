@@ -89,7 +89,7 @@ class HomePageRepository extends BaseRepository
         //                           ->get()
         //                           ->toArray();
 
-        $res['adv'] = Adv::select('adv_id', 'adv_title', 'adv_url', 'adv_type', 'adv_img')
+        $res['adv'] = Adv::select('adv_id', 'adv_title', 'adv_url', 'adv_type', 'adv_img','adv_content')
                          ->where('adv_status', '=', Adv::ADV_STATUS_1)->orderBy('adv_weight')->get()->toArray();
 
         return $res;

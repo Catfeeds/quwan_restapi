@@ -41,7 +41,6 @@ class Adv extends Model
     protected $casts = [
         'adv_id' => 'int',
         'adv_weight' => 'int',
-        'adv_content' => 'int',
         'adv_type' => 'int',
         'adv_status' => 'int',
         'adv_created_at' => 'int',
