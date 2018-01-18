@@ -347,7 +347,7 @@ class HomePageRepository extends BaseRepository
 
 
             //推荐景点
-            $listA = Attractions::select('attractions_id', 'attractions_name', 'attractions_name', 'attractions_sales_num',  'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon as lon', 'attractions_lat as lat')
+            $listA = Attractions::select('attractions_id', 'attractions_name', 'attractions_name', 'attractions_sales_num',  'attractions_price', 'attractions_score', 'attractions_evaluation', 'attractions_lon as lon', 'attractions_lat as lat','attractions_intro')
                 ->where('attractions_status','=',Attractions::ATTRACTIONS_STATUS_1)
                 ->orderBy('attractions_sales_num')->get()->toArray();
             $Lbs = new  LbsRepository();
@@ -382,6 +382,10 @@ class HomePageRepository extends BaseRepository
                     $valueAAA['img'] = Img::getOneImg($valueAAA['attractions_id'], Img::IMG_TYPE_A);
                     //分类
                     $valueAAA['cid'] = CidMap::getCidsInfo($valueAAA['attractions_id'], CidMap::CID_MAP_TYPE_1);
+
+                    //描述简介处理
+                    $valueAAA['attractions_intro'] = htmlspecialchars_decode($valueAAA['attractions_intro']);
+                    $valueAAA['attractions_intro'] = lose_space(strip_tags($valueAAA['attractions_intro']));
                 }
 
             }
