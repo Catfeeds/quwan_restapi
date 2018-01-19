@@ -92,6 +92,15 @@ class HomePageRepository extends BaseRepository
         $res['adv'] = Adv::select('adv_id', 'adv_title', 'adv_url', 'adv_type', 'adv_img','adv_content')
                          ->where('adv_status', '=', Adv::ADV_STATUS_1)->orderBy('adv_weight')->get()->toArray();
 
+        if (false === empty($res['adv']))
+        {
+            foreach ($res['adv'] as $keyR => &$valueR)
+            {
+                $valueR['adv_content'] = htmlspecialchars_decode($valueR['adv_content']);
+            }
+
+        }
+
         return $res;
     }
 
