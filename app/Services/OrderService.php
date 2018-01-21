@@ -445,7 +445,8 @@ class OrderService
         ];
         $res =  $this->createWxOrder($arr);
         $res['order_sn'] = $goods;
-        $res['wx_amount'] = $wxAmount;
+        $res['wx_amount'] =  sprintf('%0.2f', $wxAmount);
+
         //var_dump($goods,$res);die;
 
         //更新订单信息prepay_id
