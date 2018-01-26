@@ -159,6 +159,7 @@ class RouteDayRepository extends BaseRepository
             'join_lon' => $res['hotel_lon'],
             'join_lat' => $res['hotel_lat'],
             'join_img' => $img,
+            'join_address' => $res['hotel_address'],
         ];
 
         return $data;
@@ -188,6 +189,7 @@ class RouteDayRepository extends BaseRepository
             'join_lon' => $res['attractions_lon'],
             'join_lat' => $res['attractions_lat'],
             'join_img' => $img,
+            'join_address' => $res['attractions_address'],
         ];
 
         return $data;
@@ -217,6 +219,7 @@ class RouteDayRepository extends BaseRepository
             'join_lon' => $res['hall_lon'],
             'join_lat' => $res['hall_lat'],
             'join_img' => $img,
+            'join_address' => $res['hall_address'],
         ];
 
 
