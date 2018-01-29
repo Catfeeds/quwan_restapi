@@ -188,16 +188,20 @@ class XSController extends Controller
         $this->params['lon'] = $this->params['lon'] ?? ''; //用户经度
         $this->params['lat'] = $this->params['lat'] ?? ''; //用户纬度
 
-        //获取用户经纬度
-        if ($this->userId)
-        {
-            $userLon = User::getUserLon($this->userId);
-            if (false === empty($userLon))
+        if(!$this->params['lon'] && !$this->params['lat']){
+            //获取用户经纬度
+            if ($this->userId)
             {
-                $this->params['lon'] = $userLon['user_lon']; //用户经度
-                $this->params['lat'] = $userLon['user_lat']; //用户纬度
+                $userLon = User::getUserLon($this->userId);
+                if (false === empty($userLon))
+                {
+                    $this->params['lon'] = $userLon['user_lon']; //用户经度
+                    $this->params['lat'] = $userLon['user_lat']; //用户纬度
+                }
             }
         }
+
+
 
 
 
