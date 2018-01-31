@@ -46,18 +46,19 @@ class DestinationJoin extends Model
   'destination_join_type' => 'int',
 );
 
-    //获取线路下第一张图片
+    //获取目的地下第一张图片
     public static function getOneJoinImg($destinationId)
     {
 
         $data = self::select('join_id', 'destination_join_type')
             ->where('destination_id', '=', $destinationId)
+            ->where('destination_join_type', '=', self::DESTINATION_JOIN_TYPE_A)
             ->orderBy('destination_join_sort')
             ->first();
         if (!$data) {
             return '';
         }
-
+        
         //获取第一张图片
         $img = Img::getOneImg($data->join_id, $data->destination_join_type);
 
