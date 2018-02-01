@@ -71,6 +71,8 @@ class AttractionsController extends Controller
             $data['is_fav'] = $this->favService->isFav(Fav::FAV_TYPE_A, $userId, $attractions_id) ? 1 : 0;
         }
         $data['attractions_intro'] = Attractions::getKeyValue($attractions_id, 'attractions_intro');
+        $data['attractions_intro'] = htmlspecialchars_decode($data['attractions_intro']);
+        $data['attractions_intro'] = strip_tags($data['attractions_intro']);
 
         return $data;
     }
