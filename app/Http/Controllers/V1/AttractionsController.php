@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 
+use App\Models\Attractions;
 use App\Models\CidMap;
 use App\Models\Fav;
 use App\Models\Order;
@@ -69,6 +70,7 @@ class AttractionsController extends Controller
             //检测用户是否收藏 1景点,2目的地，3路线,4节日，5酒店,6餐厅
             $data['is_fav'] = $this->favService->isFav(Fav::FAV_TYPE_A, $userId, $attractions_id) ? 1 : 0;
         }
+        $data['attractions_intro'] = Attractions::getKeyValue($attractions_id, 'attractions_intro');
 
         return $data;
     }
